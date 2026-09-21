@@ -20,7 +20,7 @@
     <x-site.mark class="absolute -right-[60px] -bottom-[70px] size-[400px] text-strong opacity-[0.06]" />
 
     <div class="relative flex items-center justify-between">
-        <x-site.lockup class="h-[40px] text-[44px] text-strong" />
+        <x-site.lockup class="h-[40px] text-strong" />
         @if ($eyebrow)
             <p class="text-[15px] font-semibold text-accent">{{ $eyebrow }}</p>
         @endif

@@ -14,7 +14,7 @@
 ])>
     <x-site.mark class="absolute top-[96px] -right-[40px] size-[560px] text-strong opacity-[0.05]" />
 
-    <x-site.lockup class="relative h-[40px] self-start text-[44px] text-strong" />
+    <x-site.lockup class="relative h-[40px] self-start text-strong" />
 
     <div class="relative mt-[88px] flex max-w-[900px] flex-col">
         <p class="text-pretty font-serif text-[64px] leading-[1.08] font-semibold tracking-[-0.03em] text-strong"><x-site.marked :text="$heading" :marked="$marked" /></p>
