@@ -22,7 +22,9 @@ is its own.
   element's own `dark:` fire, so a pair on it would always read its dark half.
   Tailwind's colour names resolve to the nearest ramp for Flux's `color`
   props, as an interim until no view passes one.
-- **Components**: `x-site.button`, over `flux:button` with `primary`, `secondary` and `ghost`, `x-site.container`, `x-site.section`,
+- **Components**: `x-site.heading` (`size` display, 1, 2, 3 and `tone`) and
+  `x-site.text` (`variant` lede, copy, small, label, meta and `tone` body,
+  strong, muted, accent, error), both over Flux; `x-site.button`, over `flux:button` with `primary`, `secondary` and `ghost`, `x-site.container`, `x-site.section`,
   `x-site.numbered-section`, `x-site.section-head`, `x-site.breadcrumb`, `x-site.badge`, `x-site.country-select` and `x-site.copy-menu`
   resolve from the foundry. The copy menu reads its words from
   `foundry::agents`, in English and Dutch.

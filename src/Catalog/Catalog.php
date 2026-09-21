@@ -242,7 +242,7 @@ BLADE],
             'heading' => [
                 'name' => 'Heading',
                 'group' => 'Type',
-                'from' => 'imprint',
+                'from' => 'foundry',
                 'description' => 'Spectral, on the imprint\'s scale. Colour comes from the tone alone.',
                 'examples' => [
                     ['title' => 'The four sizes', 'blade' => <<<'BLADE'
@@ -258,7 +258,7 @@ BLADE],
             'text' => [
                 'name' => 'Text',
                 'group' => 'Type',
-                'from' => 'imprint',
+                'from' => 'foundry',
                 'description' => 'Chivo, in a variant for its role and a tone for its colour.',
                 'examples' => [
                     ['title' => 'Variants', 'blade' => <<<'BLADE'
