@@ -43,7 +43,7 @@ final class BrandAssets
     }
 
     /**
-     * @return array{heading: string, marked?: string|null, lede?: string|null, eyebrow?: string|null}
+     * @return array{heading: string, marked?: string, lede?: string, eyebrow?: string}
      */
     private static function copy(string $key): array
     {
@@ -53,6 +53,14 @@ final class BrandAssets
             throw new InvalidArgumentException("config/imprint.php states no {$key}.heading.");
         }
 
-        return array_filter($copy, fn (mixed $value): bool => $value !== null);
+        $locale = $copy['locale'] ?? null;
+        unset($copy['locale']);
+
+        // A value may be a translation key, so a site whose copy lives in lang/
+        // states it once; a plain sentence has no translation and stays itself.
+        return array_map(
+            fn (mixed $value): mixed => is_string($value) ? __($value, [], $locale) : $value,
+            array_filter($copy, fn (mixed $value): bool => $value !== null),
+        );
     }
 }

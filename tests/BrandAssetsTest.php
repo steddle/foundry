@@ -71,3 +71,11 @@ test('the check fails until every image is rendered from the copy the imprint st
     File::delete(public_path('og-image.png'));
     File::deleteDirectory(public_path('brand'));
 });
+
+test('a copy value may be a translation key, read in the locale its block names', function () {
+    app('translator')->addLines(['home.hero.title' => 'Het Nederlandse recht, bij de bron.'], 'nl');
+    config()->set('imprint.og.heading', 'home.hero.title');
+    config()->set('imprint.og.locale', 'nl');
+
+    expect(BrandAssets::find('og-image')->markup())->toContain('Het Nederlandse recht, bij de bron.');
+});

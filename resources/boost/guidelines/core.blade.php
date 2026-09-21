@@ -20,7 +20,8 @@ is its own.
 - **Published images**: `x-site.og-image`, `x-site.social-preview` and
   `x-site.readme-banner` are rendered from the imprint's
   `config/imprint.php` (`name`, `stylesheet`, and `og` and `banner` copy:
-  `heading`, `marked`, `lede`, `eyebrow`) into `public/og-image.png` and
+  `heading`, `marked`, `lede`, `eyebrow`, each a sentence or a translation
+  key, and an optional `locale` per block) into `public/og-image.png` and
   `public/brand/social/`. `php artisan foundry:assets --url=https://<site>.test`
   renders them through headless Chrome; `foundry:assets --check` fails where
   the copy or markup moved since, and every imprint's suite runs it. Change the
