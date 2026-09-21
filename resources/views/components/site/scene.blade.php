@@ -1,6 +1,14 @@
 @props(['name', 'scrim', 'eager' => false])
 
-{{-- A scene: the photo an ink band carries behind its content, and the scrim that keeps the content legible on it. $name is a folder under public/ holding home-{768,1280,1672}.{avif,webp}; config/imprint.php frames it under `scenes.{$name}`, where its subject stays in view as the band narrows. --}}
+@php
+    // `start` and `center` are measured over every imprint's scenes at 1440 and 390 wide: each line of text set there reads at 4.5:1 or more. A phone sets text across the whole band, so `start` is flat there.
+    $scrim = [
+        'start' => 'max-lg:bg-zinc-900/88 lg:bg-[linear-gradient(to_right,--alpha(var(--color-zinc-900)/90%)_0%,--alpha(var(--color-zinc-900)/75%)_45%,--alpha(var(--color-zinc-900)/20%)_90%),linear-gradient(to_bottom,transparent_55%,--alpha(var(--color-zinc-900)/85%)_100%)]',
+        'center' => 'bg-[radial-gradient(ellipse_at_center,--alpha(var(--color-zinc-900)/80%)_0%,--alpha(var(--color-zinc-900)/55%)_55%,--alpha(var(--color-zinc-900)/35%)_100%)]',
+    ][$scrim] ?? $scrim;
+@endphp
+
+{{-- A scene: the photo an ink band carries behind its content, and the scrim that keeps the content legible on it. $name is a folder under public/ holding home-{768,1280,1672}.{avif,webp}; config/imprint.php frames it under `scenes.{$name}`, where its subject stays in view as the band narrows. `scrim` is `start` or `center`, for content set there, or a band's own measured classes. --}}
 <picture data-markdown-skip>
     <source type="image/avif" srcset="/{{ $name }}/home-768.avif 768w, /{{ $name }}/home-1280.avif 1280w, /{{ $name }}/home-1672.avif 1672w" sizes="100vw">
     <img src="/{{ $name }}/home-1280.webp" srcset="/{{ $name }}/home-768.webp 768w, /{{ $name }}/home-1280.webp 1280w, /{{ $name }}/home-1672.webp 1672w" sizes="100vw"

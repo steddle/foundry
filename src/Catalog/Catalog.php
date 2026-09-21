@@ -34,7 +34,7 @@ BLADE],
                 'name' => 'Section',
                 'group' => 'Layout',
                 'from' => 'foundry',
-                'description' => 'A band of the page, spaced from the next, with a hairline between bands in dark mode.',
+                'description' => 'A band of the page, spaced from the next, with a hairline between bands in dark mode. With a scene it is ink over that photo, under the measured scrim.',
                 'examples' => [
                     ['title' => 'A band with a heading and a lede', 'ground' => 'bare', 'blade' => <<<'BLADE'
 <x-site.section>
@@ -176,6 +176,20 @@ BLADE],
 BLADE],
                     ['title' => 'Ghost, on ink', 'ground' => 'ink', 'blade' => <<<'BLADE'
 <x-site.button href="#" variant="ghost">Ghost</x-site.button>
+BLADE],
+                ],
+            ],
+            'actions' => [
+                'name' => 'Actions',
+                'group' => 'Actions',
+                'from' => 'foundry',
+                'description' => 'The row of buttons a band, a page or a form ends on. A page\'s markdown leaves it out.',
+                'examples' => [
+                    ['title' => 'Two buttons', 'blade' => <<<'BLADE'
+<x-site.actions>
+    <x-site.button href="#">Talk to us</x-site.button>
+    <x-site.button href="#" variant="secondary">Read the docs</x-site.button>
+</x-site.actions>
 BLADE],
                 ],
             ],

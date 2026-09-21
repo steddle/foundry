@@ -17,7 +17,7 @@ test('every entry names itself, its group, where it comes from and one example',
 
 test('the index groups the entries in the order they are listed', function () {
     expect(array_keys(Catalog::groups()))->toBe(['Layout', 'Type', 'Actions', 'Brand', 'Bands', 'Images'])
-        ->and(Catalog::groups()['Actions'])->toBe(['button']);
+        ->and(Catalog::groups()['Actions'])->toBe(['button', 'actions']);
 });
 
 test('a component the catalog does not hold is not found', function () {

@@ -34,7 +34,10 @@ is its own.
 - **Hero**: `x-site.hero` opens a page on ink under the header: `scene`,
   `align` (`start` or `center`, which chooses the scrim), `tall`, and the
   `eyebrow`, `title` with its `marked` phrase and `lead` it sets itself; the
-  slot follows them. A scene
+  slot follows them. `x-site.section` takes `scene` and `align` too, for an
+  ink band further down a page. Both draw the scrim `x-site.scene` holds for
+  `start` or `center`, measured over every imprint's scenes; the footer keeps
+  its own. `x-site.actions` is the row of buttons a band ends on. A scene
   is framed once, in `config/imprint.php` under `scenes`, name => its
   object-position classes, and every `x-site.scene` of it reads that; a site's
   stylesheet sources `config/imprint.php` so the classes are built.
