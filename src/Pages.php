@@ -2,52 +2,49 @@
 
 namespace Steddle\Foundry;
 
-use Closure;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Traits\Localizable;
+use Steddle\Foundry\Contracts\Sitemap;
 
 /**
- * The imprint's public pages, from the class `imprint.sitemap` names: its
- * static `all()` answers, in the current locale and in the order the sitemap
- * and llms.txt list them, `key => [title, description, url, render]`, where
- * `render` builds the page's HTML for llms-full.txt, or is null for a page a
- * controller answers. Its optional static `sections()` answers what llms.txt
- * says beyond the pages, `heading => lines`.
+ * The imprint's public pages in every locale, from the `Sitemap` that
+ * `imprint.sitemap` names.
  */
 final class Pages
 {
+    use Localizable;
+
     /**
-     * The pages in every locale, `locale => key => page`.
+     * `locale => key => page`.
      *
-     * @return array<string, array<string, array{title: string, description: string, url: string, render: (Closure(): string)|null}>>
+     * @return array<string, array<string, array{title: string, description: string, url: string, render: (\Closure(): string)|null}>>
      */
-    public static function byLocale(): array
+    public function byLocale(): array
     {
-        return collect(Locales::all())->mapWithKeys(fn (string $locale): array => [$locale => self::in($locale, fn (): array => config('imprint.sitemap')::all())])->all();
+        return collect(Locales::all())->mapWithKeys(fn (string $locale): array => [$locale => $this->withLocale($locale, fn (): array => $this->sitemap()->pages())])->all();
+    }
+
+    /**
+     * Every page's rendered HTML, with its address, in every locale.
+     *
+     * @return list<array{url: string, html: string}>
+     */
+    public function rendered(): array
+    {
+        return collect(Locales::all())->flatMap(fn (string $locale): array => $this->withLocale($locale, fn (): array => collect($this->sitemap()->pages())
+            ->filter(fn (array $page): bool => $page['render'] !== null)
+            ->map(fn (array $page): array => ['url' => $page['url'], 'html' => ($page['render'])()])
+            ->values()
+            ->all()))->all();
     }
 
     /** @return array<string, list<string>> */
-    public static function sections(): array
+    public function sections(): array
     {
-        $class = config('imprint.sitemap');
-
-        return method_exists($class, 'sections') ? $class::sections() : [];
+        return $this->sitemap()->sections();
     }
 
-    /**
-     * @template T
-     *
-     * @param  Closure(): T  $callback
-     * @return T
-     */
-    public static function in(string $locale, Closure $callback): mixed
+    private function sitemap(): Sitemap
     {
-        $previous = App::getLocale();
-        App::setLocale($locale);
-
-        try {
-            return $callback();
-        } finally {
-            App::setLocale($previous);
-        }
+        return app(config('imprint.sitemap'));
     }
 }

@@ -1,5 +1,18 @@
 @props(['variant' => 'copy', 'tone' => 'body', 'inline' => false])
 
+{{--
+    Chivo, in a variant for its role and a tone for its colour.
+
+    @group Type
+
+    @example Variants
+    <div class="flex flex-col gap-4">
+        <x-site.text variant="lede">A lede opens a section.</x-site.text>
+        <x-site.text>Copy carries the text.</x-site.text>
+        <x-site.text variant="small">Small sets a caption or a note.</x-site.text>
+        <x-site.text variant="label" tone="muted">A label names what follows</x-site.text>
+    </div>
+--}}
 @php
     $variants = [
         'lede' => 'text-lede text-pretty',

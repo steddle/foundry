@@ -1,4 +1,16 @@
-{{-- A reading layout: navigation beside the text on wide screens, above it on narrow ones. --}}
+{{--
+    A reading layout: navigation beside the text on wide screens, above it on narrow ones.
+
+    @group Layout
+
+    @example Side navigation and text
+    <x-site.document>
+        <x-slot:aside>
+            <x-site.side-nav :groups="['On this page' => [['label' => 'Install', 'href' => '#', 'current' => true], ['label' => 'Configure', 'href' => '#']]]" />
+        </x-slot:aside>
+        <x-site.text>The text beside it.</x-site.text>
+    </x-site.document>
+--}}
 <div {{ $attributes->class('grid grid-cols-1 gap-10 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12') }}>
     <aside data-markdown-skip class="lg:sticky lg:top-8 lg:self-start">
         {{ $aside }}

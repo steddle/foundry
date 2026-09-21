@@ -5,6 +5,20 @@
     lede and the actions the slot holds, stacked. At the start everything stays
     on the dark side of the footer's scrim, clear of the scene's subject,
     which every scene keeps to the right.
+
+    @group Bands
+
+    @example Centred
+    @ground ink
+    <x-site.closing title="The last thing a reader sees.">
+        <x-site.button href="#">An action</x-site.button>
+    </x-site.closing>
+
+    @example At the start, with a lede
+    @ground ink
+    <x-site.closing align="start" title="Where to go when the docs did not answer." lead="One sentence on what the action does.">
+        <x-site.button href="#">An action</x-site.button>
+    </x-site.closing>
 --}}
 <section {{ $attributes }}>
     <x-site.container @class([

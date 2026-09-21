@@ -6,6 +6,15 @@
     it from the bands around it. With a `scene` the band is ink over that photo,
     its content at the start or in the centre as `align` says, under the scrim
     measured for it.
+
+    @group Layout
+
+    @example A band with a heading and a lede
+    @ground bare
+    <x-site.section>
+        <x-site.heading size="2">A section heading.</x-site.heading>
+        <x-site.text variant="lede">The lede under it, in the body colour.</x-site.text>
+    </x-site.section>
 --}}
 <section {{ $attributes->class([
     'scroll-mt-4 py-18 lg:py-32',

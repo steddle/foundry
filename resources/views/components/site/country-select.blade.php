@@ -1,5 +1,14 @@
 @props(['countries', 'placeholder' => null])
 
+{{--
+    A searchable Flux listbox of countries, each with its flag. The site hands
+    it the countries in its own language.
+
+    @group Forms
+
+    @example Three countries
+    <x-site.country-select :countries="['nl' => 'Netherlands', 'gb' => 'United Kingdom', 'us' => 'United States']" label="Country" class="max-w-sm" />
+--}}
 @php
     $placeholder ??= __('foundry::forms.country');
 @endphp

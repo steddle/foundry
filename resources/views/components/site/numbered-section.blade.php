@@ -1,6 +1,15 @@
 @props(['number', 'name', 'note' => null, 'sunken' => false])
 
-{{-- A section that opens on a ruled row: its number, its name, one fact about what follows, and the actions on it. `sunken` sets it a step below the page. --}}
+{{--
+    A section that opens on a ruled row: its number, its name, one fact about what follows, and the actions on it. `sunken` sets it a step below the page.
+
+    @group Layout
+
+    @example With a note
+    <x-site.numbered-section number="04" name="Social images" note="4 files">
+        <x-site.text>What follows the row.</x-site.text>
+    </x-site.numbered-section>
+--}}
 <section {{ $attributes->class(['scroll-mt-4', 'bg-zinc-100 dark:bg-zinc-950' => $sunken]) }}>
     <div class="border-b border-zinc-200 dark:border-zinc-50/13">
         <x-site.container class="flex h-12 items-center justify-between gap-6">

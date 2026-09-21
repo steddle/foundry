@@ -1,10 +1,11 @@
 <?php
 
+use Steddle\Foundry\Contracts\Sitemap;
 use Steddle\Foundry\FoundryServiceProvider;
 
-final class TestPages
+final class TestPages implements Sitemap
 {
-    public static function all(): array
+    public function pages(): array
     {
         return [
             'home' => ['title' => 'Home', 'description' => 'What the imprint is.', 'url' => url('/'), 'render' => fn (): string => '<h1>Home</h1><p>Words.</p>'],
@@ -12,7 +13,7 @@ final class TestPages
         ];
     }
 
-    public static function sections(): array
+    public function sections(): array
     {
         return ['MCP' => ['- [MCP server](https://example.test/mcp)']];
     }

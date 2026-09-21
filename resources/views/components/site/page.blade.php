@@ -8,6 +8,15 @@
     og-image's props or the og-image itself as a slot. `flux` loads Flux and
     with it Livewire's Alpine; a page that renders no control can leave them
     out. No @fluxAppearance: the site follows the system theme itself.
+
+    @group Bands
+
+    @example A site's layout
+    @code
+    <x-site.page :$title :$description :$og>
+        {{ $slot }}
+        <x-slot:closing>{{ $closing ?? '' }}</x-slot:closing>
+    </x-site.page>
 --}}
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">

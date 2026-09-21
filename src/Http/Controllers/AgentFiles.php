@@ -16,9 +16,9 @@ use Steddle\Foundry\Pages;
  */
 final class AgentFiles
 {
-    public function sitemap(): Response
+    public function sitemap(Pages $pages): Response
     {
-        $pages = Pages::byLocale();
+        $pages = $pages->byLocale();
         $urls = [];
 
         foreach ($pages[Locales::root()] as $key => $page) {
@@ -34,9 +34,9 @@ final class AgentFiles
             ->header('Content-Type', 'application/xml; charset=UTF-8');
     }
 
-    public function llms(): Response
+    public function llms(Pages $site): Response
     {
-        $pages = Pages::byLocale();
+        $pages = $site->byLocale();
         $lines = ['# '.config('imprint.name'), '', '> '.(array_values($pages[Locales::root()])[0]['description'] ?? ''), ''];
 
         foreach ($pages as $locale => $list) {
@@ -50,7 +50,7 @@ final class AgentFiles
             $lines[] = '';
         }
 
-        foreach (Pages::sections() as $heading => $sectionLines) {
+        foreach ($site->sections() as $heading => $sectionLines) {
             $lines = [...$lines, "## {$heading}", '', ...$sectionLines, ''];
         }
 
@@ -64,24 +64,12 @@ final class AgentFiles
      * markdown preprocessors strip whatever layout a page renders with, so
      * nav and footer never reach it.
      */
-    public function full(): Response
+    public function full(Pages $pages): Response
     {
         $markdown = Cache::store(config('markdown-response.cache.store'))
-            ->remember('llms-full.txt', config('markdown-response.cache.ttl', 3600), function (): string {
-                $sections = [];
-
-                foreach (Locales::all() as $locale) {
-                    Pages::in($locale, function () use (&$sections): void {
-                        foreach (config('imprint.sitemap')::all() as $page) {
-                            if ($page['render'] !== null) {
-                                $sections[] = '# '.$page['url']."\n\n".Markdown::convert(($page['render'])());
-                            }
-                        }
-                    });
-                }
-
-                return implode("\n\n---\n\n", $sections)."\n";
-            });
+            ->remember('llms-full.txt', config('markdown-response.cache.ttl', 3600), fn (): string => collect($pages->rendered())
+                ->map(fn (array $page): string => '# '.$page['url']."\n\n".Markdown::convert($page['html']))
+                ->implode("\n\n---\n\n")."\n");
 
         return $this->respond($markdown);
     }

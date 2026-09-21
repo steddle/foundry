@@ -66,11 +66,12 @@ is its own.
   `imprint.legal`; the list on a page is its own `<h2>`s, read by `Outline`.
   Long-form text is the `longform` utility in `foundry.css`.
 - **Pages for search engines and agents**: `imprint.sitemap` names the
-  imprint's `Pages` class, whose static `all()` answers its public pages in
-  the current locale, `key => [title, description, url, render]`, and whose
-  optional `sections()` adds to llms.txt. The foundry then answers
-  `sitemap.xml`, with alternates where the imprint speaks more than one
-  language, `llms.txt` and `llms-full.txt`.
+  imprint's class implementing `Steddle\Foundry\Contracts\Sitemap`: `pages()`
+  answers its public pages in the current locale, `key => [title,
+  description, url, render]`, and `sections()` what llms.txt adds. The
+  foundry then answers `sitemap.xml`, with alternates where the imprint
+  speaks more than one language, `llms.txt` and `llms-full.txt`, from
+  `routes/foundry.php`.
 - **Markdown for agents**: `Steddle\Foundry\Markdown\*` extends
   spatie/laravel-markdown-response. The provider binds the table-aware driver
   and the `/index.md` rewrite; a site's `config/markdown-response.php` names
@@ -113,7 +114,9 @@ is its own.
   end on Lab. A page with no hero opens on `x-site.page-title`.
 - **`/components`** shows every component an imprint renders, from the
   catalogue in `Steddle\Foundry\Catalog\Catalog`: each example rendered
-  live on its ground and printed as Blade. An imprint's own components join
+  live on its ground and printed as Blade. A component, the foundry's or
+  the imprint's, describes itself in the comment its file opens on: the
+  prose, `@group`, and `@example Title` with `@ground`, `@zoom` or `@code`. An imprint's own components join
   it on their own: every file under its `resources/views/components/site`
   the foundry neither keeps nor names. The comment a file opens on is its
   description, and each `@example Title` line in it starts a live example,

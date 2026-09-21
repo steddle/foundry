@@ -4,21 +4,15 @@ namespace Steddle\Foundry;
 
 use Closure;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use LogicException;
 use Spatie\MarkdownResponse\Middleware\RewriteMarkdownUrls as BaseRewriteMarkdownUrls;
 use Steddle\Foundry\Console\RenderBrandAssets;
-use Steddle\Foundry\Http\Controllers\AgentFiles;
-use Steddle\Foundry\Http\Controllers\RenderBrandAsset;
-use Steddle\Foundry\Http\Controllers\ShowComponent;
-use Steddle\Foundry\Http\Controllers\ShowLab;
-use Steddle\Foundry\Http\Controllers\UpdateLocale;
 use Steddle\Foundry\Http\Middleware\FollowPreferredLocale;
 use Steddle\Foundry\Http\Middleware\FollowVisitorLanguage;
-use Steddle\Foundry\Http\Middleware\Noindex;
 use Steddle\Foundry\Http\Middleware\SetLocale;
 use Steddle\Foundry\Markdown\LeagueDriverWithTables;
 use Steddle\Foundry\Markdown\RewriteMarkdownUrls;
@@ -49,37 +43,7 @@ class FoundryServiceProvider extends ServiceProvider
 
         $this->localize();
 
-        // The sitemap and the llms files, for an imprint that lists its pages in `imprint.sitemap`.
-        if (config('imprint.sitemap')) {
-            Route::middleware('web')->group(function (): void {
-                Route::get('sitemap.xml', [AgentFiles::class, 'sitemap'])->name('sitemap');
-                Route::get('llms.txt', [AgentFiles::class, 'llms'])->name('llms.index');
-                Route::get('llms-full.txt', [AgentFiles::class, 'full'])->name('llms.full');
-            });
-        }
-
-        // The page Playwright renders a brand asset from. Off a public deployment's
-        // route list altogether, as the design page is.
-        if (! $this->app->isProduction()) {
-            Route::get('foundry/brand/{asset}', RenderBrandAsset::class)
-                ->middleware(Noindex::class)
-                ->name('foundry.brand');
-
-            // The imprint's own pages about itself, open locally and behind
-            // what config/imprint.php names as `pages.guard` elsewhere.
-            Route::middleware(['web', Noindex::class, ...config('imprint.pages.middleware', []), ...($this->app->isLocal() ? [] : config('imprint.pages.guard', []))])
-                ->group(function (): void {
-                    Route::get('labs/{page?}', ShowLab::class)
-                        ->where('page', '[a-z0-9-]+')
-                        ->name('foundry.lab');
-
-                    Route::view('design', 'foundry::design')->name('foundry.design');
-
-                    Route::get('components/{component?}', ShowComponent::class)
-                        ->where('component', '[a-z-]+')
-                        ->name('foundry.components');
-                });
-        }
+        $this->loadRoutesFrom(__DIR__.'/../routes/foundry.php');
     }
 
     /**
@@ -87,10 +51,10 @@ class FoundryServiceProvider extends ServiceProvider
      * language, named `{locale}.{page}`, the root language at the root; an
      * imprint in one language registers them once, named as they are.
      * `Route::docs()` and `Route::legal()` register the pages `Content`
-     * publishes, inside it or on their own. The
-     * rest is only for a site with more than one language: the `locale:`
-     * middleware, the visitor's language on a page that states none, the
-     * switch's route, and the root language's prefix sent to the root.
+     * publishes, inside it or on their own. A site with more than one language
+     * also gets the visitor's language on a page that states none, and a plain
+     * cookie for the switch; routes/foundry.php adds the switch's route and
+     * the root language's prefix sent to the root.
      */
     private function localize(): void
     {
@@ -102,9 +66,12 @@ class FoundryServiceProvider extends ServiceProvider
             }
 
             foreach (Locales::all() as $locale) {
-                Route::name("{$locale}.")
-                    ->middleware(["locale:{$locale}", ...($locale === Locales::root() ? [FollowVisitorLanguage::class] : [])])
-                    ->group(fn () => $pages(fn (string $english): string => localized_path($english, $locale) ?: '/', $locale));
+                // `locale` on the group reaches every route's action, where `Locales` reads it.
+                Route::group([
+                    'as' => "{$locale}.",
+                    'locale' => $locale,
+                    'middleware' => ["locale:{$locale}", ...($locale === Locales::root() ? [FollowVisitorLanguage::class] : [])],
+                ], fn () => $pages(fn (string $english): string => localized_path($english, $locale) ?: '/', $locale));
             }
         });
 
@@ -113,11 +80,19 @@ class FoundryServiceProvider extends ServiceProvider
             $path ??= fn (string $english): string => '/'.$english;
 
             Route::view($path('docs'), 'foundry::docs.index')->name('docs.index');
+            $articles = [];
 
             foreach (Content::docs($locale ?? Locales::root()) as $topic => $entry) {
                 Route::view($path("docs/{$topic}"), 'foundry::docs.category', ['slug' => $topic])->name("docs.category.{$topic}");
 
                 foreach (array_keys($entry['articles']) as $article) {
+                    // An article is named by its slug alone, so two topics cannot both hold one.
+                    if (isset($articles[$article])) {
+                        throw new LogicException("The docs topics {$articles[$article]} and {$topic} both hold the article {$article}; an article's slug names it on its own.");
+                    }
+
+                    $articles[$article] = $topic;
+
                     Route::view($path("docs/{$topic}/{$article}"), 'foundry::docs.article', ['slug' => $article, 'topicSlug' => $topic])->name("docs.article.{$article}");
                 }
             }
@@ -139,28 +114,9 @@ class FoundryServiceProvider extends ServiceProvider
             Livewire::addPersistentMiddleware([SetLocale::class]);
         }
 
-        if (! Locales::multilingual()) {
-            return;
+        if (Locales::multilingual()) {
+            $router->pushMiddlewareToGroup('web', FollowPreferredLocale::class);
+            EncryptCookies::except([Locales::COOKIE]);
         }
-
-        $router->pushMiddlewareToGroup('web', FollowPreferredLocale::class);
-        EncryptCookies::except([Locales::COOKIE]);
-
-        Route::middleware('web')->group(function (): void {
-            // The root language has no prefix, and an address that names it
-            // anyway means the same page. Leading slashes, backslashes and
-            // whitespace go first: `/nl//other.example` would otherwise be
-            // sent on as `//other.example`, an address on another host.
-            Route::get(Locales::root().'/{path?}', function (Request $request, string $path = '') {
-                $query = $request->getQueryString();
-
-                return redirect('/'.ltrim($path, "/\\ \t\n\r\0\x0B").($query === null ? '' : "?{$query}"), 301);
-            })->where('path', '.*');
-
-            // Outside every language, because it answers whichever one the reader is leaving.
-            Route::post('locale/{locale}', UpdateLocale::class)
-                ->whereIn('locale', Locales::all())
-                ->name('locale.update');
-        });
     }
 }

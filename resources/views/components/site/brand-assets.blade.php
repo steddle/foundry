@@ -2,6 +2,15 @@
 
 @props(['group' => 'social'])
 
+{{--
+    What foundry:assets renders, as /design shows it: the social images, or
+    the icons with the files written beside them.
+
+    @group Images
+
+    @example Icons
+    <x-site.brand-assets group="icon" />
+--}}
 @php
     $manifest = BrandAssets::manifest();
     $assets = collect(BrandAssets::all())->where('group', $group);

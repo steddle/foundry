@@ -1,5 +1,22 @@
 @props(['tone' => 'neutral', 'dot' => false])
 
+{{--
+    A short status beside what it describes: a status ramp's 50 as the ground
+    and its 700 as the text. Action, in lichen, is the one tone that asks the
+    reader to do something.
+
+    @group Actions
+
+    @example Every tone
+    <div class="flex flex-wrap items-center gap-2.5">
+        <x-site.badge>Neutral</x-site.badge>
+        <x-site.badge tone="info">Info</x-site.badge>
+        <x-site.badge tone="success">Success</x-site.badge>
+        <x-site.badge tone="warning">Warning</x-site.badge>
+        <x-site.badge tone="danger">Danger</x-site.badge>
+        <x-site.badge tone="action" dot>Action</x-site.badge>
+    </div>
+--}}
 @php
     // Each status ramp's 50 as the ground and 700 as the text, in both themes. Lichen is the one tone that asks the reader to act.
     $tones = [

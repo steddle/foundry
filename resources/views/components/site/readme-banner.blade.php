@@ -6,7 +6,21 @@
     'dark' => false,
 ])
 
-{{-- 1600×520, for a README's <picture>: a light source and a dark one, which GitHub picks by the reader's theme. --}}
+{{--
+    1600×520, for a README's <picture>: a light source and a dark one, which GitHub picks by the reader's theme.
+
+    @group Images
+
+    @example Light
+    @ground bare
+    @zoom 0.45
+    <x-site.readme-banner heading="A heading for the README." lede="What the repository holds, in a sentence." />
+
+    @example Dark
+    @ground bare
+    @zoom 0.45
+    <x-site.readme-banner heading="A heading for the README." lede="What the repository holds, in a sentence." dark />
+--}}
 <div @class([
     'relative flex h-[520px] w-[1600px] flex-col overflow-hidden p-[64px] font-sans',
     'grain ink bg-zinc-900' => $dark,

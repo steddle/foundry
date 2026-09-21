@@ -99,15 +99,9 @@ final class Locales
         return route("{$locale}.{$page}", [...$parameters, ...$request->query()], $absolute);
     }
 
-    /** The `locale:` middleware can be read before it runs, after a session expired too. */
+    /** The locale `Route::localized()` gave the route's group, which a route carries in its action. */
     private static function stated(Route $route): ?string
     {
-        foreach ($route->gatherMiddleware() as $middleware) {
-            if (is_string($middleware) && str_starts_with($middleware, 'locale:')) {
-                return substr($middleware, strlen('locale:'));
-            }
-        }
-
-        return null;
+        return $route->getAction('locale');
     }
 }

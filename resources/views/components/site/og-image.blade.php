@@ -15,6 +15,13 @@
     `marked` is the one phrase of the heading that carries the marker.
     `width` and `height` set the canvas, for a format of another size, and a
     `footer` slot sets a row below the lede.
+
+    @group Images
+
+    @example Heading, marker, lede and eyebrow
+    @ground bare
+    @zoom 0.6
+    <x-site.og-image heading="A heading with its phrase marked." marked="phrase marked." lede="The lede under it, as long as a line or two." eyebrow="An eyebrow" />
 --}}
 <div class="grain ink relative flex flex-col justify-between overflow-hidden bg-zinc-900 p-[64px] font-sans" style="width: {{ $width }}px; height: {{ $height }}px">
     <x-site.mark class="absolute -right-[60px] -bottom-[70px] size-[400px] text-zinc-950 dark:text-zinc-50 opacity-[0.06]" />

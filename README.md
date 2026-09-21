@@ -54,6 +54,12 @@ Outside production, `/components` shows every component the imprint renders, liv
 - `php artisan foundry:assets` renders the OG image, the social preview, the README banners and the icons, and `--check` fails when they drift from the copy
 - Markdown for agents: every page answers as markdown at `.md`, chrome left out
 
+## What it takes over
+
+The foundry owns `x-site.*` in every imprint. A site overrides a component by keeping a file of the same name under `resources/views/components/site`, and can wrap the foundry's version as `x-foundry::site.<name>`.
+
+An imprint in more than one language (`imprint.locales`) gets `FollowPreferredLocale` pushed onto its `web` middleware group and the locale cookie left unencrypted, so a page that states no language speaks the visitor's.
+
 ## Documentation
 
 The rules every imprint follows live in [`resources/boost/guidelines/core.blade.php`](resources/boost/guidelines/core.blade.php), which Laravel Boost renders into each site's `CLAUDE.md`.

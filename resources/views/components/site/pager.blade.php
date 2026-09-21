@@ -4,6 +4,14 @@
     The foot of a long read: a note from the slot, and the ways on. Each of
     `previous`, `next` and `back` is [label, href]; `back` leads up rather
     than along, to the list the page belongs to.
+
+    @group Layout
+
+    @example Along
+    <x-site.pager :previous="['Two dates', '#']" :next="['Two lanes', '#']">Checked against the API on 21 September 2026.</x-site.pager>
+
+    @example Back
+    <x-site.pager :back="['Every document', '#']">Questions: hello@example.com</x-site.pager>
 --}}
 <div {{ $attributes->class('flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-zinc-200 dark:border-zinc-700 pt-6') }}>
     @if ($back)

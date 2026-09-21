@@ -1,5 +1,17 @@
 @props(['name', 'scrim', 'eager' => false])
 
+{{--
+    The photo an ink band carries behind its content, with the scrim that
+    keeps the content legible on it.
+
+    @group Bands
+
+    @example Behind a band
+    <div class="relative isolate flex h-72 items-end overflow-hidden bg-zinc-900 ink p-8">
+        <x-site.scene :name="array_key_first(config('imprint.scenes'))" scrim="bg-zinc-900/60" />
+        <x-site.heading size="2">Content on the scene.</x-site.heading>
+    </div>
+--}}
 @php
     // `start` and `center` are measured over every imprint's scenes at 1440 and 390 wide: each line of text set there reads at 4.5:1 or more. A phone sets text across the whole band, so `start` is flat there.
     $scrim = [

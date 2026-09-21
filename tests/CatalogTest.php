@@ -15,11 +15,21 @@ test('every entry names itself, its group, where it comes from and one example',
     }
 });
 
-test('the index groups the entries in the order they are listed', function () {
+test('the index keeps its groups in order and each group alphabetical', function () {
     expect(array_keys(Catalog::groups()))->toBe(['Layout', 'Type', 'Actions', 'Forms', 'Brand', 'Bands', 'Images'])
-        ->and(Catalog::groups()['Actions'])->toBe(['button', 'badge', 'actions', 'copy-menu']);
+        ->and(Catalog::groups()['Actions'])->toBe(['actions', 'badge', 'button', 'copy-menu']);
 });
 
 test('a component the catalog does not hold is not found', function () {
     $this->get('/components/nothing-here')->assertNotFound();
+});
+
+test('every foundry component the index lists shows at least one example with Blade', function () {
+    foreach (Catalog::shared() as $slug => $entry) {
+        expect($entry['examples'])->not->toBeEmpty("{$slug} has no example");
+
+        foreach ($entry['examples'] as $example) {
+            expect($example['blade'])->not->toBeEmpty("{$slug}: {$example['title']} has no Blade");
+        }
+    }
 });

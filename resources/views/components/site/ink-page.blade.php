@@ -1,5 +1,19 @@
 @props(['title', 'description', 'scene' => null, 'card' => false, 'home' => null])
 
+{{--
+    A page of its own on ink, for an error or for signing in: the lockup, the
+    slot, and the service line, kept out of search. A scene lays a photo under
+    it; a card sets the slot in the middle.
+
+    @group Bands
+
+    @example An error page
+    @code
+    <x-site.ink-page title="Page not found" description="Nothing answers at this address." scene="error">
+        <x-site.text variant="label" tone="accent">Error 404</x-site.text>
+        <x-site.heading size="1" level="1">Page not found</x-site.heading>
+    </x-site.ink-page>
+--}}
 @php
     $home ??= \Steddle\Foundry\Locales::multilingual() ? localized_route('home') : url('/');
 @endphp

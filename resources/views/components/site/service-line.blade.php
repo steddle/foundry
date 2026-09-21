@@ -2,6 +2,12 @@
     The line every page closes on: the imprint's disclaimer, its copyright,
     and the house that serves it where `imprint.endorsed` holds, as it does
     for every imprint but Steddle itself. On ink.
+
+    @group Bands
+
+    @example On ink
+    @ground ink
+    <x-site.service-line />
 --}}
 <div {{ $attributes->class('flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3') }}>
     <x-site.text variant="small" tone="muted">{{ __(config('imprint.disclaimer')) }}</x-site.text>

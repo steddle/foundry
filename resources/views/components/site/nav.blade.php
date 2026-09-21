@@ -6,6 +6,18 @@
     'menuLabel' => 'Menu',
 ])
 
+{{--
+    The bar every page lays over its first band: the lockup, the links and the
+    actions, folded into a menu on a phone.
+
+    @group Bands
+
+    @example As this imprint sets it
+    @ground bare
+    <div class="relative h-20 bg-zinc-900 ink">
+        <x-site.nav />
+    </div>
+--}}
 @php
     $homeLabel ??= config('imprint.name').', home';
     $lab = request()->routeIs('foundry.lab', 'foundry.design', 'foundry.components');

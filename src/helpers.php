@@ -23,13 +23,11 @@ if (! function_exists('localized_path')) {
      */
     function localized_path(string $path, string $locale): string
     {
-        /** @var array<string, array<string, string>> $words */
-        static $words = [];
-
-        $words[$locale] ??= is_file(lang_path("{$locale}/routes.php")) ? require lang_path("{$locale}/routes.php") : [];
+        $words = trans('routes', [], $locale);
+        $words = is_array($words) ? $words : [];
 
         $segments = array_map(
-            fn (string $segment): string => $words[$locale][$segment] ?? $segment,
+            fn (string $segment): string => $words[$segment] ?? $segment,
             array_filter(explode('/', $path), fn (string $segment): bool => $segment !== ''),
         );
 

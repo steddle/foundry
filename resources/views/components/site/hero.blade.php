@@ -9,6 +9,19 @@
     sets the height. The eyebrow, the title with its `marked` phrase and the
     lede come first, one gap apart; the slot follows at the same gap. An
     eyebrow that is more than a label, a breadcrumb or a status, is a slot.
+
+    @group Bands
+
+    @example A page
+    @ground bare
+    <x-site.hero title="A page title." lead="The lead that says what the page is for, in a sentence or two." />
+
+    @example Centred and tall
+    @ground bare
+    @zoom 0.5
+    <x-site.hero align="center" tall eyebrow="The eyebrow" title="The first thing a reader sees." marked="a reader sees." lead="A lede under it, centred.">
+        <x-site.button href="#">An action</x-site.button>
+    </x-site.hero>
 --}}
 <section {{ $attributes->class(['relative isolate overflow-hidden bg-zinc-900 ink', 'grain' => ! $scene]) }}>
     @if ($scene)

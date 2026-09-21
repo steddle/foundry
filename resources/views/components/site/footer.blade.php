@@ -5,6 +5,16 @@
     'homeLabel' => null,
 ])
 
+{{--
+    Ink closes the page on the imprint's scene: the lockup, the links and the
+    colophon.
+
+    @group Bands
+
+    @example As this imprint sets it
+    @ground bare
+    <x-site.footer />
+--}}
 @php
     $homeLabel ??= config('imprint.name').', home';
     $endorsed = config('imprint.endorsed', true);
