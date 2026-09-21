@@ -29,7 +29,8 @@ final class Catalog
      */
     public static function custom(): array
     {
-        $class = config('imprint.components');
+        // A test's dataset asks for the entries before the application boots.
+        $class = app()->bound('config') ? config('imprint.components') : null;
 
         return $class ? array_map(fn (array $entry): array => [...$entry, 'from' => 'custom'], $class::all()) : [];
     }
