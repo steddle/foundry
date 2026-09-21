@@ -52,3 +52,8 @@
         mix-blend-mode: screen;
     }
 }
+
+/* Held back until Alpine has read the element, so a closed panel never flashes open. */
+[x-cloak] {
+    display: none !important;
+}

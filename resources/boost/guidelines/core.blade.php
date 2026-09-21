@@ -10,6 +10,15 @@ is its own.
   `tailwindcss`.
 - **Components**: `x-site.container`, `x-site.section` and
   `x-site.numbered-section` resolve from the foundry.
+- **Header and footer**: `x-foundry::site.nav` takes the links, the home
+  address, an `actions` slot and whether a phone folds them into a menu;
+  `x-foundry::site.footer` takes the photo and its two scrims, the links or an
+  `items` slot, whether the lockup is endorsed, and a `colophon` slot. A
+  site's own `x-site.nav` and `x-site.footer` wrap them with its content.
+- **Script**: a foundry component that holds state uses Alpine, which
+  Livewire loads on the page, and `[x-cloak]` holds it back until Alpine has
+  read it. A page with such a component loads Livewire's scripts; what only
+  appears and disappears is CSS.
 - **Markdown for agents**: `Steddle\Foundry\Markdown\*` extends
   spatie/laravel-markdown-response. The provider binds the table-aware driver
   and the `/index.md` rewrite; a site's `config/markdown-response.php` names
