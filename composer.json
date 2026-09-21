@@ -1,0 +1,40 @@
+{
+    "name": "steddle/foundry",
+    "description": "What Steddle's imprints share: type, components and site behaviour.",
+    "type": "library",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.3",
+        "illuminate/support": "^13.0",
+        "spatie/laravel-markdown-response": "^1.2"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Steddle\\Foundry\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Steddle\\Foundry\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Steddle\\Foundry\\FoundryServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
