@@ -2,6 +2,7 @@
 
 namespace Steddle\Foundry\Brand;
 
+use Illuminate\Support\Facades\File;
 use InvalidArgumentException;
 
 /**
@@ -39,7 +40,7 @@ final class BrandAssets
     {
         $path = public_path(self::MANIFEST);
 
-        return is_file($path) ? json_decode(file_get_contents($path), true) : [];
+        return is_file($path) ? File::json($path) : [];
     }
 
     /**

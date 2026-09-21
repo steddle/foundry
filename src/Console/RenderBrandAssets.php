@@ -4,6 +4,7 @@ namespace Steddle\Foundry\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 use Steddle\Foundry\Brand\BrandAsset;
@@ -45,9 +46,7 @@ final class RenderBrandAssets extends Command
                 return self::FAILURE;
             }
 
-            if (! is_dir(dirname($target))) {
-                mkdir(dirname($target), 0755, true);
-            }
+            File::ensureDirectoryExists(dirname($target));
 
             // Chrome reads the page through the site's own server, so the image
             // carries the stylesheet exactly as the site builds it.
@@ -73,7 +72,7 @@ final class RenderBrandAssets extends Command
             $this->line("{$asset->path} | {$asset->width}×{$asset->height}");
         }
 
-        file_put_contents(public_path(BrandAssets::MANIFEST), json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
+        File::put(public_path(BrandAssets::MANIFEST), json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
 
         return self::SUCCESS;
     }
