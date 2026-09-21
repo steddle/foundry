@@ -39,7 +39,9 @@ is its own.
   slot follows them. `x-site.section` takes `scene` and `align` too, for an
   ink band further down a page. Both draw the scrim `x-site.scene` holds for
   `start` or `center`, measured over every imprint's scenes; the footer keeps
-  its own. `x-site.actions` is the row of buttons a band ends on. A scene
+  its own. `x-site.actions` is the row of buttons a band ends on.
+  `x-site.closing` is the page's last word in the footer's slot: `title`,
+  `lead` and `align`, with the actions as its slot. A scene
   is framed once, in `config/imprint.php` under `scenes`, name => its
   object-position classes, and every `x-site.scene` of it reads that; a site's
   stylesheet sources `config/imprint.php` so the classes are built.

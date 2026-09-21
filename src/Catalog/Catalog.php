@@ -298,6 +298,24 @@ BLADE],
 BLADE],
                 ],
             ],
+            'closing' => [
+                'name' => 'Closing',
+                'group' => 'Bands',
+                'from' => 'foundry',
+                'description' => 'The page\'s last word, in the footer\'s slot on its scene: a title, a lede and the actions. Centred it stands alone; at the start the actions end the row beside the text.',
+                'examples' => [
+                    ['title' => 'Centred', 'ground' => 'ink', 'blade' => <<<'BLADE'
+<x-site.closing title="The last thing a reader sees.">
+    <x-site.button href="#">An action</x-site.button>
+</x-site.closing>
+BLADE],
+                    ['title' => 'At the start, with a lede', 'ground' => 'ink', 'blade' => <<<'BLADE'
+<x-site.closing align="start" title="Where to go when the docs did not answer." lead="One sentence on what the action does.">
+    <x-site.button href="#">An action</x-site.button>
+</x-site.closing>
+BLADE],
+                ],
+            ],
             'page-title' => [
                 'name' => 'Page title',
                 'group' => 'Bands',
