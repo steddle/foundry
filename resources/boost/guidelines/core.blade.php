@@ -65,6 +65,12 @@ is its own.
   title, lede, closing, the draft notice and contact, are `imprint.docs` and
   `imprint.legal`; the list on a page is its own `<h2>`s, read by `Outline`.
   Long-form text is the `longform` utility in `foundry.css`.
+- **Pages for search engines and agents**: `imprint.pages` names the
+  imprint's `Pages` class, whose static `all()` answers its public pages in
+  the current locale, `key => [title, description, url, render]`, and whose
+  optional `sections()` adds to llms.txt. The foundry then answers
+  `sitemap.xml`, with alternates where the imprint speaks more than one
+  language, `llms.txt` and `llms-full.txt`.
 - **Markdown for agents**: `Steddle\Foundry\Markdown\*` extends
   spatie/laravel-markdown-response. The provider binds the table-aware driver
   and the `/index.md` rewrite; a site's `config/markdown-response.php` names

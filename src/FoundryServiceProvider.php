@@ -11,6 +11,7 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Spatie\MarkdownResponse\Middleware\RewriteMarkdownUrls as BaseRewriteMarkdownUrls;
 use Steddle\Foundry\Console\RenderBrandAssets;
+use Steddle\Foundry\Http\Controllers\AgentFiles;
 use Steddle\Foundry\Http\Controllers\RenderBrandAsset;
 use Steddle\Foundry\Http\Controllers\ShowComponent;
 use Steddle\Foundry\Http\Controllers\ShowLab;
@@ -47,6 +48,15 @@ class FoundryServiceProvider extends ServiceProvider
         }
 
         $this->localize();
+
+        // The sitemap and the llms files, for an imprint that lists its pages in `imprint.pages`.
+        if (config('imprint.pages')) {
+            Route::middleware('web')->group(function (): void {
+                Route::get('sitemap.xml', [AgentFiles::class, 'sitemap'])->name('sitemap');
+                Route::get('llms.txt', [AgentFiles::class, 'llms'])->name('llms.index');
+                Route::get('llms-full.txt', [AgentFiles::class, 'full'])->name('llms.full');
+            });
+        }
 
         // The page Playwright renders a brand asset from. Off a public deployment's
         // route list altogether, as the design page is.
