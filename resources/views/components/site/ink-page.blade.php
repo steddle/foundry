@@ -53,8 +53,8 @@
         @endif
 
         <footer class="ink">
-            <x-site.container class="border-t border-zinc-50/13 py-6">
-                <x-site.service-line />
+            <x-site.container class="pb-6">
+                <x-site.service-line class="border-t border-zinc-50/13 pt-6" />
             </x-site.container>
         </footer>
 
