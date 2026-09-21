@@ -2,6 +2,7 @@
 
 namespace Steddle\Foundry;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Spatie\MarkdownResponse\Middleware\RewriteMarkdownUrls as BaseRewriteMarkdownUrls;
 use Steddle\Foundry\Markdown\LeagueDriverWithTables;
@@ -14,5 +15,10 @@ class FoundryServiceProvider extends ServiceProvider
         $this->app->extend('markdown-response.driver.league', fn (): LeagueDriverWithTables => new LeagueDriverWithTables(config('markdown-response.driver_options.league.options', [])));
 
         $this->app->bind(BaseRewriteMarkdownUrls::class, RewriteMarkdownUrls::class);
+    }
+
+    public function boot(): void
+    {
+        Blade::anonymousComponentPath(__DIR__.'/../resources/views/components');
     }
 }
