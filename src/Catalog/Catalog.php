@@ -246,6 +246,19 @@ BLADE],
 BLADE],
                 ],
             ],
+            'section-head' => [
+                'name' => 'Section head',
+                'group' => 'Type',
+                'from' => 'foundry',
+                'description' => 'A section\'s opening: an eyebrow and a title, and the lede beside them on a wide screen.',
+                'examples' => [
+                    ['title' => 'With a lede', 'blade' => <<<'BLADE'
+<x-site.section-head eyebrow="How it works" title="One title that says what the section argues.">
+    The lede, beside the title on a wide screen and under it on a phone.
+</x-site.section-head>
+BLADE],
+                ],
+            ],
             'marker' => [
                 'name' => 'Marker',
                 'group' => 'Type',
@@ -314,6 +327,17 @@ BLADE],
                 'examples' => [
                     ['title' => 'Beside a page title', 'blade' => <<<'BLADE'
 <x-site.copy-menu />
+BLADE],
+                ],
+            ],
+            'country-select' => [
+                'name' => 'Country select',
+                'group' => 'Forms',
+                'from' => 'foundry',
+                'description' => 'A searchable Flux listbox of countries, each with its flag. The site hands it the countries in its own language.',
+                'examples' => [
+                    ['title' => 'Three countries', 'blade' => <<<'BLADE'
+<x-site.country-select :countries="['nl' => 'Netherlands', 'gb' => 'United Kingdom', 'us' => 'United States']" label="Country" class="max-w-sm" />
 BLADE],
                 ],
             ],

@@ -16,7 +16,7 @@ test('every entry names itself, its group, where it comes from and one example',
 });
 
 test('the index groups the entries in the order they are listed', function () {
-    expect(array_keys(Catalog::groups()))->toBe(['Layout', 'Type', 'Actions', 'Brand', 'Bands', 'Images'])
+    expect(array_keys(Catalog::groups()))->toBe(['Layout', 'Type', 'Actions', 'Forms', 'Brand', 'Bands', 'Images'])
         ->and(Catalog::groups()['Actions'])->toBe(['button', 'badge', 'actions', 'copy-menu']);
 });
 

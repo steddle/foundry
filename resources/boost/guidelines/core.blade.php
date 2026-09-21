@@ -23,7 +23,7 @@ is its own.
   Tailwind's colour names resolve to the nearest ramp for Flux's `color`
   props, as an interim until no view passes one.
 - **Components**: `x-site.button`, over `flux:button` with `primary`, `secondary` and `ghost`, `x-site.container`, `x-site.section`,
-  `x-site.numbered-section`, `x-site.breadcrumb` and `x-site.copy-menu`
+  `x-site.numbered-section`, `x-site.section-head`, `x-site.breadcrumb`, `x-site.badge`, `x-site.country-select` and `x-site.copy-menu`
   resolve from the foundry. The copy menu reads its words from
   `foundry::agents`, in English and Dutch.
 - **Header and footer**: `x-foundry::site.nav` takes the links, the home
