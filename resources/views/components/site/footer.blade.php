@@ -27,10 +27,15 @@
     <div class="relative">
         {{ $slot }}
 
+        @if ($slot->hasActualContent())
+            <x-site.container><div class="border-t border-zinc-50/13"></div></x-site.container>
+        @endif
+
         <x-site.container class="flex flex-col gap-10 py-14">
             <div class="flex flex-wrap items-center justify-between gap-8">
                 <a href="{{ $home }}" aria-label="{{ $homeLabel }}" class="shrink-0 text-zinc-950 dark:text-zinc-50">
-                    <x-site.lockup :endorsed="$endorsed" class="h-8" />
+                    {{-- An endorsed lockup at h-8 draws its wordmark at 22px in bron and 23px in sendnda; a plain one matches at 22px. --}}
+                    <x-site.lockup :endorsed="$endorsed" @class(['h-8' => $endorsed, 'h-5.5' => ! $endorsed]) />
                 </a>
                 <ul role="list" class="flex flex-wrap gap-x-7 gap-y-2">
                     @isset($items)
