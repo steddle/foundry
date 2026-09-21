@@ -44,6 +44,17 @@ BLADE],
 BLADE],
                 ],
             ],
+            'breadcrumb' => [
+                'name' => 'Breadcrumb',
+                'group' => 'Layout',
+                'from' => 'foundry',
+                'description' => 'The pages above this one, outermost first. The page\'s own title stands under it, so the trail names only what is above.',
+                'examples' => [
+                    ['title' => 'Two levels up', 'blade' => <<<'BLADE'
+<x-site.breadcrumb :items="['Docs' => '#', 'Getting started' => '#']" />
+BLADE],
+                ],
+            ],
             'numbered-section' => [
                 'name' => 'Numbered section',
                 'group' => 'Layout',
@@ -193,6 +204,17 @@ BLADE],
 BLADE],
                 ],
             ],
+            'copy-menu' => [
+                'name' => 'Copy menu',
+                'group' => 'Actions',
+                'from' => 'foundry',
+                'description' => 'Copies or opens the page\'s own markdown, or every page\'s at once, with the token count of each. It fetches both on the first hover or focus.',
+                'examples' => [
+                    ['title' => 'Beside a page title', 'blade' => <<<'BLADE'
+<x-site.copy-menu />
+BLADE],
+                ],
+            ],
             'lockup' => [
                 'name' => 'Lockup',
                 'group' => 'Brand',
@@ -257,7 +279,7 @@ BLADE],
                 'examples' => [
                     ['title' => 'Behind a band', 'blade' => <<<'BLADE'
 <div class="relative isolate flex h-72 items-end overflow-hidden bg-zinc-900 ink p-8">
-    <x-site.scene name="footer" scrim="bg-zinc-900/60" />
+    <x-site.scene :name="array_key_first(config('imprint.scenes'))" scrim="bg-zinc-900/60" />
     <x-site.heading size="2">Content on the scene.</x-site.heading>
 </div>
 BLADE],

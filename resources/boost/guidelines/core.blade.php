@@ -22,8 +22,10 @@ is its own.
   element's own `dark:` fire, so a pair on it would always read its dark half.
   Tailwind's colour names resolve to the nearest ramp for Flux's `color`
   props, as an interim until no view passes one.
-- **Components**: `x-site.container`, `x-site.section` and
-  `x-site.numbered-section` resolve from the foundry.
+- **Components**: `x-site.container`, `x-site.section`,
+  `x-site.numbered-section`, `x-site.breadcrumb` and `x-site.copy-menu`
+  resolve from the foundry. The copy menu reads its words from
+  `foundry::agents`, in English and Dutch.
 - **Header and footer**: `x-foundry::site.nav` takes the links, the home
   address, an `actions` slot and whether a phone folds them into a menu;
   `x-foundry::site.footer` takes the scene, the links or an `items` slot and
@@ -48,7 +50,8 @@ is its own.
 - **Markdown for agents**: `Steddle\Foundry\Markdown\*` extends
   spatie/laravel-markdown-response. The provider binds the table-aware driver
   and the `/index.md` rewrite; a site's `config/markdown-response.php` names
-  the detector and `RemoveMarkdownSkipPreprocessor`.
+  the detector and `RemoveMarkdownSkipPreprocessor`. `MarkdownUrl::of()` is
+  the one statement of a page's markdown address, `/index.md` for a root.
 - **`Steddle\Foundry\Http\Middleware\Noindex`** sets `X-Robots-Tag: noindex`,
   also on the redirect or 403 an `auth` or `can` guard throws.
 - **Grain**: the `grain` utility in `foundry.css`, on ink bands only.
