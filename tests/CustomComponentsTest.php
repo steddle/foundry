@@ -2,19 +2,7 @@
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
-
-final class ImprintComponents
-{
-    public static function all(): array
-    {
-        return ['stamp' => [
-            'name' => 'Stamp',
-            'group' => 'Signing',
-            'description' => 'The imprint\'s own stamp.',
-            'examples' => [['title' => 'Alone', 'blade' => '<x-site.stamp />']],
-        ]];
-    }
-}
+use Steddle\Foundry\Catalog\Catalog;
 
 beforeEach(function () {
     $this->artisan('view:clear');
@@ -22,10 +10,19 @@ beforeEach(function () {
     File::ensureDirectoryExists(resource_path('views/layouts'));
     File::put(resource_path('views/components/site/heading.blade.php'), '<h2 {{ $attributes }}>{{ $slot }}</h2>');
     File::put(resource_path('views/components/site/text.blade.php'), '<p {{ $attributes }}>{{ $slot }}</p>');
-    File::put(resource_path('views/components/site/stamp.blade.php'), '<span>the stamp</span>');
+    File::put(resource_path('views/components/site/stamp.blade.php'), <<<'BLADE'
+{{--
+    The imprint's own stamp,
+    in red.
+    @example Alone
+    <x-site.stamp />
+--}}
+<span>the stamp</span>
+BLADE);
+    File::ensureDirectoryExists(resource_path('views/components/site/signing'));
+    File::put(resource_path('views/components/site/signing/seal.blade.php'), '<span>the seal</span>');
     File::put(resource_path('views/layouts/site.blade.php'), '<main>{{ $slot }}</main>');
     Blade::anonymousComponentPath(resource_path('views/layouts'), 'layouts');
-    config()->set('imprint.components', ImprintComponents::class);
 });
 
 afterEach(function () {
@@ -33,28 +30,45 @@ afterEach(function () {
     File::deleteDirectory(resource_path('views/layouts'));
 });
 
-test('an imprint\'s own components join the foundry\'s, marked as its own', function () {
+test('an imprint\'s own component files join the foundry\'s, described and shown by their opening comment', function () {
     $this->get('/components/stamp')->assertOk()
-        ->assertSee('the stamp', false)
+        ->assertSee('The imprint\'s own stamp, in red.')
+        ->assertSee('<span>the stamp</span>', false)
         ->assertSee('outside steddle/foundry')
         ->assertSee('href="'.route('foundry.components', 'hero').'"', false)
-        ->assertSee('Custom components');
+        ->assertSee('href="'.route('foundry.components', ['from' => 'custom']).'"', false);
 });
 
-test('the custom filter lists the imprint\'s components alone, and the lab links to it', function () {
-    $this->get('/components?custom=1')->assertOk()
-        ->assertSee('href="'.route('foundry.components', ['stamp', 'custom' => 1]).'"', false)
-        ->assertDontSee('href="'.route('foundry.components', ['hero', 'custom' => 1]).'"', false)
-        ->assertSee('All components');
+test('the toggle lists the foundry\'s or the imprint\'s components alone, and the lab links to the custom ones', function () {
+    $this->get('/components?from=custom')->assertOk()
+        ->assertSee('href="'.route('foundry.components', ['stamp', 'from' => 'custom']).'"', false)
+        ->assertDontSee('href="'.route('foundry.components', ['hero', 'from' => 'custom']).'"', false);
 
-    $this->get('/components/hero?custom=1')->assertNotFound();
+    $this->get('/components/hero?from=custom')->assertNotFound();
+    $this->get('/components/stamp?from=foundry')->assertNotFound();
+    $this->get('/components/container?from=foundry')->assertOk();
 
-    $this->get('/labs')->assertSee('href="'.route('foundry.components', ['custom' => 1]).'"', false);
+    $this->get('/labs')->assertSee('href="'.route('foundry.components', ['from' => 'custom']).'"', false);
 });
 
-test('without custom components there is no filter', function () {
-    config()->set('imprint.components', null);
+test('a component without an example shows its tag, grouped by its folder', function () {
+    $this->get('/components/signing-seal')->assertOk()
+        ->assertSee('x-site.signing.seal')
+        ->assertSee('Add an @example')
+        ->assertDontSee('<span>the seal</span>', false)
+        ->assertSee('aria-label="Signing"', false);
+});
 
-    $this->get('/components/container')->assertOk()->assertDontSee('Custom components');
-    $this->get('/components?custom=1')->assertNotFound();
+test('a file the foundry keeps, or an entry its catalogue names, is no custom component', function () {
+    File::put(resource_path('views/components/site/section.blade.php'), '<x-foundry::site.section>{{ $slot }}</x-foundry::site.section>');
+    File::put(resource_path('views/components/site/lockup.blade.php'), '<svg></svg>');
+
+    expect(array_keys(Catalog::custom()))->toContain('stamp', 'signing-seal')
+        ->not->toContain('section', 'lockup');
+});
+
+test('without component files of its own an imprint has no custom components', function () {
+    File::deleteDirectory(resource_path('views/components'));
+
+    expect(Catalog::custom())->toBe([]);
 });

@@ -2,15 +2,17 @@
 
 namespace Steddle\Foundry\Catalog;
 
+use Composer\InstalledVersions;
+use Illuminate\Support\Str;
+use Symfony\Component\Finder\Finder;
+
 /**
  * Every component /components shows, in the order of its index. An example is
  * Blade the page renders live and prints beside it, so an imprint sees what it
  * renders itself, its own version of a component included. `ground` is the
  * band an example stands on, `page` or `ink`; `zoom` shrinks a fixed-size
  * render to the column; `code` alone prints the Blade without rendering it.
- * An imprint's own components join them from the class `imprint.components`
- * names, whose static `all()` answers entries of the same shape, marked
- * `custom`.
+ * An imprint's own components join them, read from its own component files.
  */
 final class Catalog
 {
@@ -23,22 +25,80 @@ final class Catalog
     }
 
     /**
-     * The imprint's own components, from the class `imprint.components` names.
+     * The imprint's own components: every file under its
+     * resources/views/components/site that neither the foundry keeps nor its
+     * catalogue names. The comment a file opens on is its description, and
+     * each `@example Title` line in it starts a live example, its Blade the
+     * lines after it. A component with none shows its tag alone.
      *
-     * @return array<string, array{name: string, group: string, from: string, description: string, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}>
+     * @return array<string, array{name: string, group: string, from: string, tag: string, description: string, examples: list<array{title: string, blade: string, code?: bool}>}>
      */
     public static function custom(): array
     {
-        // A test's dataset asks for the entries before the application boots.
-        $class = app()->bound('config') ? config('imprint.components') : null;
+        // A test's dataset asks for the entries before the application boots, when Composer still knows the project's root.
+        $root = (app()->bound('path.resources') ? resource_path() : realpath(InstalledVersions::getRootPackage()['install_path']).'/resources').'/views/components/site';
+        $foundry = __DIR__.'/../../resources/views/components/site';
 
-        return $class ? array_map(fn (array $entry): array => [...$entry, 'from' => 'custom'], $class::all()) : [];
+        if (! is_dir($root)) {
+            return [];
+        }
+
+        $entries = [];
+
+        foreach (Finder::create()->files()->in($root)->name('*.blade.php')->sortByName() as $file) {
+            $relative = Str::before(str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePathname()), '.blade.php');
+            $tag = Str::replaceLast('/index', '', $relative);
+            $slug = str_replace(['/', '.'], '-', $tag);
+
+            if (is_file("{$foundry}/{$relative}.blade.php") || isset(self::shared()[$slug])) {
+                continue;
+            }
+
+            [$description, $examples] = self::read($file->getContents());
+            $tag = 'x-site.'.str_replace('/', '.', $tag);
+
+            $entries[$slug] = [
+                'name' => Str::ucfirst(str_replace(['-', '/'], [' ', ': '], Str::replaceLast('/index', '', $relative))),
+                'group' => str_contains($relative, '/') ? Str::ucfirst(str_replace('-', ' ', Str::before($relative, '/'))) : 'Custom',
+                'from' => 'custom',
+                'tag' => $tag,
+                'description' => $description,
+                'examples' => $examples ?: [['title' => 'Its tag', 'code' => true, 'blade' => "<{$tag} />"]],
+            ];
+        }
+
+        return collect($entries)->sortBy(fn (array $entry): string => ($entry['group'] === 'Custom' ? '0' : '1').$entry['group'].$entry['name'])->all();
     }
 
     /**
+     * The description and examples a component's opening comment carries.
+     *
+     * @return array{0: string, 1: list<array{title: string, blade: string}>}
+     */
+    private static function read(string $source): array
+    {
+        // The comment may follow the component's @props and @use lines.
+        if (! preg_match('/^\s*(?:@(?:props|use)\(.*?\)[ \t]*\n\s*)*\{\{--(.*?)--\}\}/s', $source, $match)) {
+            return ['', []];
+        }
+
+        $parts = preg_split('/^\s*@example\s+(.+)$/m', $match[1], -1, PREG_SPLIT_DELIM_CAPTURE);
+        $description = trim(preg_replace('/\s+/', ' ', array_shift($parts)));
+        $examples = [];
+
+        foreach (array_chunk($parts, 2) as [$title, $blade]) {
+            $examples[] = ['title' => trim($title), 'blade' => trim(implode("\n", array_map(fn (string $line): string => preg_replace('/^ {4}/', '', $line), explode("\n", $blade))))];
+        }
+
+        return [$description, $examples];
+    }
+
+    /**
+     * The foundry's own entries, the ones every imprint supplies included.
+     *
      * @return array<string, array{name: string, group: string, from: string, description: string, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}>
      */
-    private static function shared(): array
+    public static function shared(): array
     {
         return [
             'container' => [

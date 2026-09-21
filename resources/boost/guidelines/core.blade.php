@@ -92,9 +92,12 @@ is its own.
 - **`/components`** shows every component an imprint renders, from the
   catalogue in `Steddle\Foundry\Catalog\Catalog`: each example rendered
   live on its ground and printed as Blade. An imprint's own components join
-  it from the class `imprint.components` names, whose static `all()` answers
-  entries of the catalogue's shape; `/components?custom=1` and the lab's
-  Custom components row list those alone. It marks a foundry component the
+  it on their own: every file under its `resources/views/components/site`
+  the foundry neither keeps nor names. The comment a file opens on is its
+  description, and each `@example Title` line in it starts a live example,
+  its Blade the lines after it; a folder is a group. The toggle on
+  `/components` shows all, the foundry's or the imprint's own, and the
+  lab's Custom components row opens `/components?from=custom`. It marks a foundry component the
   imprint keeps a copy of, in place of wrapping it, which is the thing to
   fix. Outside production only; `config/imprint.php` names `pages.middleware`
   for it and `pages.guard` for outside local. Add a component to the

@@ -4,7 +4,7 @@
             <x-site.link-row :href="route('foundry.design')" title="Design">The brand, the colours, the type and the assets, on one page.</x-site.link-row>
             <x-site.link-row :href="route('foundry.components')" title="Components">Every component the site renders, live, with its Blade beside it.</x-site.link-row>
             @if (\Steddle\Foundry\Catalog\Catalog::custom() !== [])
-                <x-site.link-row :href="route('foundry.components', ['custom' => 1])" title="Custom components">The components this site keeps outside the foundry.</x-site.link-row>
+                <x-site.link-row :href="route('foundry.components', ['from' => 'custom'])" title="Custom components">The components this site keeps outside the foundry.</x-site.link-row>
             @endif
             @foreach ($pages as $page => [$title, $summary])
                 <x-site.link-row :href="route('foundry.lab', $page)" :title="$title">{{ $summary }}</x-site.link-row>

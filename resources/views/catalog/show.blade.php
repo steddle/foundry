@@ -4,9 +4,15 @@
             <x-slot:aside>
                 <div class="flex flex-col gap-8">
                     @if ($hasCustom)
-                        <flux:button size="sm" :href="$custom ? route('foundry.components') : route('foundry.components', ['custom' => 1])" class="self-start">
-                            {{ $custom ? 'All components' : 'Custom components' }}
-                        </flux:button>
+                        <nav aria-label="Which components" class="flex self-start rounded-md border border-zinc-200 dark:border-zinc-700 p-0.5 text-small font-medium">
+                            @foreach ([null => 'All', 'foundry' => 'Foundry', 'custom' => 'Custom'] as $value => $label)
+                                <a href="{{ route('foundry.components', $value ? ['from' => $value] : []) }}" @if ($from === ($value ?: null)) aria-current="page" @endif @class([
+                                    'rounded-sm px-3 py-1',
+                                    'bg-zinc-200 dark:bg-zinc-700 text-zinc-950 dark:text-zinc-50' => $from === ($value ?: null),
+                                    'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50' => $from !== ($value ?: null),
+                                ])>{{ $label }}</a>
+                            @endforeach
+                        </nav>
                     @endif
                     <x-site.side-nav :groups="$groups" label="Components" />
                 </div>
@@ -20,13 +26,13 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-                    <code class="font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums">x-site.{{ $slug }}</code>
+                    <code class="font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums">{{ $entry['tag'] ?? 'x-site.'.$slug }}</code>
                     @if ($own === 'copies')
                         <x-site.text variant="small" tone="strong" class="font-medium">✗ This imprint keeps a copy of its own, in place of the foundry's.</x-site.text>
                     @elseif ($own === 'wraps')
                         <x-site.text variant="small" tone="muted">From steddle/foundry, wrapped with this imprint's content.</x-site.text>
                     @elseif ($entry['from'] === 'custom')
-                        <x-site.text variant="small" tone="muted">This imprint's own, outside steddle/foundry.</x-site.text>
+                        <x-site.text variant="small" tone="muted">This imprint's own, outside steddle/foundry.{{ ($entry['examples'][0]['code'] ?? false) ? ' Add an @example to its opening comment to render it here.' : '' }}</x-site.text>
                     @elseif ($entry['from'] === 'foundry')
                         <x-site.text variant="small" tone="muted">From steddle/foundry.</x-site.text>
                     @else
