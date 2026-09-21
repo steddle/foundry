@@ -16,7 +16,11 @@
         <x-slot:actions>
             <x-site.copy-menu />
         </x-slot:actions>
-        <x-site.promises :items="$legal['promises']" />
+        <x-site.promises>
+            @foreach ($legal['promises'] as [$promise, $body])
+                <x-site.promises.item :title="$promise">{{ $body }}</x-site.promises.item>
+            @endforeach
+        </x-site.promises>
     </x-site.numbered-section>
 
     @foreach ($legal['audiences'] as $audience)

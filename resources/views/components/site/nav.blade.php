@@ -46,7 +46,7 @@
 
             @if ($menu)
                 <button type="button" aria-controls="mobile-menu" :aria-expanded="open" aria-label="{{ $menuLabel }}" @click="open = ! open"
-                    class="group relative -mr-2 shrink-0 cursor-pointer rounded-md p-2 text-zinc-950 dark:text-zinc-50 hover:bg-strong/5 lg:hidden">
+                    class="group relative -mr-2 shrink-0 cursor-pointer rounded-md p-2 text-zinc-950 dark:text-zinc-50 hover:bg-zinc-50/5 lg:hidden">
                     <span class="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden" aria-hidden="true"></span>
                     <svg class="size-6 group-aria-expanded:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
                         <path d="M4 6h16M4 12h16M4 18h16" />

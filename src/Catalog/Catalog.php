@@ -157,10 +157,13 @@ BLADE],
                 'name' => 'Promises',
                 'group' => 'Layout',
                 'from' => 'foundry',
-                'description' => 'Numbered commitments, two to a row on a wide screen, as the legal page opens on them.',
+                'description' => 'Numbered commitments, two to a row on a wide screen, as the legal page opens on them. A CSS counter numbers the items.',
                 'examples' => [
                     ['title' => 'Two promises', 'blade' => <<<'BLADE'
-<x-site.promises :items="[['We give no legal advice.', 'What a text said, and where. What follows from it is for you and your counsel.'], ['Every quotation can be checked.', 'Fetch the document, hash it and cut the span.']]" />
+<x-site.promises>
+    <x-site.promises.item title="We give no legal advice.">What a text said, and where. What follows from it is for you and your counsel.</x-site.promises.item>
+    <x-site.promises.item title="Every quotation can be checked.">Fetch the document, hash it and cut the span.</x-site.promises.item>
+</x-site.promises>
 BLADE],
                 ],
             ],
@@ -384,7 +387,10 @@ BLADE],
                 'description' => 'What something may do or includes, each line ticked in the accent.',
                 'examples' => [
                     ['title' => 'What a client may do', 'blade' => <<<'BLADE'
-<x-site.checklist :items="['Search the corpus and read what it holds', 'Nothing it writes']" />
+<x-site.checklist>
+    <x-site.checklist.item>Search the corpus and read what it holds</x-site.checklist.item>
+    <x-site.checklist.item>Nothing it writes</x-site.checklist.item>
+</x-site.checklist>
 BLADE],
                 ],
             ],
