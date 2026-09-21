@@ -1,5 +1,7 @@
 /* Imported by each site's app.css after tailwindcss. Paths resolve from this file. */
 @source '../views';
+/* The catalogue's examples, which are Blade in PHP strings. */
+@source '../../src/Catalog';
 
 @font-face {
     font-family: 'Spectral';

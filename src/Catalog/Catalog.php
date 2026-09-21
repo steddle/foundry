@@ -153,11 +153,11 @@ BLADE],
                 'from' => 'imprint',
                 'description' => 'The mark and the wordmark in the current colour. An imprint endorses it with BY STEDDLE where it stands without the house around it.',
                 'examples' => [
-                    ['title' => 'On the page and on ink', 'blade' => <<<'BLADE'
-<x-site.lockup class="h-8 text-3xl text-strong" />
+                    ['title' => 'On the page', 'blade' => <<<'BLADE'
+<x-site.lockup class="h-8 text-strong" />
 BLADE],
                     ['title' => 'On ink', 'ground' => 'ink', 'blade' => <<<'BLADE'
-<x-site.lockup class="h-8 text-3xl text-strong" />
+<x-site.lockup class="h-8 text-strong" />
 BLADE],
                 ],
             ],
@@ -218,8 +218,8 @@ BLADE],
                 'from' => 'foundry',
                 'description' => 'The bar every page lays over its first band: the lockup, the links and the actions, folded into a menu on a phone.',
                 'examples' => [
-                    ['title' => 'As this imprint sets it', 'ground' => 'ink', 'blade' => <<<'BLADE'
-<div class="relative -m-8 h-24">
+                    ['title' => 'As this imprint sets it', 'ground' => 'bare', 'blade' => <<<'BLADE'
+<div class="relative h-20 bg-inverse ink">
     <x-site.nav />
 </div>
 BLADE],
