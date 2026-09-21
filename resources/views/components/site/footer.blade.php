@@ -1,6 +1,5 @@
 @props([
     'scene',
-    'sceneClass' => 'object-bottom-right',
     'links' => [],
     'home' => '/',
     'homeLabel' => null,
@@ -22,7 +21,7 @@
     copyright, and the house that serves it where the lockup is endorsed.
 --}}
 <footer class="relative isolate overflow-hidden bg-zinc-900 ink">
-    <x-site.scene :name="$scene" :class="$sceneClass" :scrim="$slot->hasActualContent()
+    <x-site.scene :name="$scene" :scrim="$slot->hasActualContent()
         ? 'bg-[linear-gradient(to_right,--alpha(var(--color-zinc-900)/78%)_0%,--alpha(var(--color-zinc-900)/50%)_45%,--alpha(var(--color-zinc-900)/10%)_85%),linear-gradient(to_bottom,--alpha(var(--color-zinc-900)/55%)_0%,transparent_35%,--alpha(var(--color-zinc-900)/82%)_65%,--alpha(var(--color-zinc-900)/95%)_100%)]'
         : 'bg-zinc-900/90'" />
 

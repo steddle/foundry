@@ -219,14 +219,19 @@ BLADE],
 BLADE],
                 ],
             ],
-            'page-hero' => [
-                'name' => 'Page hero',
+            'hero' => [
+                'name' => 'Hero',
                 'group' => 'Bands',
-                'from' => 'imprint',
-                'description' => 'The ink band that opens every page but the home page. The header overlays it.',
+                'from' => 'foundry',
+                'description' => 'The ink band a page opens on, under the header: an eyebrow, a title with one marked phrase, a lede, then the slot. It sits at the start or in the centre, and the scrim follows; tall takes the screen\'s height and a display title.',
                 'examples' => [
-                    ['title' => 'Title and lead', 'blade' => <<<'BLADE'
-<x-site.page-hero title="A page title." lead="The lead that says what the page is for, in a sentence or two." />
+                    ['title' => 'A page', 'ground' => 'bare', 'blade' => <<<'BLADE'
+<x-site.hero title="A page title." lead="The lead that says what the page is for, in a sentence or two." />
+BLADE],
+                    ['title' => 'Centred and tall', 'ground' => 'bare', 'zoom' => 0.5, 'blade' => <<<'BLADE'
+<x-site.hero align="center" tall eyebrow="The eyebrow" title="The first thing a reader sees." marked="a reader sees." lead="A lede under it, centred.">
+    <x-site.button href="#">An action</x-site.button>
+</x-site.hero>
 BLADE],
                 ],
             ],
@@ -238,7 +243,7 @@ BLADE],
                 'examples' => [
                     ['title' => 'Behind a band', 'blade' => <<<'BLADE'
 <div class="relative isolate flex h-72 items-end overflow-hidden bg-zinc-900 ink p-8">
-    <x-site.scene name="footer" class="object-bottom-right" scrim="bg-zinc-900/60" />
+    <x-site.scene name="footer" scrim="bg-zinc-900/60" />
     <x-site.heading size="2">Content on the scene.</x-site.heading>
 </div>
 BLADE],

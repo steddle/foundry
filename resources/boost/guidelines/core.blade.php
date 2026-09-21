@@ -31,6 +31,13 @@ is its own.
   closing section set in its slot, and closes on the colophon: the disclaimer
   from `config/imprint.php` and the copyright. A site's own `x-site.nav` and
   `x-site.footer` wrap them with its content.
+- **Hero**: `x-site.hero` opens a page on ink under the header: `scene`,
+  `align` (`start` or `center`, which chooses the scrim), `tall`, and the
+  `eyebrow`, `title` with its `marked` phrase and `lead` it sets itself; the
+  slot follows them. A scene
+  is framed once, in `config/imprint.php` under `scenes`, name => its
+  object-position classes, and every `x-site.scene` of it reads that; a site's
+  stylesheet sources `config/imprint.php` so the classes are built.
 - **Script**: a foundry component that holds state uses Alpine, which
   Livewire loads on the page, and `[x-cloak]` holds it back until Alpine has
   read it. A page with such a component loads Livewire's scripts; what only
