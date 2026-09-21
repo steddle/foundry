@@ -23,8 +23,10 @@
 {{-- Kept out of the markdown, which opens on the page's own heading: the title repeats it with the site's name. --}}
 <title data-markdown-skip>{{ $title }}</title>
 
-<link rel="canonical" href="{{ $canonical }}" />
-{{-- Only on a page of the site: an error nobody routed has no counterpart to name. --}}
+{{-- Only on a page something routed: an error nobody routed is no address to point a search engine at, and has no counterpart. --}}
+@if (request()->route())
+    <link rel="canonical" href="{{ $canonical }}" />
+@endif
 @if (Locales::multilingual() && Locales::counterpart(request(), Locales::root()) !== null)
     @foreach (localized_alternates() as $locale => $href)
         <link rel="alternate" hreflang="{{ $locale }}" href="{{ $href }}" />
