@@ -35,7 +35,7 @@ class FoundryServiceProvider extends ServiceProvider
             $this->commands([RenderBrandAssets::class]);
         }
 
-        // The page Chrome renders a brand asset from. Off a public deployment's
+        // The page Playwright renders a brand asset from. Off a public deployment's
         // route list altogether, as the design page is.
         if (! $this->app->isProduction()) {
             Route::get('foundry/brand/{asset}', RenderBrandAsset::class)

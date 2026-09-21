@@ -23,9 +23,12 @@ is its own.
   `heading`, `marked`, `lede`, `eyebrow`, each a sentence or a translation
   key, and an optional `locale` per block) into `public/og-image.png` and
   `public/brand/social/`. `php artisan foundry:assets --url=https://<site>.test`
-  renders them through headless Chrome; `foundry:assets --check` fails where
-  the copy or markup moved since, and every imprint's suite runs it. Change the
-  copy in `config/imprint.php`, never the PNG.
+  renders them through Playwright's own Chromium, never the reader's browser,
+  so `playwright` is a devDependency of every imprint. `foundry:assets --check`
+  fails where the copy or markup moved since, and every imprint's suite runs
+  it. Change the copy in `config/imprint.php`, never the PNG. The copy is
+  English whatever languages the site speaks: a Dutch reader reads English, a
+  reader in the US does not read Dutch, and a README is English.
 - **What an imprint supplies**: `x-site.lockup`, `x-site.mark` and
   `x-site.marker`, and the tokens `bg-page`, `bg-inverse`, `text-strong`,
   `text-body`, `text-accent` and the `ink` variant. A site overrides any

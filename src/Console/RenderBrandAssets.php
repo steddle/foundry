@@ -14,8 +14,7 @@ final class RenderBrandAssets extends Command
 {
     protected $signature = 'foundry:assets
         {--check : Fail where an image was rendered from other copy or markup than the imprint states now}
-        {--url= : Where the site answers, when APP_URL is not it (https://steddle.test)}
-        {--chrome=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome : The Chrome binary to render with}';
+        {--url= : Where the site answers, when APP_URL is not it (https://steddle.test)}';
 
     protected $description = 'Render the imprint\'s OG image, social preview and README banners into public/';
 
@@ -29,11 +28,19 @@ final class RenderBrandAssets extends Command
         $manifest = [];
         $base = rtrim($this->option('url') ?: config('app.url'), '/');
 
+        $playwright = base_path('node_modules/.bin/playwright');
+
+        if (! is_file($playwright)) {
+            $this->error('Playwright renders the images: npm install --save-dev playwright && npx playwright install chromium');
+
+            return self::FAILURE;
+        }
+
         foreach (BrandAssets::all() as $asset) {
             $target = public_path($asset->path);
             $url = $base.route('foundry.brand', $asset->name, absolute: false);
 
-            // Chrome screenshots whatever answers, an error page included.
+            // Playwright screenshots whatever answers, an error page included.
             try {
                 $status = Http::withOptions(['verify' => false])->get($url)->status();
             } catch (ConnectionException) {
@@ -48,22 +55,21 @@ final class RenderBrandAssets extends Command
 
             File::ensureDirectoryExists(dirname($target));
 
-            // Chrome reads the page through the site's own server, so the image
-            // carries the stylesheet exactly as the site builds it.
-            $result = Process::timeout(60)->run([
-                $this->option('chrome'),
-                '--headless=new',
-                '--hide-scrollbars',
-                '--force-device-scale-factor=1',
-                '--virtual-time-budget=5000',
-                "--window-size={$asset->width},{$asset->height}",
-                "--screenshot={$target}",
-                '--ignore-certificate-errors',
+            // Playwright's own Chromium reads the page through the site's own
+            // server, so the image carries the stylesheet exactly as the site
+            // builds it, and the reader's browser is never touched.
+            $result = Process::path(base_path())->timeout(60)->run([
+                $playwright,
+                'screenshot',
+                "--viewport-size={$asset->width},{$asset->height}",
+                '--ignore-https-errors',
+                '--wait-for-timeout=500',
                 $url,
+                $target,
             ]);
 
             if (! $result->successful() || ! is_file($target)) {
-                $this->error("{$asset->name}: Chrome did not render it. {$result->errorOutput()}");
+                $this->error("{$asset->name}: Playwright did not render it. {$result->errorOutput()}");
 
                 return self::FAILURE;
             }
