@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 use Steddle\Foundry\Brand\BrandAssets;
 
@@ -78,4 +79,20 @@ test('a copy value may be a translation key, read in the locale its block names'
     config()->set('imprint.og.locale', 'nl');
 
     expect(BrandAssets::find('og-image')->markup())->toContain('Het Nederlandse recht, bij de bron.');
+});
+
+test('the design section shows every image with its size and use', function () {
+    $directory = resource_path('views/components/site');
+    File::put($directory.'/text.blade.php', '<p {{ $attributes }}>{{ $slot }}</p>');
+    File::ensureDirectoryExists(public_path('brand'));
+    File::put(public_path(BrandAssets::MANIFEST), json_encode(['og-image' => 'abcdef0123456789']));
+
+    $html = Blade::render('<x-site.brand-assets />', deleteCachedView: true);
+
+    expect($html)
+        ->toContain('og-image.png?v=abcdef01')
+        ->toContain('github-social-preview.png | 1280×640')
+        ->toContain('README &lt;picture&gt;, dark source');
+
+    File::deleteDirectory(public_path('brand'));
 });
