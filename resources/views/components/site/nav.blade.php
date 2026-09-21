@@ -2,7 +2,6 @@
     'links' => [],
     'home' => '/',
     'homeLabel' => null,
-    'lockupClass' => 'h-6',
     'menu' => true,
     'menuLabel' => 'Menu',
 ])
@@ -20,13 +19,13 @@
 <header class="absolute inset-x-0 top-0 z-10 ink">
     <nav aria-label="Main" @if ($menu) x-data="{ open: false }" @keydown.escape.window="open = false" @endif>
         <x-site.container class="flex items-center justify-between gap-6 py-5">
-            <a href="{{ $home }}" aria-label="{{ $homeLabel }}" class="shrink-0 text-2xl text-strong">
-                <x-site.lockup class="{{ $lockupClass }}" />
+            <a href="{{ $home }}" aria-label="{{ $homeLabel }}" class="shrink-0 text-strong">
+                <x-site.lockup class="h-6" />
             </a>
 
             <div @class(['flex items-center gap-7', 'max-lg:hidden' => $menu])>
                 @foreach ($links as $label => $href)
-                    <a href="{{ $href }}" class="text-copy font-medium hover:text-strong max-lg:hidden">{{ $label }}</a>
+                    <a href="{{ $href }}" class="text-copy font-medium whitespace-nowrap hover:text-strong max-lg:hidden">{{ $label }}</a>
                 @endforeach
                 {{ $actions ?? '' }}
             </div>

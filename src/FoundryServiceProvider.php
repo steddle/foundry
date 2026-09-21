@@ -31,6 +31,7 @@ class FoundryServiceProvider extends ServiceProvider
         Blade::anonymousComponentPath(__DIR__.'/../resources/views/components', 'foundry');
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'foundry');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'foundry');
 
         if ($this->app->runningInConsole()) {
             $this->commands([RenderBrandAssets::class]);

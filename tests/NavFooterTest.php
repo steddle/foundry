@@ -9,6 +9,7 @@ beforeEach(function () {
     File::ensureDirectoryExists($directory);
     File::put($directory.'/lockup.blade.php', '@props([\'endorsed\' => false])<span {{ $attributes }}>@if ($endorsed)Imprint by Steddle @else Imprint @endif</span>');
     File::put($directory.'/scene.blade.php', '@props([\'name\', \'scrim\'])<img data-scene="{{ $name }}" {{ $attributes }}><div class="{{ $scrim }}"></div>');
+    File::put($directory.'/text.blade.php', '<p {{ $attributes }}>{{ $slot }}</p>');
     config()->set('imprint.name', 'Imprint');
 });
 
@@ -44,10 +45,15 @@ test('the footer lays a flat scrim where no closing section is set, the measured
         ->and($closed)->toContain('class="measured"')->toContain('<section>Closing</section>');
 });
 
-test('the footer lists its links, or the items a site sets, above its colophon', function () {
-    $html = Blade::render('<x-site.footer scene="p" scrim="s" flat-scrim="f" :links="[\'Legal\' => \'/legal\']"><x-slot:colophon><p>Not a law firm.</p></x-slot:colophon></x-site.footer>', deleteCachedView: true);
+test('the footer lists its links, or the items a site sets, above the disclaimer and the copyright', function () {
+    config()->set('imprint.disclaimer', 'Imprint is not a law firm.');
+    $html = Blade::render('<x-site.footer scene="p" scrim="s" flat-scrim="f" :links="[\'Legal\' => \'/legal\']" />', deleteCachedView: true);
     $items = Blade::render('<x-site.footer scene="p" scrim="s" flat-scrim="f" :endorsed="false"><x-slot:items><li>Services</li></x-slot:items></x-site.footer>', deleteCachedView: true);
 
-    expect($html)->toContain('<a href="/legal" class="hover:text-strong">Legal</a>')->toContain('<p>Not a law firm.</p>')->toContain('Imprint by Steddle')
-        ->and($items)->toContain('<li>Services</li>')->not->toContain('by Steddle');
+    expect($html)->toContain('<a href="/legal" class="hover:text-strong">Legal</a>')
+        ->toContain('Imprint is not a law firm.')
+        ->toContain('© '.now()->year.' Imprint')
+        ->toContain('A service by')
+        ->toContain('Imprint by Steddle')
+        ->and($items)->toContain('<li>Services</li>')->not->toContain('by Steddle')->not->toContain('A service by');
 });
