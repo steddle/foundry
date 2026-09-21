@@ -24,10 +24,10 @@ test('a closing centres its title and actions, and leaves out a lede it was not 
         ->not->toContain('<p');
 });
 
-test('at the start the actions end the row beside the title and lede', function () {
+test('at the start the title, lede and actions stack at the start', function () {
     $html = Blade::render('<x-site.closing align="start" title="Last word." lead="The lede."><a href="#">Act</a></x-site.closing>', deleteCachedView: true);
 
-    expect($html)->toContain('justify-between')
+    expect($html)->toContain('items-start')
         ->not->toContain('text-center')
         ->toContain('The lede.</p>');
 });

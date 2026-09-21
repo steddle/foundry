@@ -325,7 +325,7 @@ BLADE],
                 'name' => 'Closing',
                 'group' => 'Bands',
                 'from' => 'foundry',
-                'description' => 'The page\'s last word, in the footer\'s slot on its scene: a title, a lede and the actions. Centred it stands alone; at the start the actions end the row beside the text.',
+                'description' => 'The page\'s last word, in the footer\'s slot on its scene: a title, a lede and the actions. Centred it stands alone; at the start it stacks on the dark side of the scrim, clear of the scene\'s subject.',
                 'examples' => [
                     ['title' => 'Centred', 'ground' => 'ink', 'blade' => <<<'BLADE'
 <x-site.closing title="The last thing a reader sees.">
