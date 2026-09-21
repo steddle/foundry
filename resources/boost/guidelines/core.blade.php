@@ -17,8 +17,9 @@ is its own.
   text. There are no role tokens: a component writes the pair out,
   `text-zinc-600 dark:text-zinc-400`, and `dark:` fires under
   `prefers-color-scheme` and inside `ink`, so a band on ink reads the same in
-  both themes. An ink ground is `bg-zinc-900 ink` in both themes: `ink` makes
-  the element's own `dark:` fire, so a pair on it would always read its dark half.
+  both themes; inside `bone`, a sheet that stays bone in both themes, it never
+  fires. An ink ground is `bg-zinc-900 ink` in both themes: `ink` makes the
+  element's own `dark:` fire, so a pair on it would always read its dark half.
   Tailwind's colour names resolve to the nearest ramp for Flux's `color`
   props, as an interim until no view passes one.
 - **Components**: `x-site.container`, `x-site.section` and

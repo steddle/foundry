@@ -438,15 +438,19 @@
 /*
  * `dark:` follows the system theme, and an ink block inside a bone page gets
  * it too, so a band set on ink reads the same in both themes. Flux styles its
- * dark look with `dark:`, so its controls follow along. `ink` matches the
- * element itself, so an ink ground is `bg-zinc-900 ink` and never a pair.
+ * dark look with `dark:`, so its controls follow along. `bone` is the reverse,
+ * a sheet that stays bone in both themes, on ink as well; an `ink` inside one
+ * reads dark again. `ink` matches the element itself, so an ink ground is
+ * `bg-zinc-900 ink` and never a pair.
  */
 @custom-variant dark {
     @media (prefers-color-scheme: dark) {
-        @slot;
+        &:not(:where(.bone, .bone *)) {
+            @slot;
+        }
     }
 
-    &:where(.ink, .ink *) {
+    &:where(.ink, .ink *):not(:where(.ink .bone, .ink .bone *)) {
         @slot;
     }
 }
@@ -462,6 +466,11 @@
 @utility ink {
     --color-accent-content: var(--color-primary-300);
     color: var(--color-zinc-200);
+}
+
+@utility bone {
+    --color-accent-content: var(--color-primary-700);
+    color: var(--color-zinc-800);
 }
 
 /* Flux paints a menu item's hover and active state in zinc-50, the page's own bone. Unlayered, so it outranks Flux's utilities; inside a @layer it would not. */
