@@ -358,6 +358,15 @@
 
     <x-site.numbered-section number="11" name="Feedback" note="What the site tells a reader">
         <div class="flex flex-col gap-8">
+            <div class="flex flex-wrap items-center gap-2.5">
+                <x-site.badge>Neutral</x-site.badge>
+                <x-site.badge tone="info">Info</x-site.badge>
+                <x-site.badge tone="success">Success</x-site.badge>
+                <x-site.badge tone="warning">Warning</x-site.badge>
+                <x-site.badge tone="danger">Danger</x-site.badge>
+                <x-site.badge tone="action" dot>Action</x-site.badge>
+            </div>
+
             <flux:callout icon="information-circle" class="max-w-[66ch]">
                 <flux:callout.heading>A callout</flux:callout.heading>
                 <flux:callout.text>What a reader should know before going on, in a sentence or two.</flux:callout.text>

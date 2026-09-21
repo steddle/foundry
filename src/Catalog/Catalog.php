@@ -274,6 +274,24 @@ BLADE],
 BLADE],
                 ],
             ],
+            'badge' => [
+                'name' => 'Badge',
+                'group' => 'Actions',
+                'from' => 'foundry',
+                'description' => 'A short status beside what it describes: a status ramp\'s 50 as the ground and its 700 as the text. Action, in lichen, is the one tone that asks the reader to do something.',
+                'examples' => [
+                    ['title' => 'Every tone', 'blade' => <<<'BLADE'
+<div class="flex flex-wrap items-center gap-2.5">
+    <x-site.badge>Neutral</x-site.badge>
+    <x-site.badge tone="info">Info</x-site.badge>
+    <x-site.badge tone="success">Success</x-site.badge>
+    <x-site.badge tone="warning">Warning</x-site.badge>
+    <x-site.badge tone="danger">Danger</x-site.badge>
+    <x-site.badge tone="action" dot>Action</x-site.badge>
+</div>
+BLADE],
+                ],
+            ],
             'actions' => [
                 'name' => 'Actions',
                 'group' => 'Actions',

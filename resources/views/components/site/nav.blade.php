@@ -16,7 +16,8 @@
 @endphp
 
 {{--
-    Overlays the hero, which carries the ink. `actions` closes the bar. With
+    Overlays the hero, which carries the ink. `actions` closes the bar, after
+    the language switch where the imprint speaks more than one. With
     `menu`, a phone folds the links and the actions into a panel below the bar,
     through Alpine, which Livewire loads on the page; without one, the lockup
     and the actions are the whole bar there and the bar needs no script.
@@ -37,6 +38,9 @@
                 @foreach ($links as $label => $href)
                     <a href="{{ $href }}" class="text-copy font-medium whitespace-nowrap hover:text-zinc-950 dark:hover:text-zinc-50 max-lg:hidden">{{ $label }}</a>
                 @endforeach
+                @if (\Steddle\Foundry\Locales::multilingual())
+                    <x-site.locale-switch />
+                @endif
                 {{ $actions ?? '' }}
             </div>
 
@@ -66,6 +70,9 @@
                         @endforeach
                     </ul>
                     <div class="flex w-full items-center justify-between gap-6">
+                        @if (\Steddle\Foundry\Locales::multilingual())
+                            <x-site.locale-switch />
+                        @endif
                         {{ $actions ?? '' }}
                     </div>
                 </x-site.container>
