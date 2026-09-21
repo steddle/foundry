@@ -12,10 +12,10 @@
 
     @unless ($example['code'] ?? false)
         <div @class([
-            'overflow-hidden rounded-md border border-subtle',
+            'overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700',
             'p-8' => $ground !== 'bare',
-            'bg-inverse ink' => $ground === 'ink',
-            'bg-page' => $ground === 'page',
+            'bg-zinc-900 ink' => $ground === 'ink',
+            'bg-zinc-50 dark:bg-zinc-900' => $ground === 'page',
         ])>
             @isset($example['zoom'])
                 <div style="zoom: {{ $example['zoom'] }}">{!! Blade::render($example['blade']) !!}</div>
@@ -25,5 +25,5 @@
         </div>
     @endunless
 
-    <pre class="overflow-x-auto rounded-md border border-subtle bg-sunken p-4 font-mono text-code text-strong slashed-zero tabular-nums"><code>{{ $example['blade'] }}</code></pre>
+    <pre class="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-950 p-4 font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums"><code>{{ $example['blade'] }}</code></pre>
 </figure>

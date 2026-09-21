@@ -9,7 +9,7 @@
 
             <div class="flex flex-col gap-12">
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-                    <code class="font-mono text-code text-strong slashed-zero tabular-nums">x-site.{{ $slug }}</code>
+                    <code class="font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums">x-site.{{ $slug }}</code>
                     @if ($own === 'copies')
                         <x-site.text variant="small" tone="strong" class="font-medium">✗ This imprint keeps a copy of its own, in place of the foundry's.</x-site.text>
                     @elseif ($own === 'wraps')

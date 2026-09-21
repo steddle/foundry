@@ -36,8 +36,8 @@ test('every asset is filled from the imprint', function () {
         ->and($assets['og-image']->markup())
         ->toContain('Dutch law, <mark>at the source.</mark>')
         ->toContain('Legal sources')
-        ->and($assets['readme-banner-dark']->markup())->toContain('ink bg-inverse')
-        ->and($assets['readme-banner-light']->markup())->toContain('bg-page')->not->toContain('ink');
+        ->and($assets['readme-banner-dark']->markup())->toContain('ink bg-zinc-900')
+        ->and($assets['readme-banner-light']->markup())->toContain('bg-zinc-50')->not->toContain('ink');
 });
 
 test('an imprint without a heading is refused by name', function () {

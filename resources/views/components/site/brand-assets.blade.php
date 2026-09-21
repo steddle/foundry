@@ -12,21 +12,21 @@
 <div {{ $attributes->class('flex flex-col gap-8') }}>
     <x-site.text tone="muted" class="max-w-[64ch] hyphens-manual">
         @if ($group === 'social')
-            Rendered from config/imprint.php by <code class="font-mono text-code text-strong slashed-zero tabular-nums">php artisan foundry:assets</code>. og-image.png stands in where OG Kit has no key; with one, ogkit.dev renders each page's own template.
+            Rendered from config/imprint.php by <code class="font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums">php artisan foundry:assets</code>. og-image.png stands in where OG Kit has no key; with one, ogkit.dev renders each page's own template.
         @else
-            Drawn from x-site.mark in the imprint's ink and paper by <code class="font-mono text-code text-strong slashed-zero tabular-nums">php artisan foundry:assets</code>, with favicon.ico cut from icon-512.png and site.webmanifest written beside them.
+            Drawn from x-site.mark in the imprint's ink and paper by <code class="font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums">php artisan foundry:assets</code>, with favicon.ico cut from icon-512.png and site.webmanifest written beside them.
         @endif
     </x-site.text>
 
     @if ($group === 'social')
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
             @foreach ($assets as $asset)
-                <figure class="flex flex-col gap-3 rounded-md border border-subtle p-4">
-                    <img src="{{ asset($asset->path) }}?v={{ $version($asset->name) }}" alt="{{ basename($asset->path) }}" width="{{ $asset->width }}" height="{{ $asset->height }}" class="h-auto w-full rounded-sm border border-subtle" loading="lazy">
+                <figure class="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-700 p-4">
+                    <img src="{{ asset($asset->path) }}?v={{ $version($asset->name) }}" alt="{{ basename($asset->path) }}" width="{{ $asset->width }}" height="{{ $asset->height }}" class="h-auto w-full rounded-sm border border-zinc-200 dark:border-zinc-700" loading="lazy">
                     <figcaption class="flex flex-col gap-1">
                         <x-site.text variant="small" tone="strong" class="font-medium tabular-nums">{{ basename($asset->path) }} | {{ $asset->width }}×{{ $asset->height }}</x-site.text>
                         <x-site.text variant="small" tone="muted">{{ $asset->use }}</x-site.text>
-                        <a href="{{ asset($asset->path) }}" download class="w-fit text-small text-accent underline underline-offset-2">Download</a>
+                        <a href="{{ asset($asset->path) }}" download class="w-fit text-small text-primary-700 dark:text-primary-300 underline underline-offset-2">Download</a>
                     </figcaption>
                 </figure>
             @endforeach
@@ -34,7 +34,7 @@
     @else
         <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
             @foreach ($assets as $asset)
-                <figure class="flex flex-col gap-3 rounded-md border border-subtle p-4">
+                <figure class="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-700 p-4">
                     <img src="{{ asset($asset->path) }}?v={{ $version($asset->name) }}" alt="{{ basename($asset->path) }}" width="64" height="64" class="size-16" loading="lazy">
                     <figcaption class="flex flex-col gap-1">
                         <x-site.text variant="small" tone="strong" class="font-medium tabular-nums"><span class="break-all">{{ basename($asset->path) }}</span> <span class="whitespace-nowrap">| {{ $asset->width }}×{{ $asset->height }}</span></x-site.text>
@@ -46,7 +46,7 @@
 
         <div class="flex flex-wrap items-center gap-6">
             @foreach (['favicon.ico', ...array_keys(BrandAssets::files())] as $path)
-                <a href="{{ asset($path) }}" download class="flex items-center gap-3 text-small text-accent underline underline-offset-2">
+                <a href="{{ asset($path) }}" download class="flex items-center gap-3 text-small text-primary-700 dark:text-primary-300 underline underline-offset-2">
                     @if (! str_ends_with($path, '.webmanifest'))
                         <img src="{{ asset($path) }}" alt="" width="32" height="32" class="size-8">
                     @endif

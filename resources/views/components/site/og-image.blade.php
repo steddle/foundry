@@ -16,20 +16,20 @@
     `width` and `height` set the canvas, for a format of another size, and a
     `footer` slot sets a row below the lede.
 --}}
-<div class="grain ink relative flex flex-col justify-between overflow-hidden bg-inverse p-[64px] font-sans" style="width: {{ $width }}px; height: {{ $height }}px">
-    <x-site.mark class="absolute -right-[60px] -bottom-[70px] size-[400px] text-strong opacity-[0.06]" />
+<div class="grain ink relative flex flex-col justify-between overflow-hidden bg-zinc-900 p-[64px] font-sans" style="width: {{ $width }}px; height: {{ $height }}px">
+    <x-site.mark class="absolute -right-[60px] -bottom-[70px] size-[400px] text-zinc-950 dark:text-zinc-50 opacity-[0.06]" />
 
     <div class="relative flex items-center justify-between">
-        <x-site.lockup class="h-[40px] text-strong" />
+        <x-site.lockup class="h-[40px] text-zinc-950 dark:text-zinc-50" />
         @if ($eyebrow)
-            <p class="text-[15px] font-semibold text-accent">{{ $eyebrow }}</p>
+            <p class="text-[15px] font-semibold text-primary-700 dark:text-primary-300">{{ $eyebrow }}</p>
         @endif
     </div>
 
     <div class="relative flex flex-col">
-        <p class="max-w-[940px] text-pretty font-serif text-[72px] leading-[1.04] font-semibold tracking-[-0.03em] text-strong"><x-site.marked :text="$heading" :marked="$marked" /></p>
+        <p class="max-w-[940px] text-pretty font-serif text-[72px] leading-[1.04] font-semibold tracking-[-0.03em] text-zinc-950 dark:text-zinc-50"><x-site.marked :text="$heading" :marked="$marked" /></p>
         @if ($lede)
-            <p class="mt-[24px] max-w-[780px] text-pretty text-[26px] leading-[1.5] text-body">{{ $lede }}</p>
+            <p class="mt-[24px] max-w-[780px] text-pretty text-[26px] leading-[1.5] text-zinc-800 dark:text-zinc-200">{{ $lede }}</p>
         @endif
     </div>
 

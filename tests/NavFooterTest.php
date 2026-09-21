@@ -38,19 +38,19 @@ test('without a menu the lockup and the actions are the whole bar on a phone', f
 });
 
 test('the footer lays a flat scrim where no closing section is set, the measured one where it is', function () {
-    $bare = Blade::render('<x-site.footer scene="stones" scrim="measured" flat-scrim="flat" />', deleteCachedView: true);
-    $closed = Blade::render('<x-site.footer scene="stones" scrim="measured" flat-scrim="flat"><section>Closing</section></x-site.footer>', deleteCachedView: true);
+    $bare = Blade::render('<x-site.footer scene="stones" />', deleteCachedView: true);
+    $closed = Blade::render('<x-site.footer scene="stones"><section>Closing</section></x-site.footer>', deleteCachedView: true);
 
-    expect($bare)->toContain('class="flat"')->toContain('data-scene="stones"')
-        ->and($closed)->toContain('class="measured"')->toContain('<section>Closing</section>');
+    expect($bare)->toContain('class="bg-zinc-900/88"')->toContain('data-scene="stones"')
+        ->and($closed)->toContain('class="bg-[linear-gradient(')->toContain('<section>Closing</section>');
 });
 
 test('the footer lists its links, or the items a site sets, above the disclaimer and the copyright', function () {
     config()->set('imprint.disclaimer', 'Imprint is not a law firm.');
-    $html = Blade::render('<x-site.footer scene="p" scrim="s" flat-scrim="f" :links="[\'Legal\' => \'/legal\']" />', deleteCachedView: true);
-    $items = Blade::render('<x-site.footer scene="p" scrim="s" flat-scrim="f" :endorsed="false"><x-slot:items><li>Services</li></x-slot:items></x-site.footer>', deleteCachedView: true);
+    $html = Blade::render('<x-site.footer scene="p" :links="[\'Legal\' => \'/legal\']" />', deleteCachedView: true);
+    $items = Blade::render('<x-site.footer scene="p" :endorsed="false"><x-slot:items><li>Services</li></x-slot:items></x-site.footer>', deleteCachedView: true);
 
-    expect($html)->toContain('<a href="/legal" class="hover:text-strong">Legal</a>')
+    expect($html)->toContain('<a href="/legal" class="hover:text-zinc-950 dark:hover:text-zinc-50">Legal</a>')
         ->toContain('Imprint is not a law firm.')
         ->toContain('© '.now()->year.' Imprint')
         ->toContain('A service by')

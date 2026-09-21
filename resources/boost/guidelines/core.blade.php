@@ -5,14 +5,27 @@ imprints that take its structure in their own colours. Change shared code here,
 in `~/Github/steddle/foundry`, never in a site's copy: a site holds only what
 is its own.
 
-- **Type**: `resources/css/foundry.css` declares Spectral, Chivo and Chivo Mono
-  and sources the foundry's views. A site's `app.css` imports it after
-  `tailwindcss`.
+- **Type**: `resources/css/foundry.css` declares Spectral, Chivo and Chivo Mono,
+  the type scale (`display`, `heading-1` to `-3`, `lede`, `copy`, `small`,
+  `label`, `meta`, `code`) and the radii, and sources the foundry's views. A
+  site's `app.css` imports it after `tailwindcss` and Flux.
+- **Colour**: seven ramps on steps 25 to 950 and nothing else; Tailwind's
+  palettes are reset. `secondary` (lichen), `info`, `success`, `warning` and
+  `danger` live in the foundry; a site's theme adds `zinc`, its grey, and
+  `primary`. `300` is the colour and text on ink, `700` text on bone, `50` a
+  wash, `800` hover on bone. Flux fills with `primary-300` under `zinc-950`
+  text. There are no role tokens: a component writes the pair out,
+  `text-zinc-600 dark:text-zinc-400`, and `dark:` fires under
+  `prefers-color-scheme` and inside `ink`, so a band on ink reads the same in
+  both themes. An ink ground is `bg-zinc-900 ink` in both themes: `ink` makes
+  the element's own `dark:` fire, so a pair on it would always read its dark half.
+  Tailwind's colour names resolve to the nearest ramp for Flux's `color`
+  props, as an interim until no view passes one.
 - **Components**: `x-site.container`, `x-site.section` and
   `x-site.numbered-section` resolve from the foundry.
 - **Header and footer**: `x-foundry::site.nav` takes the links, the home
   address, an `actions` slot and whether a phone folds them into a menu;
-  `x-foundry::site.footer` takes the scene and its two scrims, the links or an
+  `x-foundry::site.footer` takes the scene, lays one scrim over it, takes the links or an
   `items` slot, whether the lockup is endorsed, and a `colophon` slot. A
   site's own `x-site.nav` and `x-site.footer` wrap them with its content.
 - **Script**: a foundry component that holds state uses Alpine, which
@@ -45,8 +58,7 @@ is its own.
   browser chrome in those two colours. `x-site.brand-assets` shows either set
   on `/design`, `group="social"` or `group="icon"`.
 - **What an imprint supplies**: `x-site.lockup`, `x-site.mark` and
-  `x-site.marker`, and the tokens `bg-page`, `bg-inverse`, `text-strong`,
-  `text-body`, `text-accent` and the `ink` variant. A site overrides any
+  `x-site.marker`, and the `zinc` and `primary` ramps. A site overrides any
   foundry component by keeping a file of the same name under
   `resources/views/components`, and can wrap the foundry's version inside it
   as `x-foundry::site.<name>` rather than copy it.

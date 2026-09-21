@@ -25,7 +25,7 @@ final class Catalog
                 'examples' => [
                     ['title' => 'Content at the page\'s width', 'blade' => <<<'BLADE'
 <x-site.container>
-    <div class="rounded-md border border-dashed border-subtle p-6 text-muted">Wide, with the phone and desktop gutters.</div>
+    <div class="rounded-md border border-dashed border-zinc-200 dark:border-zinc-700 p-6 text-zinc-600 dark:text-zinc-400">Wide, with the phone and desktop gutters.</div>
 </x-site.container>
 BLADE],
                 ],
@@ -154,10 +154,10 @@ BLADE],
                 'description' => 'The mark and the wordmark in the current colour. An imprint endorses it with BY STEDDLE where it stands without the house around it.',
                 'examples' => [
                     ['title' => 'On the page', 'blade' => <<<'BLADE'
-<x-site.lockup class="h-8 text-strong" />
+<x-site.lockup class="h-8 text-zinc-950 dark:text-zinc-50" />
 BLADE],
                     ['title' => 'On ink', 'ground' => 'ink', 'blade' => <<<'BLADE'
-<x-site.lockup class="h-8 text-strong" />
+<x-site.lockup class="h-8 text-zinc-950 dark:text-zinc-50" />
 BLADE],
                 ],
             ],
@@ -168,7 +168,7 @@ BLADE],
                 'description' => 'The imprint\'s mark on a 32 by 32 grid, in the current colour. The icons are drawn from it.',
                 'examples' => [
                     ['title' => 'At three sizes', 'blade' => <<<'BLADE'
-<div class="flex items-end gap-6 text-strong">
+<div class="flex items-end gap-6 text-zinc-950 dark:text-zinc-50">
     <x-site.mark class="size-16" />
     <x-site.mark class="size-8" />
     <x-site.mark class="size-4" />
@@ -205,8 +205,8 @@ BLADE],
                 'description' => 'The photo an ink band carries behind its content, with the scrim that keeps the content legible on it.',
                 'examples' => [
                     ['title' => 'Behind a band', 'blade' => <<<'BLADE'
-<div class="relative isolate flex h-72 items-end overflow-hidden bg-inverse ink p-8">
-    <x-site.scene name="footer" class="object-bottom-right" scrim="bg-inverse/60" />
+<div class="relative isolate flex h-72 items-end overflow-hidden bg-zinc-900 ink p-8">
+    <x-site.scene name="footer" class="object-bottom-right" scrim="bg-zinc-900/60" />
     <x-site.heading size="2">Content on the scene.</x-site.heading>
 </div>
 BLADE],
@@ -219,7 +219,7 @@ BLADE],
                 'description' => 'The bar every page lays over its first band: the lockup, the links and the actions, folded into a menu on a phone.',
                 'examples' => [
                     ['title' => 'As this imprint sets it', 'ground' => 'bare', 'blade' => <<<'BLADE'
-<div class="relative h-20 bg-inverse ink">
+<div class="relative h-20 bg-zinc-900 ink">
     <x-site.nav />
 </div>
 BLADE],
