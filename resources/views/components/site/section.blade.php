@@ -1,14 +1,16 @@
-@props(['scene' => null, 'align' => 'start'])
+@props(['scene' => null, 'align' => 'start', 'sunken' => false])
 
 {{--
     A band of the page. In dark mode every band shares the page ground, so a
-    hairline separates them. With a `scene` the band is ink over that photo,
+    hairline separates them; `sunken` sets it a step below the page, to part
+    it from the bands around it. With a `scene` the band is ink over that photo,
     its content at the start or in the centre as `align` says, under the scrim
     measured for it.
 --}}
 <section {{ $attributes->class([
     'scroll-mt-4 py-18 lg:py-32',
     'dark:border-t dark:border-zinc-50/13' => ! $scene,
+    'bg-zinc-100 dark:bg-zinc-950' => $sunken && ! $scene,
     'relative isolate overflow-hidden bg-zinc-900 ink' => $scene,
 ]) }}>
     @if ($scene)

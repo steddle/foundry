@@ -523,6 +523,29 @@
     display: none !important;
 }
 
+/* A link inside running text: the accent, underlined at a third of its strength until hovered. */
+@utility link {
+    color: var(--color-primary-700);
+    text-decoration: underline;
+    text-decoration-color: --alpha(var(--color-primary-700) / 35%);
+    text-underline-offset: 3px;
+
+    @variant hover {
+        color: var(--color-primary-800);
+        text-decoration-color: currentColor;
+    }
+
+    @variant dark {
+        color: var(--color-primary-300);
+        text-decoration-color: --alpha(var(--color-primary-300) / 35%);
+
+        @variant hover {
+            color: var(--color-primary-200);
+            text-decoration-color: currentColor;
+        }
+    }
+}
+
 /* Long-form text: a docs article, a legal document. Width is set in the markup. */
 @utility longform {
     font-size: var(--text-copy);
@@ -571,25 +594,7 @@
     }
 
     & a {
-        color: var(--color-primary-700);
-        text-decoration: underline;
-        text-decoration-color: --alpha(var(--color-primary-700) / 35%);
-        text-underline-offset: 3px;
-
-        @variant hover {
-            color: var(--color-primary-800);
-            text-decoration-color: currentColor;
-        }
-
-        @variant dark {
-            color: var(--color-primary-300);
-            text-decoration-color: --alpha(var(--color-primary-300) / 35%);
-
-            @variant hover {
-                color: var(--color-primary-200);
-                text-decoration-color: currentColor;
-            }
-        }
+        @apply link;
     }
 
     & strong {

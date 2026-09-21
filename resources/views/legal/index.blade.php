@@ -24,7 +24,7 @@
     </x-site.numbered-section>
 
     @foreach ($legal['audiences'] as $audience)
-        <x-site.numbered-section :number="sprintf('%02d', $loop->index + 2)" :name="$audience['title']" :note="trans_choice('foundry::legal.documents', count($audience['documents']))" @class(['bg-zinc-100 dark:bg-zinc-950' => $loop->odd])>
+        <x-site.numbered-section :number="sprintf('%02d', $loop->index + 2)" :name="$audience['title']" :note="trans_choice('foundry::legal.documents', count($audience['documents']))" :sunken="$loop->odd">
             <div class="grid grid-cols-1 gap-x-12 border-t border-zinc-200 dark:border-zinc-700 lg:grid-cols-2">
                 @foreach ($audience['documents'] as $slug => [$documentTitle, $description])
                     <x-site.link-row :href="localized_route('legal.show', $slug)" :title="$documentTitle" class="border-b border-zinc-200 dark:border-zinc-700">

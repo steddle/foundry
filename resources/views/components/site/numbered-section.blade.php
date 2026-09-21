@@ -1,8 +1,8 @@
-@props(['number', 'name', 'note' => null])
+@props(['number', 'name', 'note' => null, 'sunken' => false])
 
-{{-- A section that opens on a ruled row: its number, its name, one fact about what follows, and the actions on it. --}}
-<section {{ $attributes->class('scroll-mt-4') }}>
-    <div class="border-b border-zinc-200 dark:border-zinc-700 dark:border-zinc-50/13">
+{{-- A section that opens on a ruled row: its number, its name, one fact about what follows, and the actions on it. `sunken` sets it a step below the page. --}}
+<section {{ $attributes->class(['scroll-mt-4', 'bg-zinc-100 dark:bg-zinc-950' => $sunken]) }}>
+    <div class="border-b border-zinc-200 dark:border-zinc-50/13">
         <x-site.container class="flex h-12 items-center justify-between gap-6">
             <div class="flex items-center gap-6">
                 <p class="w-6 text-sm font-medium text-zinc-600 dark:text-zinc-400 tabular-nums">{{ $number }}</p>

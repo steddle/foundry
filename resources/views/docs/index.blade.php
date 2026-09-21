@@ -24,7 +24,7 @@
         </div>
     </x-site.numbered-section>
 
-    <x-site.numbered-section number="02" :name="__('foundry::docs.topics')" :note="trans_choice('foundry::docs.topics_count', count($topics)).' | '.trans_choice('foundry::docs.articles', $articleCount)" class="bg-zinc-100 dark:bg-zinc-950">
+    <x-site.numbered-section number="02" :name="__('foundry::docs.topics')" :note="trans_choice('foundry::docs.topics_count', count($topics)).' | '.trans_choice('foundry::docs.articles', $articleCount)" sunken>
         <x-site.tile-grid :count="count($topics)">
             @foreach ($topics as $slug => $topic)
                 <x-site.topic :icon="$topic['icon']" :eyebrow="trans_choice('foundry::docs.articles', count($topic['articles']))" :title="$topic['title']" :href="localized_route('docs.category.'.$slug)"

@@ -131,7 +131,7 @@
         </div>
     </x-site.numbered-section>
 
-    <x-site.numbered-section number="02" name="Family" note="One structure, an ink and an accent each" class="bg-zinc-100 dark:bg-zinc-950">
+    <x-site.numbered-section number="02" name="Family" note="One structure, an ink and an accent each" sunken>
         <div class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-200 dark:bg-zinc-700 lg:grid-cols-3">
             @foreach (Family::all() as $imprint)
                 <div class="flex flex-col gap-8 p-8" style="background: {{ $imprint['ink'] }}">

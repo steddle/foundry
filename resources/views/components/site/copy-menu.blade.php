@@ -54,7 +54,7 @@
     @focusin.once="load()"
 >
     <flux:dropdown position="bottom" align="end">
-        <flux:button icon="clipboard-document" size="sm" variant="ghost" class="border border-zinc-200 dark:border-zinc-700 text-zinc-950 dark:text-zinc-50! hover:bg-zinc-100 dark:hover:bg-zinc-950! dark:border-zinc-50/13 dark:text-zinc-50! dark:hover:bg-zinc-50/5!">{{ __('foundry::agents.copy') }}</flux:button>
+        <flux:button icon="clipboard-document" size="sm" variant="ghost" class="border border-zinc-200 text-zinc-950 hover:bg-zinc-100 dark:border-zinc-50/13 dark:text-zinc-50! dark:hover:bg-zinc-50/5!">{{ __('foundry::agents.copy') }}</flux:button>
 
         {{--
             The label is read through Js::from(), not embedded between quotes
