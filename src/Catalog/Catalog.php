@@ -366,6 +366,28 @@ BLADE],
 BLADE],
                 ],
             ],
+            'account-row' => [
+                'name' => 'Account row',
+                'group' => 'Forms',
+                'from' => 'foundry',
+                'description' => 'Who is signed in, where a page acts as them: their initials, name and address.',
+                'examples' => [
+                    ['title' => 'Above a consent', 'blade' => <<<'BLADE'
+<x-site.account-row :user="(object) ['name' => 'Ada Visser', 'email' => 'ada@example.com']" class="max-w-md" />
+BLADE],
+                ],
+            ],
+            'checklist' => [
+                'name' => 'Checklist',
+                'group' => 'Forms',
+                'from' => 'foundry',
+                'description' => 'What something may do or includes, each line ticked in the accent.',
+                'examples' => [
+                    ['title' => 'What a client may do', 'blade' => <<<'BLADE'
+<x-site.checklist :items="['Search the corpus and read what it holds', 'Nothing it writes']" />
+BLADE],
+                ],
+            ],
             'lockup' => [
                 'name' => 'Lockup',
                 'group' => 'Brand',

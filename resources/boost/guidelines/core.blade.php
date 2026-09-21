@@ -25,7 +25,7 @@ is its own.
 - **Components**: `x-site.heading` (`size` display, 1, 2, 3 and `tone`) and
   `x-site.text` (`variant` lede, copy, small, label, meta and `tone` body,
   strong, muted, accent, error), both over Flux; `x-site.button`, over `flux:button` with `primary`, `secondary` and `ghost`, `x-site.container`, `x-site.section`,
-  `x-site.numbered-section`, `x-site.section-head`, `x-site.breadcrumb`, `x-site.badge`, `x-site.country-select` and `x-site.copy-menu`
+  `x-site.numbered-section`, `x-site.section-head`, `x-site.breadcrumb`, `x-site.badge`, `x-site.country-select`, `x-site.account-row`, `x-site.checklist`, `x-site.pager`, `x-site.promises` and `x-site.copy-menu`
   resolve from the foundry. The copy menu reads its words from
   `foundry::agents`, in English and Dutch.
 - **Header and footer**: `x-foundry::site.nav` takes the links, the home
