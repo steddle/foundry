@@ -87,6 +87,24 @@ BLADE],
 BLADE],
                 ],
             ],
+            'tile-grid' => [
+                'name' => 'Tiles',
+                'group' => 'Layout',
+                'from' => 'foundry',
+                'description' => 'Tiles on a hairline grid, one to three columns, with blank tiles closing the last row. A topic tile names its count, its title and what it covers, and lists its first links.',
+                'examples' => [
+                    ['title' => 'Two topics', 'ground' => 'bare', 'blade' => <<<'BLADE'
+<x-site.tile-grid :count="2">
+    <x-site.topic icon="command-line" eyebrow="6 articles" title="The CLI" href="#" :links="['bron law' => '#', 'bron case' => '#']" more="All 6 articles">
+        Every command, every option, and what a script can rely on when it reads the output.
+    </x-site.topic>
+    <x-site.topic icon="book-open" eyebrow="2 articles" title="Concepts" href="#" :links="['Two dates' => '#', 'Two lanes' => '#']">
+        The ideas the answers rest on.
+    </x-site.topic>
+</x-site.tile-grid>
+BLADE],
+                ],
+            ],
             'heading' => [
                 'name' => 'Heading',
                 'group' => 'Type',
