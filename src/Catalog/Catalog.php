@@ -523,6 +523,20 @@ BLADE],
 BLADE],
                 ],
             ],
+            'page' => [
+                'name' => 'Page',
+                'group' => 'Bands',
+                'from' => 'foundry',
+                'description' => 'A page of the site: the head, the nav, the content, and the footer with its closing. It takes the og-image\'s props or the og-image itself, and leaves Flux out where a page renders no control.',
+                'examples' => [
+                    ['title' => 'A site\'s layout', 'code' => true, 'blade' => <<<'BLADE'
+<x-site.page :$title :$description :$og>
+    {{ $slot }}
+    <x-slot:closing>{{ $closing ?? '' }}</x-slot:closing>
+</x-site.page>
+BLADE],
+                ],
+            ],
             'ink-page' => [
                 'name' => 'Ink page',
                 'group' => 'Bands',
