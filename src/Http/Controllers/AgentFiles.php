@@ -72,7 +72,7 @@ final class AgentFiles
 
                 foreach (Locales::all() as $locale) {
                     Pages::in($locale, function () use (&$sections): void {
-                        foreach (config('imprint.pages')::all() as $page) {
+                        foreach (config('imprint.sitemap')::all() as $page) {
                             if ($page['render'] !== null) {
                                 $sections[] = '# '.$page['url']."\n\n".Markdown::convert(($page['render'])());
                             }

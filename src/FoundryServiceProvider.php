@@ -49,8 +49,8 @@ class FoundryServiceProvider extends ServiceProvider
 
         $this->localize();
 
-        // The sitemap and the llms files, for an imprint that lists its pages in `imprint.pages`.
-        if (config('imprint.pages')) {
+        // The sitemap and the llms files, for an imprint that lists its pages in `imprint.sitemap`.
+        if (config('imprint.sitemap')) {
             Route::middleware('web')->group(function (): void {
                 Route::get('sitemap.xml', [AgentFiles::class, 'sitemap'])->name('sitemap');
                 Route::get('llms.txt', [AgentFiles::class, 'llms'])->name('llms.index');

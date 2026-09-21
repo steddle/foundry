@@ -20,7 +20,7 @@ final class TestPages
 
 beforeEach(function () {
     config()->set('imprint.name', 'Imprint');
-    config()->set('imprint.pages', TestPages::class);
+    config()->set('imprint.sitemap', TestPages::class);
     config()->set('markdown-response.cache.store', 'array');
     (new FoundryServiceProvider(app()))->boot();
     app('router')->getRoutes()->refreshNameLookups();

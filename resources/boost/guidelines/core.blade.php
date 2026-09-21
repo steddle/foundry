@@ -65,7 +65,7 @@ is its own.
   title, lede, closing, the draft notice and contact, are `imprint.docs` and
   `imprint.legal`; the list on a page is its own `<h2>`s, read by `Outline`.
   Long-form text is the `longform` utility in `foundry.css`.
-- **Pages for search engines and agents**: `imprint.pages` names the
+- **Pages for search engines and agents**: `imprint.sitemap` names the
   imprint's `Pages` class, whose static `all()` answers its public pages in
   the current locale, `key => [title, description, url, render]`, and whose
   optional `sections()` adds to llms.txt. The foundry then answers
