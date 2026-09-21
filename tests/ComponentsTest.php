@@ -46,3 +46,14 @@ test('a site\'s own version of a component can wrap the foundry\'s', function ()
         File::deleteDirectory(resource_path('views/components'));
     }
 });
+
+test('a scene draws its photo in every width and format, with its scrim over it', function () {
+    $html = Blade::render('<x-site.scene name="stones" scrim="bg-black/50" eager class="object-right" />', deleteCachedView: true);
+
+    expect($html)
+        ->toContain('/stones/home-1672.avif 1672w')
+        ->toContain('src="/stones/home-1280.webp"')
+        ->toContain('fetchpriority="high"')
+        ->toContain('object-right')
+        ->toContain('-z-10 bg-black/50');
+});

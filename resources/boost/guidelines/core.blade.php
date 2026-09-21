@@ -12,7 +12,7 @@ is its own.
   `x-site.numbered-section` resolve from the foundry.
 - **Header and footer**: `x-foundry::site.nav` takes the links, the home
   address, an `actions` slot and whether a phone folds them into a menu;
-  `x-foundry::site.footer` takes the photo and its two scrims, the links or an
+  `x-foundry::site.footer` takes the scene and its two scrims, the links or an
   `items` slot, whether the lockup is endorsed, and a `colophon` slot. A
   site's own `x-site.nav` and `x-site.footer` wrap them with its content.
 - **Script**: a foundry component that holds state uses Alpine, which
