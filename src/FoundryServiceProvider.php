@@ -74,7 +74,10 @@ class FoundryServiceProvider extends ServiceProvider
 
     /**
      * `Route::localized()` registers the pages its callback names once per
-     * language, named `{locale}.{page}`, the root language at the root. The
+     * language, named `{locale}.{page}`, the root language at the root; an
+     * imprint in one language registers them once, named as they are.
+     * `Route::docs()` and `Route::legal()` register the pages `Content`
+     * publishes, inside it or on their own. The
      * rest is only for a site with more than one language: the `locale:`
      * middleware, the visitor's language on a page that states none, the
      * switch's route, and the root language's prefix sent to the root.
@@ -82,11 +85,40 @@ class FoundryServiceProvider extends ServiceProvider
     private function localize(): void
     {
         Route::macro('localized', function (Closure $pages): void {
+            if (! Locales::multilingual()) {
+                $pages(fn (string $english): string => '/'.ltrim($english, '/'), Locales::root());
+
+                return;
+            }
+
             foreach (Locales::all() as $locale) {
                 Route::name("{$locale}.")
-                    ->middleware(["locale:{$locale}", ...(Locales::multilingual() && $locale === Locales::root() ? [FollowVisitorLanguage::class] : [])])
+                    ->middleware(["locale:{$locale}", ...($locale === Locales::root() ? [FollowVisitorLanguage::class] : [])])
                     ->group(fn () => $pages(fn (string $english): string => localized_path($english, $locale) ?: '/', $locale));
             }
+        });
+
+        // The docs and the legal documents, one page per entry `Content` publishes.
+        Route::macro('docs', function (?Closure $path = null, ?string $locale = null): void {
+            $path ??= fn (string $english): string => '/'.$english;
+
+            Route::view($path('docs'), 'foundry::docs.index')->name('docs.index');
+
+            foreach (Content::docs($locale ?? Locales::root()) as $topic => $entry) {
+                Route::view($path("docs/{$topic}"), 'foundry::docs.category', ['slug' => $topic])->name("docs.category.{$topic}");
+
+                foreach (array_keys($entry['articles']) as $article) {
+                    Route::view($path("docs/{$topic}/{$article}"), 'foundry::docs.article', ['slug' => $article, 'topicSlug' => $topic])->name("docs.article.{$article}");
+                }
+            }
+        });
+
+        Route::macro('legal', function (?Closure $path = null, ?string $locale = null): void {
+            $path ??= fn (string $english): string => '/'.$english;
+            $documents = collect(Content::legal($locale ?? Locales::root())['audiences'])->flatMap(fn (array $audience): array => array_keys($audience['documents']))->all();
+
+            Route::view($path('legal'), 'foundry::legal.index')->name('legal.index');
+            Route::view($path('legal').'/{document}', 'foundry::legal.show')->whereIn('document', $documents)->name('legal.show');
         });
 
         $router = $this->app['router'];

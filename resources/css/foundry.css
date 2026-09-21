@@ -522,3 +522,182 @@
 [x-cloak] {
     display: none !important;
 }
+
+/* Long-form text: a docs article, a legal document. Width is set in the markup. */
+@utility longform {
+    font-size: var(--text-copy);
+    line-height: --spacing(7);
+    color: var(--color-zinc-800);
+
+    @variant dark {
+        color: var(--color-zinc-200);
+    }
+
+    & > * + * {
+        margin-top: --spacing(5);
+    }
+
+    & :where(h2, h3) {
+        font-family: var(--font-serif);
+        font-weight: 600;
+        color: var(--color-zinc-950);
+        text-wrap: balance;
+
+        @variant dark {
+            color: var(--color-zinc-50);
+        }
+    }
+
+    & h2 {
+        margin-top: --spacing(14);
+        font-size: var(--text-heading-2);
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        scroll-margin-top: --spacing(6);
+    }
+
+    & h3 {
+        margin-top: --spacing(10);
+        font-size: var(--text-heading-3);
+        line-height: 1.3;
+    }
+
+    & :where(h2, h3) + * {
+        margin-top: --spacing(3);
+    }
+
+    & p {
+        text-wrap: pretty;
+    }
+
+    & a {
+        color: var(--color-primary-700);
+        text-decoration: underline;
+        text-decoration-color: --alpha(var(--color-primary-700) / 35%);
+        text-underline-offset: 3px;
+
+        @variant hover {
+            color: var(--color-primary-800);
+            text-decoration-color: currentColor;
+        }
+
+        @variant dark {
+            color: var(--color-primary-300);
+            text-decoration-color: --alpha(var(--color-primary-300) / 35%);
+
+            @variant hover {
+                color: var(--color-primary-200);
+                text-decoration-color: currentColor;
+            }
+        }
+    }
+
+    & strong {
+        font-weight: 600;
+        color: var(--color-zinc-950);
+
+        @variant dark {
+            color: var(--color-zinc-50);
+        }
+    }
+
+    & :where(ul, ol) {
+        padding-left: --spacing(5);
+    }
+
+    & ul {
+        list-style: disc;
+    }
+
+    & ol {
+        list-style: decimal;
+    }
+
+    & li + li {
+        margin-top: --spacing(2);
+    }
+
+    & li::marker {
+        color: var(--color-zinc-600);
+
+        @variant dark {
+            color: var(--color-zinc-400);
+        }
+    }
+
+    /* Wording quoted verbatim, a statute's or a contract's, in the serif. */
+    & blockquote {
+        border-left: 2px solid var(--color-zinc-200);
+
+        @variant dark {
+            border-color: var(--color-zinc-700);
+        }
+        padding-left: --spacing(5);
+        font-family: var(--font-serif);
+        font-size: var(--text-lede);
+        line-height: var(--text-lede--line-height);
+        color: var(--color-zinc-950);
+
+        @variant dark {
+            color: var(--color-zinc-50);
+        }
+    }
+
+    & code {
+        font-family: var(--font-mono);
+        font-size: 0.875em;
+        color: var(--color-zinc-950);
+
+        @variant dark {
+            color: var(--color-zinc-50);
+        }
+        font-variant-numeric: slashed-zero tabular-nums;
+    }
+
+    & pre {
+        overflow-x: auto;
+        border-radius: var(--radius-lg);
+        background-color: var(--color-zinc-950);
+        padding: --spacing(4) --spacing(5);
+        font-size: var(--text-code);
+        line-height: var(--text-code--line-height);
+        color: var(--color-zinc-200);
+    }
+
+    & pre code {
+        font-size: inherit;
+        color: inherit;
+    }
+
+    & table {
+        width: 100%;
+        font-size: var(--text-copy);
+        line-height: --spacing(6);
+    }
+
+    & th {
+        padding: --spacing(2) --spacing(4) --spacing(2) 0;
+        text-align: left;
+        font-weight: 600;
+        white-space: nowrap;
+        color: var(--color-zinc-950);
+
+        @variant dark {
+            color: var(--color-zinc-50);
+        }
+    }
+
+    & td {
+        border-top: 1px solid var(--color-zinc-200);
+
+        @variant dark {
+            border-color: var(--color-zinc-700);
+        }
+        padding: --spacing(3) --spacing(4) --spacing(3) 0;
+        vertical-align: top;
+    }
+
+    & img {
+        border-radius: var(--radius-md);
+    }
+}

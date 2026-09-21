@@ -53,6 +53,14 @@ is its own.
   Livewire loads on the page, and `[x-cloak]` holds it back until Alpine has
   read it. A page with such a component loads Livewire's scripts; what only
   appears and disappears is CSS.
+- **Docs and legal**: `Route::docs()` and `Route::legal()` register the
+  foundry's pages for them, inside `Route::localized()` or on their own. The
+  table of contents is `resources/content/[{locale}/]docs.php` and
+  `legal.php`, each entry a view under `docs.articles` or `legal.documents`,
+  and an entry is published where its view exists. The words around them,
+  title, lede, closing, draft and contact, are `imprint.docs` and
+  `imprint.legal`; the list on a page is its own `<h2>`s, read by `Outline`.
+  Long-form text is the `longform` utility in `foundry.css`.
 - **Markdown for agents**: `Steddle\Foundry\Markdown\*` extends
   spatie/laravel-markdown-response. The provider binds the table-aware driver
   and the `/index.md` rewrite; a site's `config/markdown-response.php` names

@@ -139,6 +139,31 @@ BLADE],
 BLADE],
                 ],
             ],
+            'pager' => [
+                'name' => 'Pager',
+                'group' => 'Layout',
+                'from' => 'foundry',
+                'description' => 'The foot of a long read: a note, and the ways on. Previous and next lead along; back leads up to the list the page belongs to.',
+                'examples' => [
+                    ['title' => 'Along', 'blade' => <<<'BLADE'
+<x-site.pager :previous="['Two dates', '#']" :next="['Two lanes', '#']">Checked against the API on 21 September 2026.</x-site.pager>
+BLADE],
+                    ['title' => 'Back', 'blade' => <<<'BLADE'
+<x-site.pager :back="['Every document', '#']">Questions: hello@example.com</x-site.pager>
+BLADE],
+                ],
+            ],
+            'promises' => [
+                'name' => 'Promises',
+                'group' => 'Layout',
+                'from' => 'foundry',
+                'description' => 'Numbered commitments, two to a row on a wide screen, as the legal page opens on them.',
+                'examples' => [
+                    ['title' => 'Two promises', 'blade' => <<<'BLADE'
+<x-site.promises :items="[['We give no legal advice.', 'What a text said, and where. What follows from it is for you and your counsel.'], ['Every quotation can be checked.', 'Fetch the document, hash it and cut the span.']]" />
+BLADE],
+                ],
+            ],
             'numbered-section' => [
                 'name' => 'Numbered section',
                 'group' => 'Layout',

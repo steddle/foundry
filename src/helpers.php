@@ -4,13 +4,14 @@ use Steddle\Foundry\Locales;
 
 if (! function_exists('localized_route')) {
     /**
-     * A page's route in the current locale, or in the one given.
+     * A page's route in the current locale, or in the one given. An imprint in
+     * one language names its pages without a locale.
      *
      * @param  array<int|string, mixed>  $parameters  a route's parameters, positional or named, as `route()` takes them
      */
     function localized_route(string $name, array $parameters = [], ?string $locale = null): string
     {
-        return route(($locale ?? app()->getLocale()).'.'.$name, $parameters);
+        return route(Locales::multilingual() ? ($locale ?? app()->getLocale()).'.'.$name : $name, $parameters);
     }
 }
 
