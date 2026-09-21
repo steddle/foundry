@@ -5,9 +5,9 @@ use Illuminate\Support\Facades\Route;
 use Steddle\Foundry\Http\Middleware\Noindex;
 
 test('a response is marked noindex', function () {
-    Route::get('/labs', fn () => 'labs')->middleware(Noindex::class);
+    Route::get('/private', fn () => 'private')->middleware(Noindex::class);
 
-    $this->get('/labs')->assertOk()->assertHeader('X-Robots-Tag', 'noindex');
+    $this->get('/private')->assertOk()->assertHeader('X-Robots-Tag', 'noindex');
 });
 
 test('a guard that throws still answers marked noindex', function () {

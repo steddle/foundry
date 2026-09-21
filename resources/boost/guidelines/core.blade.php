@@ -66,6 +66,14 @@ is its own.
   `resources/views/components`, and can wrap the foundry's version inside it
   as `x-foundry::site.<name>` rather than copy it.
 
+- **The lab**: outside production the foundry registers `/labs`, `/design` and
+  `/components` (`foundry.lab`, `foundry.design`, `foundry.components`),
+  behind `pages.middleware` and, outside local, `pages.guard` from
+  `config/imprint.php`. `/labs` lists the design page, the components and
+  the experiments `imprint.labs` names, slug => [title, summary], each the
+  imprint's own view `labs.{slug}`; `/design` is the imprint's view `design`.
+  On those pages the nav is the lab's bar on bone, and elsewhere the links
+  end on Lab. A page with no hero opens on `x-site.page-title`.
 - **`/components`** shows every component an imprint renders, from the
   catalogue in `Steddle\Foundry\Catalog\Catalog`: each example rendered
   live on its ground and printed as Blade. It marks a foundry component the

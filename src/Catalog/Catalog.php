@@ -87,6 +87,20 @@ BLADE],
 BLADE],
                 ],
             ],
+            'link-row' => [
+                'name' => 'Link row',
+                'group' => 'Layout',
+                'from' => 'foundry',
+                'description' => 'One row in a ruled list: a serif title, a sentence, an arrow. The parent draws the rules.',
+                'examples' => [
+                    ['title' => 'Two rows', 'blade' => <<<'BLADE'
+<div class="flex flex-col divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-zinc-700 dark:border-zinc-700">
+    <x-site.link-row href="#" title="Design">The brand, the colours, the type and the assets, on one page.</x-site.link-row>
+    <x-site.link-row href="#" title="Components">Every component the site renders, live.</x-site.link-row>
+</div>
+BLADE],
+                ],
+            ],
             'tile-grid' => [
                 'name' => 'Tiles',
                 'group' => 'Layout',
@@ -240,6 +254,17 @@ BLADE],
 <div class="relative h-20 bg-zinc-900 ink">
     <x-site.nav />
 </div>
+BLADE],
+                ],
+            ],
+            'page-title' => [
+                'name' => 'Page title',
+                'group' => 'Bands',
+                'from' => 'foundry',
+                'description' => 'The first band of a page with no hero, under the lab\'s bar: its title and lede, then what the page holds, in the same band.',
+                'examples' => [
+                    ['title' => 'A title and a lede', 'ground' => 'bare', 'blade' => <<<'BLADE'
+<x-site.page-title title="Lab." lead="The design system, every component the site renders, and the questions still open." />
 BLADE],
                 ],
             ],

@@ -33,7 +33,7 @@ test('without a menu the lockup and the actions are the whole bar on a phone', f
 
     expect($html)
         ->not->toContain('x-data')
-        ->not->toContain('max-lg:hidden">')
+        ->not->toContain('gap-7 max-lg:hidden')
         ->and(substr_count($html, 'Talk to us'))->toBe(1);
 });
 

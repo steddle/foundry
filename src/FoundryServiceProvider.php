@@ -9,6 +9,7 @@ use Spatie\MarkdownResponse\Middleware\RewriteMarkdownUrls as BaseRewriteMarkdow
 use Steddle\Foundry\Console\RenderBrandAssets;
 use Steddle\Foundry\Http\Controllers\RenderBrandAsset;
 use Steddle\Foundry\Http\Controllers\ShowComponent;
+use Steddle\Foundry\Http\Controllers\ShowLab;
 use Steddle\Foundry\Http\Middleware\Noindex;
 use Steddle\Foundry\Markdown\LeagueDriverWithTables;
 use Steddle\Foundry\Markdown\RewriteMarkdownUrls;
@@ -48,6 +49,12 @@ class FoundryServiceProvider extends ServiceProvider
             // what config/imprint.php names as `pages.guard` elsewhere.
             Route::middleware(['web', Noindex::class, ...config('imprint.pages.middleware', []), ...($this->app->isLocal() ? [] : config('imprint.pages.guard', []))])
                 ->group(function (): void {
+                    Route::get('labs/{page?}', ShowLab::class)
+                        ->where('page', '[a-z0-9-]+')
+                        ->name('foundry.lab');
+
+                    Route::view('design', 'design')->name('foundry.design');
+
                     Route::get('components/{component?}', ShowComponent::class)
                         ->where('component', '[a-z-]+')
                         ->name('foundry.components');

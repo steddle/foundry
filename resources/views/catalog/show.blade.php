@@ -1,7 +1,5 @@
 <x-layouts::site :title="$entry['name'].' | Components | '.config('imprint.name')" :description="$entry['description']">
-    <x-site.page-hero :title="$entry['name'].'.'" :lead="$entry['description']" />
-
-    <x-site.section>
+    <x-site.page-title :title="$entry['name'].'.'" :lead="$entry['description']">
         <x-site.document>
             <x-slot:aside>
                 <x-site.side-nav :groups="$groups" label="Components" />
@@ -26,5 +24,5 @@
                 @endforeach
             </div>
         </x-site.document>
-    </x-site.section>
+    </x-site.page-title>
 </x-layouts::site>

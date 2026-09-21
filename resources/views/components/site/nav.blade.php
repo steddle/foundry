@@ -8,6 +8,11 @@
 
 @php
     $homeLabel ??= config('imprint.name').', home';
+    $lab = request()->routeIs('foundry.lab', 'foundry.design', 'foundry.components');
+
+    if (! $lab && Route::has('foundry.lab')) {
+        $links['Lab'] = route('foundry.lab');
+    }
 @endphp
 
 {{--
@@ -15,7 +20,12 @@
     `menu`, a phone folds the links and the actions into a panel below the bar,
     through Alpine, which Livewire loads on the page; without one, the lockup
     and the actions are the whole bar there and the bar needs no script.
+    The lab's own pages take the lab's bar instead, and wherever the lab is
+    registered, which is never in production, the links end on it.
 --}}
+@if ($lab)
+<x-foundry::site.lab-nav :home="$home" :home-label="$homeLabel" />
+@else
 <header class="absolute inset-x-0 top-0 z-10 ink">
     <nav aria-label="Main" @if ($menu) x-data="{ open: false }" @keydown.escape.window="open = false" @endif>
         <x-site.container class="flex items-center justify-between gap-6 py-5">
@@ -63,3 +73,4 @@
         @endif
     </nav>
 </header>
+@endif
