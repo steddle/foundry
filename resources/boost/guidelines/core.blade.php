@@ -91,7 +91,10 @@ is its own.
   end on Lab. A page with no hero opens on `x-site.page-title`.
 - **`/components`** shows every component an imprint renders, from the
   catalogue in `Steddle\Foundry\Catalog\Catalog`: each example rendered
-  live on its ground and printed as Blade. It marks a foundry component the
+  live on its ground and printed as Blade. An imprint's own components join
+  it from the class `imprint.components` names, whose static `all()` answers
+  entries of the catalogue's shape; `/components?custom=1` and the lab's
+  Custom components row list those alone. It marks a foundry component the
   imprint keeps a copy of, in place of wrapping it, which is the thing to
   fix. Outside production only; `config/imprint.php` names `pages.middleware`
   for it and `pages.guard` for outside local. Add a component to the

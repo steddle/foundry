@@ -6,7 +6,7 @@ test('every entry names itself, its group, where it comes from and one example',
     foreach (Catalog::all() as $slug => $entry) {
         expect($slug)->toMatch('/^[a-z-]+$/')
             ->and($entry['name'])->not->toBeEmpty()
-            ->and($entry['from'])->toBeIn(['foundry', 'imprint'])
+            ->and($entry['from'])->toBeIn(['foundry', 'imprint', 'custom'])
             ->and($entry['examples'])->not->toBeEmpty();
 
         foreach ($entry['examples'] as $example) {

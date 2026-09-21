@@ -2,7 +2,14 @@
     <x-site.section>
         <x-site.document>
             <x-slot:aside>
-                <x-site.side-nav :groups="$groups" label="Components" />
+                <div class="flex flex-col gap-8">
+                    @if ($hasCustom)
+                        <flux:button size="sm" :href="$custom ? route('foundry.components') : route('foundry.components', ['custom' => 1])" class="self-start">
+                            {{ $custom ? 'All components' : 'Custom components' }}
+                        </flux:button>
+                    @endif
+                    <x-site.side-nav :groups="$groups" label="Components" />
+                </div>
             </x-slot:aside>
 
             <div class="flex flex-col gap-12">
@@ -18,6 +25,8 @@
                         <x-site.text variant="small" tone="strong" class="font-medium">✗ This imprint keeps a copy of its own, in place of the foundry's.</x-site.text>
                     @elseif ($own === 'wraps')
                         <x-site.text variant="small" tone="muted">From steddle/foundry, wrapped with this imprint's content.</x-site.text>
+                    @elseif ($entry['from'] === 'custom')
+                        <x-site.text variant="small" tone="muted">This imprint's own, outside steddle/foundry.</x-site.text>
                     @elseif ($entry['from'] === 'foundry')
                         <x-site.text variant="small" tone="muted">From steddle/foundry.</x-site.text>
                     @else

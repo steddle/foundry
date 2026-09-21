@@ -8,6 +8,9 @@ namespace Steddle\Foundry\Catalog;
  * renders itself, its own version of a component included. `ground` is the
  * band an example stands on, `page` or `ink`; `zoom` shrinks a fixed-size
  * render to the column; `code` alone prints the Blade without rendering it.
+ * An imprint's own components join them from the class `imprint.components`
+ * names, whose static `all()` answers entries of the same shape, marked
+ * `custom`.
  */
 final class Catalog
 {
@@ -15,6 +18,26 @@ final class Catalog
      * @return array<string, array{name: string, group: string, from: string, description: string, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}>
      */
     public static function all(): array
+    {
+        return [...self::shared(), ...self::custom()];
+    }
+
+    /**
+     * The imprint's own components, from the class `imprint.components` names.
+     *
+     * @return array<string, array{name: string, group: string, from: string, description: string, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}>
+     */
+    public static function custom(): array
+    {
+        $class = config('imprint.components');
+
+        return $class ? array_map(fn (array $entry): array => [...$entry, 'from' => 'custom'], $class::all()) : [];
+    }
+
+    /**
+     * @return array<string, array{name: string, group: string, from: string, description: string, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}>
+     */
+    private static function shared(): array
     {
         return [
             'container' => [
@@ -378,11 +401,12 @@ BLADE],
     }
 
     /**
+     * @param  array<string, array{group: string}>|null  $entries  every entry where null
      * @return array<string, list<string>> group => slugs, in index order
      */
-    public static function groups(): array
+    public static function groups(?array $entries = null): array
     {
-        return collect(self::all())->map(fn (array $entry, string $slug): array => [$entry['group'], $slug])
+        return collect($entries ?? self::all())->map(fn (array $entry, string $slug): array => [$entry['group'], $slug])
             ->groupBy(0)
             ->map(fn ($pairs) => $pairs->pluck(1)->all())
             ->all();
