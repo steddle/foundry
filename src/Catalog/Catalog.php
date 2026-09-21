@@ -64,7 +64,7 @@ final class Catalog
 
             $entries[$slug] = [
                 'name' => Str::ucfirst(str_replace(['-', '/'], [' ', ': '], Str::replaceLast('/index', '', $relative))),
-                'group' => str_contains($tag, '/') ? Str::ucfirst(str_replace('-', ' ', Str::before($tag, '/'))) : 'Custom',
+                'group' => str_contains(Str::replaceLast('/index', '', $relative), '/') ? Str::ucfirst(str_replace('-', ' ', Str::before($relative, '/'))) : 'Custom',
                 'from' => 'custom',
                 'tag' => $tag,
                 'description' => $description,
