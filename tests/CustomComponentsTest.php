@@ -76,6 +76,12 @@ test('a file the foundry keeps, or an entry its catalogue names, is no custom co
         ->not->toContain('section', 'lockup');
 });
 
+test('an opening comment is read only where it opens the component', function () {
+    File::put(resource_path('views/components/site/late.blade.php'), "@props(['a' => 1])\n\n<p>{{ \$a }}</p>\n{{-- Not the description. --}}");
+
+    expect(Catalog::custom()['late']['description'])->toBe('');
+});
+
 test('without component files of its own an imprint has no custom components', function () {
     File::deleteDirectory(resource_path('views/components'));
 

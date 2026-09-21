@@ -83,11 +83,12 @@ final class Catalog
     private static function read(string $source): array
     {
         // The comment may follow the component's @props and @use lines.
-        if (! preg_match('/^\s*(?:@(?:props|use)\(.*?\)[ \t]*\n\s*)*\{\{--(.*?)--\}\}/s', $source, $match)) {
+        // Balanced parentheses, so a directive never reads on into the component's body.
+        if (! preg_match('/^\s*(?:@(?:props|use)(\((?:[^()]++|(?1))*\))[ \t]*\n\s*)*\{\{--(.*?)--\}\}/s', $source, $match)) {
             return ['', []];
         }
 
-        $parts = preg_split('/^\s*@example\s+(.+)$/m', $match[1], -1, PREG_SPLIT_DELIM_CAPTURE);
+        $parts = preg_split('/^\s*@example\s+(.+)$/m', $match[2], -1, PREG_SPLIT_DELIM_CAPTURE);
         $description = trim(preg_replace('/\s+/', ' ', array_shift($parts)));
         $examples = [];
 
