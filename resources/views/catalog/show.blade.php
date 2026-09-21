@@ -1,11 +1,17 @@
 <x-layouts::site :title="$entry['name'].' | Components | '.config('imprint.name')" :description="$entry['description']">
-    <x-site.page-title :title="$entry['name'].'.'" :lead="$entry['description']">
+    <x-site.section>
         <x-site.document>
             <x-slot:aside>
                 <x-site.side-nav :groups="$groups" label="Components" />
             </x-slot:aside>
 
             <div class="flex flex-col gap-12">
+                {{-- The title and its lede open the column, so the index beside it starts under the bar. --}}
+                <div class="flex flex-col gap-4">
+                    <x-site.heading size="1" level="1">{{ $entry['name'] }}.</x-site.heading>
+                    <x-site.text variant="lede" class="max-w-[60ch]">{{ $entry['description'] }}</x-site.text>
+                </div>
+
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
                     <code class="font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums">x-site.{{ $slug }}</code>
                     @if ($own === 'copies')
@@ -24,5 +30,5 @@
                 @endforeach
             </div>
         </x-site.document>
-    </x-site.page-title>
+    </x-site.section>
 </x-layouts::site>
