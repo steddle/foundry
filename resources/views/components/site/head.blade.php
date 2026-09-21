@@ -8,7 +8,8 @@
     The page's head: its meta, its canonical address and, where the imprint
     speaks more than one language, its counterpart in each; its Open Graph
     image, from OG Kit where a key is set; the icons; the imprint's
-    stylesheet and script; and Visitors in production. The slot adds what is
+    stylesheet and script; and Plausible and Visitors in production where the
+    imprint names them. The slot adds what is
     the page's own.
 --}}
 @php($canonical = request()->fullUrlWithoutQuery(['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'ref']))
@@ -62,6 +63,9 @@
 {{ $slot }}
 
 @production
+    @if (config('imprint.plausible'))
+        <script defer data-domain="{{ config('imprint.plausible') }}" src="https://plausible.io/js/plausible.js"></script>
+    @endif
     @if (config('imprint.visitors'))
         <script src="https://cdn.visitors.now/v.js" data-token="{{ config('imprint.visitors') }}"></script>
 
