@@ -58,7 +58,7 @@ is its own.
   table of contents is `resources/content/[{locale}/]docs.php` and
   `legal.php`, each entry a view under `docs.articles` or `legal.documents`,
   and an entry is published where its view exists. The words around them,
-  title, lede, closing, draft and contact, are `imprint.docs` and
+  title, lede, closing, the draft notice and contact, are `imprint.docs` and
   `imprint.legal`; the list on a page is its own `<h2>`s, read by `Outline`.
   Long-form text is the `longform` utility in `foundry.css`.
 - **Markdown for agents**: `Steddle\Foundry\Markdown\*` extends

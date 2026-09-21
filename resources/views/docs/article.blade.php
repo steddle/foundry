@@ -34,7 +34,7 @@
             <x-site.breadcrumb :items="[$docs => localized_route('docs.index'), $topic['title'] => localized_route('docs.category.'.$topicSlug)]" />
         </x-slot:eyebrow>
         @if ($article['draft'] ?? false)
-            <x-site.badge tone="warning">{{ __('foundry::docs.draft') }}</x-site.badge>
+            <x-site.badge tone="warning">{{ Content::copy('docs', 'draft') ?? __('foundry::docs.draft') }}</x-site.badge>
         @endif
     </x-site.hero>
 
