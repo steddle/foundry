@@ -1,7 +1,6 @@
 <?php
 
 use Steddle\Foundry\Contracts\Sitemap;
-use Steddle\Foundry\FoundryServiceProvider;
 
 final class TestPages implements Sitemap
 {
@@ -23,7 +22,7 @@ beforeEach(function () {
     config()->set('imprint.name', 'Imprint');
     config()->set('imprint.sitemap', TestPages::class);
     config()->set('markdown-response.cache.store', 'array');
-    (new FoundryServiceProvider(app()))->boot();
+    require __DIR__.'/../routes/foundry.php';
     app('router')->getRoutes()->refreshNameLookups();
 });
 

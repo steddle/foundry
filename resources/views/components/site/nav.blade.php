@@ -19,7 +19,7 @@
     </div>
 --}}
 @php
-    $homeLabel ??= config('imprint.name').', home';
+    $homeLabel ??= __('foundry::nav.home', ['name' => config('imprint.name')]);
     $lab = request()->routeIs('foundry.lab', 'foundry.design', 'foundry.components');
 
     if (! $lab && Route::has('foundry.lab')) {

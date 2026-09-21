@@ -48,6 +48,6 @@ final class UpdateLocale
             return null;
         }
 
-        return str_starts_with((string) $route->getName(), "{$locale}.") ? $asked->getRequestUri() : null;
+        return str_starts_with((string) $route->getName(), "{$locale}.") ? '/'.ltrim($asked->getRequestUri(), '/') : null;
     }
 }

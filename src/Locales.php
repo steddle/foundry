@@ -77,7 +77,8 @@ final class Locales
 
     /**
      * The request's page in another language, with its query, or null where
-     * the request is for none of the site's pages.
+     * the request is for none of the site's pages or the page is not published
+     * in that language.
      */
     public static function counterpart(Request $request, string $locale, bool $absolute = true): ?string
     {
@@ -93,10 +94,15 @@ final class Locales
             return null;
         }
 
-        // `Route::view` adds view and status parameters that do not belong in the URL.
+        // A page published in one language has no counterpart in the other.
+        if (! app('router')->has("{$locale}.{$page}")) {
+            return null;
+        }
+
+        // `Route::view` adds view and status parameters that do not belong in the URL, and a query never overrides the route's own.
         $parameters = Arr::only($route->parameters(), $route->parameterNames());
 
-        return route("{$locale}.{$page}", [...$parameters, ...$request->query()], $absolute);
+        return route("{$locale}.{$page}", [...$request->query(), ...$parameters], $absolute);
     }
 
     /** The locale `Route::localized()` gave the route's group, which a route carries in its action. */

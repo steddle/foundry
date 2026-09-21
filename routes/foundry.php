@@ -47,7 +47,7 @@ if (! app()->isProduction()) {
             Route::view('design', 'foundry::design')->name('foundry.design');
 
             Route::get('components/{component?}', ShowComponent::class)
-                ->where('component', '[a-z-]+')
+                ->where('component', '[a-z0-9_-]+')
                 ->name('foundry.components');
         });
 }

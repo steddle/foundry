@@ -32,7 +32,7 @@ class FollowVisitorLanguage
         $counterpart = $wanted === Locales::root() ? null : Locales::counterpart($request, $wanted);
 
         $response = $counterpart === null ? $next($request) : redirect()->to($counterpart);
-        $response->headers->set('Vary', 'Accept-Language, Cookie');
+        $response->setVary(['Accept-Language', 'Cookie'], false);
 
         return $response;
     }

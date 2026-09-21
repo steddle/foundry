@@ -43,11 +43,12 @@
 
         <header class="ink">
             <x-site.container class="flex items-center justify-between gap-6 py-5">
-                <a href="{{ $home }}" aria-label="{{ config('imprint.name') }}, home" class="shrink-0 text-zinc-50">
+                <a href="{{ $home }}" aria-label="{{ __('foundry::nav.home', ['name' => config('imprint.name')]) }}" class="shrink-0 text-zinc-50">
                     <x-site.lockup class="h-6" />
                 </a>
-                @if (\Steddle\Foundry\Locales::multilingual())
-                    <x-site.locale-switch />
+                {{-- Not on a card: a sign-in or a consent has no counterpart, and switching would drop the request it holds. --}}
+                @if (\Steddle\Foundry\Locales::multilingual() && ! $card)
+                    <x-site.locale-switch :aria-label="__('foundry::nav.language')" />
                 @endif
             </x-site.container>
         </header>

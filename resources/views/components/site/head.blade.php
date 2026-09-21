@@ -13,7 +13,9 @@
     the page's own.
 --}}
 @php($canonical = request()->fullUrlWithoutQuery(['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'ref']))
-@php($ogImage = config('services.ogkit.key') ? 'https://ogkit.dev/img/'.config('services.ogkit.key').'.jpeg?url='.urlencode($canonical) : asset('og-image.png'))
+{{-- A page kept out of search, a sign-in or a signing link, names no address of its own: its query can hold a token. --}}
+@php($indexed = request()->route() && ! in_array(\Steddle\Foundry\Http\Middleware\Noindex::class, request()->route()->gatherMiddleware(), true))
+@php($ogImage = config('services.ogkit.key') && $indexed ? 'https://ogkit.dev/img/'.config('services.ogkit.key').'.jpeg?url='.urlencode($canonical) : asset('og-image.png'))
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,8 +25,8 @@
 {{-- Kept out of the markdown, which opens on the page's own heading: the title repeats it with the site's name. --}}
 <title data-markdown-skip>{{ $title }}</title>
 
-{{-- Only on a page something routed: an error nobody routed is no address to point a search engine at, and has no counterpart. --}}
-@if (request()->route())
+{{-- Only on a page search may read: an error nobody routed and a page kept out of search are no address to point a search engine at. --}}
+@if ($indexed)
     <link rel="canonical" href="{{ $canonical }}" />
 @endif
 @if (Locales::multilingual() && Locales::counterpart(request(), Locales::root()) !== null)
@@ -43,7 +45,9 @@
 <meta property="og:type" content="website" />
 <meta property="og:title" content="{{ $title }}" />
 <meta property="og:description" content="{{ $description }}" />
-<meta property="og:url" content="{{ $canonical }}" />
+@if ($indexed)
+    <meta property="og:url" content="{{ $canonical }}" />
+@endif
 <meta property="og:locale" content="{{ Locales::regional(app()->getLocale()) }}" />
 @foreach (array_diff(Locales::all(), [app()->getLocale()]) as $locale)
     <meta property="og:locale:alternate" content="{{ Locales::regional($locale) }}" />
@@ -60,7 +64,7 @@
 
 <x-site.favicons />
 
-@vite([config('imprint.stylesheet'), config('imprint.script')])
+@vite(array_filter([config('imprint.stylesheet'), config('imprint.script')]))
 
 {{ $slot }}
 

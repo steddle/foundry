@@ -17,6 +17,9 @@ final class RootLanguagePrefix
     {
         $query = $request->getQueryString();
 
-        return redirect('/'.ltrim($path, "/\\ \t\n\r\0\x0B").($query === null ? '' : "?{$query}"), 301);
+        // A control character anywhere would end the Location header early.
+        $path = preg_replace('/[\x00-\x1F\x7F]/', '', $path);
+
+        return redirect('/'.ltrim($path, '/\\ ').($query === null ? '' : "?{$query}"), 301);
     }
 }

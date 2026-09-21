@@ -16,7 +16,7 @@
     <x-site.footer />
 --}}
 @php
-    $homeLabel ??= config('imprint.name').', home';
+    $homeLabel ??= __('foundry::nav.home', ['name' => config('imprint.name')]);
     $endorsed = config('imprint.endorsed', true);
 @endphp
 
