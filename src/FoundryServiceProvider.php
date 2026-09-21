@@ -25,6 +25,10 @@ class FoundryServiceProvider extends ServiceProvider
     {
         Blade::anonymousComponentPath(__DIR__.'/../resources/views/components');
 
+        // The same components under x-foundry::, so a site's own version of one
+        // can wrap the foundry's instead of copying it.
+        Blade::anonymousComponentPath(__DIR__.'/../resources/views/components', 'foundry');
+
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'foundry');
 
         if ($this->app->runningInConsole()) {

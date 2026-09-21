@@ -13,7 +13,8 @@
     is fluid and would not mean the same thing there, so every size here is a
     literal pixel value instead of the site's `text-heading-*` tokens.
     `marked` is the one phrase of the heading that carries the marker.
-    `width` and `height` set the canvas, for a format of another size.
+    `width` and `height` set the canvas, for a format of another size, and a
+    `footer` slot sets a row below the lede.
 --}}
 <div class="grain ink relative flex flex-col justify-between overflow-hidden bg-inverse p-[64px] font-sans" style="width: {{ $width }}px; height: {{ $height }}px">
     <x-site.mark class="absolute -right-[60px] -bottom-[70px] size-[400px] text-strong opacity-[0.06]" />
@@ -31,4 +32,8 @@
             <p class="mt-[24px] max-w-[780px] text-[26px] leading-[1.5] text-body">{{ $lede }}</p>
         @endif
     </div>
+
+    @isset($footer)
+        <div class="relative">{{ $footer }}</div>
+    @endisset
 </div>

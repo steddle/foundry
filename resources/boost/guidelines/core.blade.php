@@ -29,7 +29,8 @@ is its own.
   `x-site.marker`, and the tokens `bg-page`, `bg-inverse`, `text-strong`,
   `text-body`, `text-accent` and the `ink` variant. A site overrides any
   foundry component by keeping a file of the same name under
-  `resources/views/components`.
+  `resources/views/components`, and can wrap the foundry's version inside it
+  as `x-foundry::site.<name>` rather than copy it.
 
 ## Design language
 
