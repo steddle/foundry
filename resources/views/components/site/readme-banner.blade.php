@@ -19,7 +19,7 @@
     <div class="relative mt-[88px] flex max-w-[900px] flex-col">
         <p class="text-pretty font-serif text-[64px] leading-[1.08] font-semibold tracking-[-0.03em] text-strong"><x-site.marked :text="$heading" :marked="$marked" /></p>
         @if ($lede)
-            <p class="mt-[24px] max-w-[700px] text-[20px] leading-[1.5] text-body">{{ $lede }}</p>
+            <p class="mt-[24px] max-w-[700px] text-pretty text-[20px] leading-[1.5] text-body">{{ $lede }}</p>
         @endif
     </div>
 </div>
