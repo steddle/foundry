@@ -22,6 +22,8 @@ final readonly class BrandAsset
         public string $use,
         public string $component,
         public array $data,
+        public string $group = 'social',
+        public bool $transparent = false,
     ) {}
 
     public function markup(): string
