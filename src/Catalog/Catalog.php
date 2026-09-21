@@ -29,7 +29,9 @@ final class Catalog
      * resources/views/components/site that neither the foundry keeps nor its
      * catalogue names. The comment a file opens on is its description, and
      * each `@example Title` line in it starts a live example, its Blade the
-     * lines after it. A component with none shows its tag alone.
+     * lines after it. A component with none shows its tag alone. A folder with
+     * an index is one component and its other files are its parts; a folder
+     * without one is a group.
      *
      * @return array<string, array{name: string, group: string, from: string, tag: string, description: string, examples: list<array{title: string, blade: string, code?: bool}>}>
      */
@@ -50,7 +52,10 @@ final class Catalog
             $tag = Str::replaceLast('/index', '', $relative);
             $slug = str_replace(['/', '.'], '-', $tag);
 
-            if (is_file("{$foundry}/{$relative}.blade.php") || isset(self::shared()[$slug])) {
+            // A part of a component that has an index, as x-site.lifecycle.step is of x-site.lifecycle, is shown with it.
+            $part = ! str_ends_with($relative, '/index') && str_contains($relative, '/') && is_file($root.'/'.Str::beforeLast($relative, '/').'/index.blade.php');
+
+            if ($part || is_file("{$foundry}/{$relative}.blade.php") || isset(self::shared()[$slug])) {
                 continue;
             }
 
@@ -59,7 +64,7 @@ final class Catalog
 
             $entries[$slug] = [
                 'name' => Str::ucfirst(str_replace(['-', '/'], [' ', ': '], Str::replaceLast('/index', '', $relative))),
-                'group' => str_contains($relative, '/') ? Str::ucfirst(str_replace('-', ' ', Str::before($relative, '/'))) : 'Custom',
+                'group' => str_contains($tag, '/') ? Str::ucfirst(str_replace('-', ' ', Str::before($tag, '/'))) : 'Custom',
                 'from' => 'custom',
                 'tag' => $tag,
                 'description' => $description,

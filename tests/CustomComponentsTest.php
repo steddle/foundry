@@ -59,6 +59,15 @@ test('a component without an example shows its tag, grouped by its folder', func
         ->assertSee('aria-label="Signing"', false);
 });
 
+test('a folder with an index is one component, its other files its parts', function () {
+    File::ensureDirectoryExists(resource_path('views/components/site/lifecycle'));
+    File::put(resource_path('views/components/site/lifecycle/index.blade.php'), '<ol>{{ $slot }}</ol>');
+    File::put(resource_path('views/components/site/lifecycle/step.blade.php'), '<li>{{ $slot }}</li>');
+
+    expect(Catalog::custom())->toHaveKey('lifecycle')->not->toHaveKey('lifecycle-step')
+        ->and(Catalog::custom()['lifecycle']['group'])->toBe('Custom');
+});
+
 test('a file the foundry keeps, or an entry its catalogue names, is no custom component', function () {
     File::put(resource_path('views/components/site/section.blade.php'), '<x-foundry::site.section>{{ $slot }}</x-foundry::site.section>');
     File::put(resource_path('views/components/site/lockup.blade.php'), '<svg></svg>');
