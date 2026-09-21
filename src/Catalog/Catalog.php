@@ -200,7 +200,7 @@ BLADE],
             'button' => [
                 'name' => 'Button',
                 'group' => 'Actions',
-                'from' => 'imprint',
+                'from' => 'foundry',
                 'description' => 'One primary per viewport. Secondary on a card, ghost on ink.',
                 'examples' => [
                     ['title' => 'Primary and secondary', 'blade' => <<<'BLADE'

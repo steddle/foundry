@@ -22,7 +22,7 @@ is its own.
   element's own `dark:` fire, so a pair on it would always read its dark half.
   Tailwind's colour names resolve to the nearest ramp for Flux's `color`
   props, as an interim until no view passes one.
-- **Components**: `x-site.container`, `x-site.section`,
+- **Components**: `x-site.button`, over `flux:button` with `primary`, `secondary` and `ghost`, `x-site.container`, `x-site.section`,
   `x-site.numbered-section`, `x-site.breadcrumb` and `x-site.copy-menu`
   resolve from the foundry. The copy menu reads its words from
   `foundry::agents`, in English and Dutch.
@@ -86,7 +86,7 @@ is its own.
   behind `pages.middleware` and, outside local, `pages.guard` from
   `config/imprint.php`. `/labs` lists the design page, the components and
   the experiments `imprint.labs` names, slug => [title, summary], each the
-  imprint's own view `labs.{slug}`; `/design` is the imprint's view `design`.
+  imprint's own view `labs.{slug}`; `/design` is the foundry's own page, the same sections in the same order on every imprint: brand, family, colour, type, space, scenes, icons, social images, buttons, forms and feedback. What is the imprint's own comes from `config/imprint.php` under `design`: the accent's name, the rules for the mark, the ramps' names, a sample per type step, the marked phrase, each scene's place and any face of its own under `fonts`, as Blade. A component of its own belongs on `/components`, never on `/design`.
   On those pages the nav is the lab's bar on bone, and elsewhere the links
   end on Lab. A page with no hero opens on `x-site.page-title`.
 - **`/components`** shows every component an imprint renders, from the

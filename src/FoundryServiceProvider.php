@@ -53,7 +53,7 @@ class FoundryServiceProvider extends ServiceProvider
                         ->where('page', '[a-z0-9-]+')
                         ->name('foundry.lab');
 
-                    Route::view('design', 'design')->name('foundry.design');
+                    Route::view('design', 'foundry::design')->name('foundry.design');
 
                     Route::get('components/{component?}', ShowComponent::class)
                         ->where('component', '[a-z-]+')
