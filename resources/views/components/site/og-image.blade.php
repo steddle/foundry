@@ -1,0 +1,34 @@
+@props([
+    'heading',
+    'lede' => null,
+    'eyebrow' => null,
+    'marked' => null,
+    'width' => 1200,
+    'height' => 630,
+])
+
+{{--
+    OG Kit fetches the page's own URL and renders whatever sits in
+    `<template data-og-template>`, at a fixed 1200×630: the page's type scale
+    is fluid and would not mean the same thing there, so every size here is a
+    literal pixel value instead of the site's `text-heading-*` tokens.
+    `marked` is the one phrase of the heading that carries the marker.
+    `width` and `height` set the canvas, for a format of another size.
+--}}
+<div class="grain ink relative flex flex-col justify-between overflow-hidden bg-inverse p-[64px] font-sans" style="width: {{ $width }}px; height: {{ $height }}px">
+    <x-site.mark class="absolute -right-[60px] -bottom-[70px] size-[400px] text-strong opacity-[0.06]" />
+
+    <div class="relative flex items-center justify-between">
+        <x-site.lockup class="h-[40px] text-[44px] text-strong" />
+        @if ($eyebrow)
+            <p class="text-[15px] font-semibold text-accent">{{ $eyebrow }}</p>
+        @endif
+    </div>
+
+    <div class="relative flex flex-col">
+        <p class="max-w-[940px] text-pretty font-serif text-[72px] leading-[1.04] font-semibold tracking-[-0.03em] text-strong"><x-site.marked :text="$heading" :marked="$marked" /></p>
+        @if ($lede)
+            <p class="mt-[24px] max-w-[780px] text-[26px] leading-[1.5] text-body">{{ $lede }}</p>
+        @endif
+    </div>
+</div>

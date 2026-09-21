@@ -3,8 +3,12 @@
 namespace Steddle\Foundry;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Spatie\MarkdownResponse\Middleware\RewriteMarkdownUrls as BaseRewriteMarkdownUrls;
+use Steddle\Foundry\Console\RenderBrandAssets;
+use Steddle\Foundry\Http\Controllers\RenderBrandAsset;
+use Steddle\Foundry\Http\Middleware\Noindex;
 use Steddle\Foundry\Markdown\LeagueDriverWithTables;
 use Steddle\Foundry\Markdown\RewriteMarkdownUrls;
 
@@ -20,5 +24,19 @@ class FoundryServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Blade::anonymousComponentPath(__DIR__.'/../resources/views/components');
+
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'foundry');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([RenderBrandAssets::class]);
+        }
+
+        // The page Chrome renders a brand asset from. Off a public deployment's
+        // route list altogether, as the design page is.
+        if (! $this->app->isProduction()) {
+            Route::get('foundry/brand/{asset}', RenderBrandAsset::class)
+                ->middleware(Noindex::class)
+                ->name('foundry.brand');
+        }
     }
 }

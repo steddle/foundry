@@ -16,6 +16,20 @@ is its own.
   the detector and `RemoveMarkdownSkipPreprocessor`.
 - **`Steddle\Foundry\Http\Middleware\Noindex`** sets `X-Robots-Tag: noindex`,
   also on the redirect or 403 an `auth` or `can` guard throws.
+- **Grain**: the `grain` utility in `foundry.css`, on ink bands only.
+- **Published images**: `x-site.og-image`, `x-site.social-preview` and
+  `x-site.readme-banner` are rendered from the imprint's
+  `config/imprint.php` (`name`, `stylesheet`, and `og` and `banner` copy:
+  `heading`, `marked`, `lede`, `eyebrow`) into `public/og-image.png` and
+  `public/brand/social/`. `php artisan foundry:assets --url=https://<site>.test`
+  renders them through headless Chrome; `foundry:assets --check` fails where
+  the copy or markup moved since, and every imprint's suite runs it. Change the
+  copy in `config/imprint.php`, never the PNG.
+- **What an imprint supplies**: `x-site.lockup`, `x-site.mark` and
+  `x-site.marker`, and the tokens `bg-page`, `bg-inverse`, `text-strong`,
+  `text-body`, `text-accent` and the `ink` variant. A site overrides any
+  foundry component by keeping a file of the same name under
+  `resources/views/components`.
 
 ## Design language
 
