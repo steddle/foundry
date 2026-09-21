@@ -51,6 +51,14 @@ is its own.
   `resources/views/components`, and can wrap the foundry's version inside it
   as `x-foundry::site.<name>` rather than copy it.
 
+- **`/components`** shows every component an imprint renders, from the
+  catalogue in `Steddle\Foundry\Catalog\Catalog`: each example rendered
+  live on its ground and printed as Blade. It marks a foundry component the
+  imprint keeps a copy of, in place of wrapping it, which is the thing to
+  fix. Outside production only; `config/imprint.php` names `pages.middleware`
+  for it and `pages.guard` for outside local. Add a component to the
+  catalogue when it enters the foundry, and every imprint's suite renders it.
+
 ## Design language
 
 These rules hold on every page of every imprint, `/design` and `/labs`

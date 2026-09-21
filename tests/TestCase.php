@@ -20,5 +20,6 @@ abstract class TestCase extends Orchestra
         $app['config']->set('markdown-response.detection.detector', DetectsMarkdownRequest::class);
         $app['config']->set('markdown-response.preprocessors', [RemoveMarkdownSkipPreprocessor::class]);
         $app['config']->set('markdown-response.cache.store', 'array');
+        $app['config']->set('app.key', 'base64:'.base64_encode(str_repeat('k', 32)));
     }
 }

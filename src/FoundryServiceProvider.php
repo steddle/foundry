@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Spatie\MarkdownResponse\Middleware\RewriteMarkdownUrls as BaseRewriteMarkdownUrls;
 use Steddle\Foundry\Console\RenderBrandAssets;
 use Steddle\Foundry\Http\Controllers\RenderBrandAsset;
+use Steddle\Foundry\Http\Controllers\ShowComponent;
 use Steddle\Foundry\Http\Middleware\Noindex;
 use Steddle\Foundry\Markdown\LeagueDriverWithTables;
 use Steddle\Foundry\Markdown\RewriteMarkdownUrls;
@@ -41,6 +42,15 @@ class FoundryServiceProvider extends ServiceProvider
             Route::get('foundry/brand/{asset}', RenderBrandAsset::class)
                 ->middleware(Noindex::class)
                 ->name('foundry.brand');
+
+            // The imprint's own pages about itself, open locally and behind
+            // what config/imprint.php names as `pages.guard` elsewhere.
+            Route::middleware(['web', Noindex::class, ...config('imprint.pages.middleware', []), ...($this->app->isLocal() ? [] : config('imprint.pages.guard', []))])
+                ->group(function (): void {
+                    Route::get('components/{component?}', ShowComponent::class)
+                        ->where('component', '[a-z-]+')
+                        ->name('foundry.components');
+                });
         }
     }
 }
