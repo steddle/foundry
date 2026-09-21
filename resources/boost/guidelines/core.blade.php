@@ -89,8 +89,8 @@ is its own.
   `mcp_icons` names them. `x-site.favicons` links them in a head, with the
   browser chrome in those two colours. `x-site.brand-assets` shows either set
   on `/design`, `group="social"` or `group="icon"`.
-- **What an imprint supplies**: `x-site.lockup`, `x-site.mark` and
-  `x-site.marker`, and the `zinc` and `primary` ramps. A site overrides any
+- **What an imprint supplies**: `x-site.lockup` and `x-site.mark`, and the
+  `zinc` and `primary` ramps. A site overrides any
   foundry component by keeping a file of the same name under
   `resources/views/components`, and can wrap the foundry's version inside it
   as `x-foundry::site.<name>` rather than copy it.

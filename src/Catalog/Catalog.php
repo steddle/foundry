@@ -287,7 +287,7 @@ BLADE],
             'marker' => [
                 'name' => 'Marker',
                 'group' => 'Type',
-                'from' => 'imprint',
+                'from' => 'foundry',
                 'description' => 'Lichen behind one phrase of the hero headline. One per viewport, never on body copy or anything clickable.',
                 'examples' => [
                     ['title' => 'On a headline, on ink', 'ground' => 'ink', 'blade' => <<<'BLADE'
