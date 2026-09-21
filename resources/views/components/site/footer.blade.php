@@ -3,11 +3,11 @@
     'links' => [],
     'home' => '/',
     'homeLabel' => null,
-    'endorsed' => true,
 ])
 
 @php
     $homeLabel ??= config('imprint.name').', home';
+    $endorsed = config('imprint.endorsed', true);
 @endphp
 
 {{--
@@ -18,7 +18,7 @@
     the brightest pixel behind each word, over all three imprints' scenes at
     1440 and 390 wide: every line of the footer at 4.6:1 or more. `items` replaces the list
     `links` would make. Below the rule, the imprint's disclaimer and its
-    copyright, and the house that serves it where the lockup is endorsed.
+    copyright, and the house that serves it where the imprint is endorsed.
 --}}
 <footer class="relative isolate overflow-hidden bg-zinc-900 ink">
     <x-site.scene :name="$scene" :scrim="$slot->hasActualContent()
@@ -48,20 +48,7 @@
                     @endisset
                 </ul>
             </div>
-            <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3 border-t border-zinc-50/13 pt-6">
-                <x-site.text variant="small" tone="muted">{{ __(config('imprint.disclaimer')) }}</x-site.text>
-                <x-site.text variant="small" tone="muted" class="flex flex-wrap items-baseline gap-x-2 tabular-nums">
-                    <span>© {{ now()->year }} {{ config('imprint.name') }}</span>
-                    @if ($endorsed)
-                        <span aria-hidden="true">|</span>
-                        <span>
-                            {{ __('foundry::footer.service_by') }}
-                            {{-- Steddle's name in its own face, Spectral 700. --}}
-                            <a href="https://steddle.com" target="_blank" rel="noopener" class="font-serif font-bold tracking-[-0.03em] text-zinc-950 dark:text-zinc-50 hover:underline">Steddle</a>
-                        </span>
-                    @endif
-                </x-site.text>
-            </div>
+            <x-site.service-line class="border-t border-zinc-50/13 pt-6" />
         </x-site.container>
     </div>
 </footer>

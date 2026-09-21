@@ -45,10 +45,11 @@ test('the footer lays a flat scrim where no closing section is set, and the meas
         ->and($closed)->toContain('class="bg-[linear-gradient(')->toContain('<section>Closing</section>')->toContain('<div class="border-t border-zinc-50/13"></div>');
 });
 
-test('the footer lists its links, or the items a site sets, above the disclaimer and the copyright', function () {
+test('the footer lists its links, or the items a site sets, above the service line, endorsed unless the imprint says otherwise', function () {
     config()->set('imprint.disclaimer', 'Imprint is not a law firm.');
     $html = Blade::render('<x-site.footer scene="p" :links="[\'Legal\' => \'/legal\']" />', deleteCachedView: true);
-    $items = Blade::render('<x-site.footer scene="p" :endorsed="false"><x-slot:items><li>Services</li></x-slot:items></x-site.footer>', deleteCachedView: true);
+    config()->set('imprint.endorsed', false);
+    $items = Blade::render('<x-site.footer scene="p"><x-slot:items><li>Services</li></x-slot:items></x-site.footer>', deleteCachedView: true);
 
     expect($html)->toContain('<a href="/legal" class="hover:text-zinc-950 dark:hover:text-zinc-50">Legal</a>')
         ->toContain('Imprint is not a law firm.')

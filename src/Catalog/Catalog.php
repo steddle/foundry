@@ -429,6 +429,31 @@ BLADE],
 BLADE],
                 ],
             ],
+            'service-line' => [
+                'name' => 'Service line',
+                'group' => 'Bands',
+                'from' => 'foundry',
+                'description' => 'The line every page closes on: the disclaimer, the copyright, and the house that serves the imprint where it is endorsed. The footer and the ink pages both end on it.',
+                'examples' => [
+                    ['title' => 'On ink', 'ground' => 'ink', 'blade' => <<<'BLADE'
+<x-site.service-line />
+BLADE],
+                ],
+            ],
+            'ink-page' => [
+                'name' => 'Ink page',
+                'group' => 'Bands',
+                'from' => 'foundry',
+                'description' => 'A page of its own on ink, for an error or for signing in: the lockup, the slot, and the service line, kept out of search. A scene lays a photo under it; a card sets the slot in the middle.',
+                'examples' => [
+                    ['title' => 'An error page', 'code' => true, 'blade' => <<<'BLADE'
+<x-site.ink-page title="Page not found" description="Nothing answers at this address." scene="error">
+    <x-site.text variant="label" tone="accent">Error 404</x-site.text>
+    <x-site.heading size="1" level="1">Page not found</x-site.heading>
+</x-site.ink-page>
+BLADE],
+                ],
+            ],
             'footer' => [
                 'name' => 'Footer',
                 'group' => 'Bands',

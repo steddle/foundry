@@ -40,6 +40,10 @@ is its own.
   ink band further down a page. Both draw the scrim `x-site.scene` holds for
   `start` or `center`, measured over every imprint's scenes; the footer keeps
   its own. `x-site.actions` is the row of buttons a band ends on.
+  `x-site.ink-page` is a page of its own on ink, an error or a sign-in, with
+  `scene` or `card`; it and the footer close on `x-site.service-line`, the
+  disclaimer and the copyright, with 'A service by Steddle' where
+  `imprint.endorsed` holds, true unless the imprint is Steddle itself.
   `x-site.closing` is the page's last word in the footer's slot: `title`,
   `lead` and `align`, with the actions as its slot. A scene
   is framed once, in `config/imprint.php` under `scenes`, name => its
