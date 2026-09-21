@@ -5,6 +5,13 @@
     covers, then its first links, label => href. `more` labels a last link to
     the topic itself. Its three rows are the grid's own, so the rule above the
     links lines up across a row whatever each description's length.
+
+    @group Layout
+
+    @example In a grid of one
+    <x-site.tile-grid :count="1">
+        <x-site.topic icon="rocket-launch" eyebrow="2 articles" title="Getting started" href="#" :links="['What it is' => '#', 'Install' => '#']">What it answers, and the ways to ask it.</x-site.topic>
+    </x-site.tile-grid>
 --}}
 <div {{ $attributes->class('row-span-3 grid grid-rows-subgrid gap-5 bg-zinc-25 p-6 sm:p-8 dark:bg-zinc-800') }}>
     <p class="flex items-center gap-2 text-label text-zinc-600 dark:text-zinc-400">

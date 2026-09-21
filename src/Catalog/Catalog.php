@@ -4,6 +4,7 @@ namespace Steddle\Foundry\Catalog;
 
 use Composer\InstalledVersions;
 use Illuminate\Support\Str;
+use LogicException;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -75,8 +76,7 @@ final class Catalog
     /**
      * The components under a directory. A folder with an index is one
      * component and its other files are its parts; a folder without one is a
-     * group of its own. The foundry lists a file only where it names its
-     * `@group`, so a part-only file such as `marked` stays out.
+     * group of its own.
      *
      * @return array<string, array{name: string, group: string, from: string, tag: string, file: string, description: string, examples: list<array<string, mixed>>}>
      */
@@ -98,8 +98,9 @@ final class Catalog
 
             ['description' => $description, 'group' => $group, 'examples' => $examples] = self::comment($file->getContents());
 
-            if ($from === 'foundry' && $group === null) {
-                continue;
+            // By the foundry's own convention every component names its group, so one that does not failed to parse.
+            if ($from === 'foundry' && ! in_array($group, self::GROUPS, true)) {
+                throw new LogicException("The foundry's {$relative} names no group of the index, or one it does not have.");
             }
 
             $entries[str_replace(['/', '.'], '-', $path)] = [

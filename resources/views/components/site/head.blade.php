@@ -9,8 +9,13 @@
     speaks more than one language, its counterpart in each; its Open Graph
     image, from OG Kit where a key is set; the icons; the imprint's
     stylesheet and script; and Plausible and Visitors in production where the
-    imprint names them. The slot adds what is
-    the page's own.
+    imprint names them. The slot adds what is the page's own.
+
+    @group Bands
+
+    @example In a page's head
+    @code
+    <x-site.head :$title :$description />
 --}}
 @php($canonical = request()->fullUrlWithoutQuery(['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'ref']))
 {{-- A page kept out of search, a sign-in or a signing link, names no address of its own: its query can hold a token. --}}

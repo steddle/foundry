@@ -108,6 +108,8 @@ final class Locales
     /** The locale `Route::localized()` gave the route's group, which a route carries in its action. */
     private static function stated(Route $route): ?string
     {
-        return $route->getAction('locale');
+        $locale = $route->getAction('locale');
+
+        return is_string($locale) ? $locale : null;
     }
 }
