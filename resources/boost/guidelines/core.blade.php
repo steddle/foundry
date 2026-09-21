@@ -26,9 +26,11 @@ is its own.
   `x-site.numbered-section` resolve from the foundry.
 - **Header and footer**: `x-foundry::site.nav` takes the links, the home
   address, an `actions` slot and whether a phone folds them into a menu;
-  `x-foundry::site.footer` takes the scene, lays one scrim over it, takes the links or an
-  `items` slot, whether the lockup is endorsed, and a `colophon` slot. A
-  site's own `x-site.nav` and `x-site.footer` wrap them with its content.
+  `x-foundry::site.footer` takes the scene, the links or an `items` slot and
+  whether the lockup is endorsed, lays one scrim over the scene, rules off a
+  closing section set in its slot, and closes on the colophon: the disclaimer
+  from `config/imprint.php` and the copyright. A site's own `x-site.nav` and
+  `x-site.footer` wrap them with its content.
 - **Script**: a foundry component that holds state uses Alpine, which
   Livewire loads on the page, and `[x-cloak]` holds it back until Alpine has
   read it. A page with such a component loads Livewire's scripts; what only

@@ -41,7 +41,7 @@ test('the footer lays a flat scrim where no closing section is set, and the meas
     $bare = Blade::render('<x-site.footer scene="stones" />', deleteCachedView: true);
     $closed = Blade::render('<x-site.footer scene="stones"><section>Closing</section></x-site.footer>', deleteCachedView: true);
 
-    expect($bare)->toContain('class="bg-zinc-900/88"')->toContain('data-scene="stones"')->not->toContain('<div class="border-t border-zinc-50/13"></div>')
+    expect($bare)->toContain('class="bg-zinc-900/90"')->toContain('data-scene="stones"')->not->toContain('<div class="border-t border-zinc-50/13"></div>')
         ->and($closed)->toContain('class="bg-[linear-gradient(')->toContain('<section>Closing</section>')->toContain('<div class="border-t border-zinc-50/13"></div>');
 });
 
