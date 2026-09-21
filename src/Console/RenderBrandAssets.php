@@ -29,7 +29,8 @@ final class RenderBrandAssets extends Command
 
     private function render(): int
     {
-        if (! is_file(base_path('node_modules/playwright/package.json'))) {
+        // A site's node_modules, or the foundry's own where the workbench renders Foundry's images.
+        if (! is_file(base_path('node_modules/playwright/package.json')) && ! is_file(__DIR__.'/../../node_modules/playwright/package.json')) {
             $this->error('Playwright renders the images: npm install --save-dev playwright && npx playwright install chromium');
 
             return self::FAILURE;

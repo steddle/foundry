@@ -1,0 +1,13 @@
+laravel: '@testbench'
+
+providers:
+  - Workbench\App\Providers\WorkbenchServiceProvider
+
+env:
+  - APP_ENV=local
+  - APP_KEY=base64:a2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2s=
+
+workbench:
+  sync:
+    - from: workbench/public/build
+      to: public/build

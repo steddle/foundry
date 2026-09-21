@@ -1,0 +1,34 @@
+@import 'tailwindcss';
+@import '../../../vendor/livewire/flux/dist/flux.css';
+@import '../../../resources/css/foundry.css';
+
+@source '../views';
+
+@theme static {
+    /* Steddle's stone: Foundry takes the house's ramps. */
+    --color-zinc-25: #f7f8f3;
+    --color-zinc-50: #f1f2ea;
+    --color-zinc-100: #e6e8de;
+    --color-zinc-200: #d3d7cc;
+    --color-zinc-300: #b5bbb0;
+    --color-zinc-400: #929a91;
+    --color-zinc-500: #6e7873;
+    --color-zinc-600: #525d58;
+    --color-zinc-700: #3a4741;
+    --color-zinc-800: #21322b;
+    --color-zinc-900: #0b231c;
+    --color-zinc-950: #061711;
+
+    --color-primary-25: var(--color-secondary-25);
+    --color-primary-50: var(--color-secondary-50);
+    --color-primary-100: var(--color-secondary-100);
+    --color-primary-200: var(--color-secondary-200);
+    --color-primary-300: var(--color-secondary-300);
+    --color-primary-400: var(--color-secondary-400);
+    --color-primary-500: var(--color-secondary-500);
+    --color-primary-600: var(--color-secondary-600);
+    --color-primary-700: var(--color-secondary-700);
+    --color-primary-800: var(--color-secondary-800);
+    --color-primary-900: var(--color-secondary-900);
+    --color-primary-950: var(--color-secondary-950);
+}

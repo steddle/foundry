@@ -1,0 +1,2 @@
+{{-- Three cast ingots, two below and one across them. currentColor, so the ground decides ink or bone. --}}
+<svg viewBox="0 0 32 32" aria-hidden="true" {{ $attributes->class('block') }}><path fill="currentColor" d="M12.4 5H19.6L22.6 14.8H9.4Z M4.6 17.2H11.8L14.8 27H1.6Z M20.2 17.2H27.4L30.4 27H17.2Z" /></svg>

@@ -1,13 +1,13 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="art/readme-banner-dark.png">
-  <img src="art/readme-banner-light.png" alt="foundry: what Steddle's imprints share" width="1600">
+  <source media="(prefers-color-scheme: dark)" srcset="workbench/public/brand/social/readme-banner-dark.png">
+  <img src="workbench/public/brand/social/readme-banner-light.png" alt="Foundry: one package to rule them all" width="1600">
 </picture>
 
 # Foundry
 
 What Steddle's imprints share: type, components and site behaviour.
 
-steddle, bron and sendnda are imprints of one house. Foundry holds what they have in common: the type scale, the colour ramps, the Blade components every page is built from, the lab that shows them, and the rendering of each imprint's own images. A site keeps its content and its two colour ramps. Everything else comes from here.
+Every Steddle site is an imprint of one house. Foundry holds what they have in common: the type scale, the colour ramps, the Blade components every page is built from, the lab that shows them, and the rendering of each imprint's own images. A site keeps its content and its two colour ramps. Everything else comes from here.
 
 ## Installation
 
@@ -58,7 +58,7 @@ Outside production, `/components` shows every component the imprint renders, liv
 
 The rules every imprint follows live in [`resources/boost/guidelines/core.blade.php`](resources/boost/guidelines/core.blade.php), which Laravel Boost renders into each site's `CLAUDE.md`.
 
-The mark, lockups and banners are in [`art/`](art).
+Foundry renders its own banners, social preview and icons as an imprint would, from [`workbench/`](workbench): `npm run build`, `vendor/bin/testbench serve --port=8765`, then `vendor/bin/testbench foundry:assets --url=http://127.0.0.1:8765`. The mark and lockups are in [`workbench/public/brand/logos`](workbench/public/brand/logos).
 
 ## License
 
