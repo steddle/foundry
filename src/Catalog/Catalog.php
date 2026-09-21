@@ -36,8 +36,8 @@ BLADE],
                 'from' => 'foundry',
                 'description' => 'A band of the page, spaced from the next, with a hairline between bands in dark mode.',
                 'examples' => [
-                    ['title' => 'A band with a heading and a lede', 'blade' => <<<'BLADE'
-<x-site.section class="py-0! lg:py-0!">
+                    ['title' => 'A band with a heading and a lede', 'ground' => 'bare', 'blade' => <<<'BLADE'
+<x-site.section>
     <x-site.heading size="2">A section heading.</x-site.heading>
     <x-site.text variant="lede">The lede under it, in the body colour.</x-site.text>
 </x-site.section>
