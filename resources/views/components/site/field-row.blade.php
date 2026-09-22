@@ -9,7 +9,7 @@
     @prop label The setting's name, a `<label>` where `for` names its control.
     @prop description A sentence on what the setting changes.
     @prop for The id of the control the label names.
-    @slot default The control.
+    @slot slot The control.
 
     @example Two settings
     <div class="divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-zinc-700 dark:border-zinc-700">

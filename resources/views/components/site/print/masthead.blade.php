@@ -1,7 +1,10 @@
 @props(['eyebrow' => null, 'title' => null, 'lead' => null])
 
 {{--
-    The ink band a printed document opens on, bled to the paper's edges at the top of its first page: the lockup, then the words. Without a title the band is only the lockup and what the slot holds, for a document whose own text opens on its title.
+    The ink band a printed document opens on, bled to the paper's edges at
+    the top of its first page: the lockup, then the words. Without a title
+    the band is only the lockup and what the slot holds, for a document whose
+    own text opens on its title.
 
     @prop eyebrow The line over the title.
     @prop title The document's title.
@@ -15,7 +18,6 @@
         <x-site.print.facts :items="['Agreement' => 'a2cc5f8c', 'Sealed' => '21 Sep 2026, 10:37 UTC']" class="mt-8" />
     </x-site.print.masthead>
 --}}
-
 <style>
     @page :first {
         margin-top: 0;

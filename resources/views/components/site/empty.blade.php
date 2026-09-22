@@ -7,7 +7,7 @@
     @group Elements
     @prop icon A Flux icon's name, set in a muted square.
     @prop title What is missing, at heading size 3.
-    @slot default A sentence on what the list will hold.
+    @slot slot A sentence on what the list will hold.
     @slot actions The button that adds the first.
 
     @example No agreements yet

@@ -37,11 +37,11 @@
     $here = rtrim(url()->current(), '/');
 
     // Under a root address every page lies, so a root link is current only on the root itself.
-    $current = function (string $href) use ($here): bool {
+    $current = array_map(function (string $href) use ($here): bool {
         $address = rtrim(url($href), '/');
 
         return $address === $here || (trim((string) parse_url($address, PHP_URL_PATH), '/') !== '' && str_starts_with($here, $address.'/'));
-    };
+    }, $links);
 
     $hasActions = isset($actions) && $actions->isNotEmpty();
     $folds = $links !== [] || $hasActions;
@@ -56,10 +56,10 @@
 
             <div class="flex items-stretch gap-7 self-stretch max-lg:hidden">
                 @foreach ($links as $label => $href)
-                    <a href="{{ $href }}" @if ($current($href)) aria-current="page" @endif @class([
+                    <a href="{{ $href }}" @if ($current[$label]) aria-current="page" @endif @class([
                         '-mb-px flex items-center border-b-2 text-copy font-medium whitespace-nowrap',
-                        'border-primary-700 dark:border-primary-300 text-zinc-950 dark:text-zinc-50' => $current($href),
-                        'border-transparent text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50' => ! $current($href),
+                        'border-primary-700 dark:border-primary-300 text-zinc-950 dark:text-zinc-50' => $current[$label],
+                        'border-transparent text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50' => ! $current[$label],
                     ])>{{ $label }}</a>
                 @endforeach
             </div>
@@ -96,10 +96,10 @@
                         <ul role="list" class="flex w-full flex-col border-l border-zinc-200 dark:border-zinc-700">
                             @foreach ($links as $label => $href)
                                 <li>
-                                    <a href="{{ $href }}" @if ($current($href)) aria-current="page" @endif @class([
+                                    <a href="{{ $href }}" @if ($current[$label]) aria-current="page" @endif @class([
                                         '-ml-px flex border-l-2 py-2.5 pl-4 text-lede font-medium',
-                                        'border-primary-700 dark:border-primary-300 text-zinc-950 dark:text-zinc-50' => $current($href),
-                                        'border-transparent text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50' => ! $current($href),
+                                        'border-primary-700 dark:border-primary-300 text-zinc-950 dark:text-zinc-50' => $current[$label],
+                                        'border-transparent text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50' => ! $current[$label],
                                     ])>{{ $label }}</a>
                                 </li>
                             @endforeach

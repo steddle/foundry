@@ -2,17 +2,20 @@
 
 {{--
     x-site.confirm-button as a row in a menu: three presses, the words going
-    from the label to 'Click again' to 'One more time' while a danger wash grows
-    behind the icon and the words a third at a time. Moving the pointer off
-    the row starts over. The third press fills the row, and once the fill has
-    landed the menu closes and the action runs. The action is an Alpine expression rather than a wire:click on the item, which
-    would fire on the first press. A Flux item closes its menu by dispatching
-    `lofi-close-popovers` on mouseup, before the click, so the wrapper stops
-    every such event from the item and closes the menu itself, on the menu.
+    from the label to 'Click again' to 'One more time' while a danger wash
+    grows behind the icon and the words a third at a time. Pressing nothing
+    for a second and a half, or moving the pointer off the row, starts over.
+    The third press fills the row, and once the fill has landed the menu
+    closes and the action runs. The action is an Alpine expression rather
+    than a wire:click on the item, which would fire on the first press. A
+    Flux item closes its menu by dispatching `lofi-close-popovers` on
+    mouseup, before the click, so the wrapper stops every such event from
+    the item and closes the menu itself, on the menu.
 
     @group Navigation
     @prop action The Alpine expression the third press runs, e.g. `$wire.delete('…')`.
     @prop icon A Flux icon before the words.
+    @slot slot What the item does, e.g. 'Delete'.
 
     @example In a row's menu
     <flux:dropdown>

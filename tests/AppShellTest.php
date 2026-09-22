@@ -1,9 +1,11 @@
 <?php
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Steddle\Foundry\Concerns\HasInitials;
 
 beforeEach(function () {
     $this->artisan('view:clear');
@@ -71,8 +73,8 @@ test('a page head sets the trail above it, the status beside the title and the a
     $html = Blade::render('<x-site.page-head :breadcrumbs="[\'Agreements\' => \'/agreements\']" title="Mutual NDA" lead="Sent today."><x-slot:status><span>Signed</span></x-slot:status><x-slot:actions><a href="/pdf">Download</a></x-slot:actions></x-site.page-head>', deleteCachedView: true);
 
     expect($html)
-        ->toContain('breadcrumbs')
-        ->toContain('Agreements')
+        ->toContain('<flux:breadcrumbs data-markdown-skip')
+        ->toContain('>Agreements</flux:breadcrumbs.item>')
         ->toContain('Mutual NDA')
         ->toContain('<span>Signed</span>')
         ->toContain('Sent today.')
@@ -118,9 +120,9 @@ test('a badge draws a hairline ring in its own ramp', function () {
 });
 
 test('a model with HasInitials reads its initials through Nameable', function () {
-    $user = new class extends Illuminate\Database\Eloquent\Model
+    $user = new class extends Model
     {
-        use Steddle\Foundry\Concerns\HasInitials;
+        use HasInitials;
 
         protected $guarded = [];
     };

@@ -4,8 +4,8 @@
     The top of a signed-in page: the trail of pages above it, the eyebrow, the
     title with its status beside it, a line under it, and the page's actions,
     beside the words from sm and under them below. The title is a heading-2:
-    an app page is a place to work, not a cover. A div and not a header: a page's markdown drops
-    every <header> as chrome.
+    an app page is a place to work, not a cover. A div and not a header: a
+    page's markdown drops every <header> as chrome.
 
     @group Type
     @prop breadcrumbs label => href for each page above this one, outermost first, as x-site.breadcrumb.

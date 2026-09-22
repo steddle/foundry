@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
+use Steddle\Foundry\Catalog\Catalog;
 
 beforeEach(function () {
     config(['imprint.stylesheet' => null]);
@@ -62,4 +63,13 @@ test('a section starts on a page of its own when asked', function () {
     expect(Blade::render('<x-site.print.section title="Signed">Body</x-site.print.section>', deleteCachedView: true))
         ->toContain('mt-12')
         ->not->toContain('break-before-page');
+});
+
+test('the catalogue describes every print prop under the name the component declares', function () {
+    foreach (['print-document', 'print-facts', 'print-masthead', 'print-section'] as $slug) {
+        foreach (Catalog::shared()[$slug]['props'] as $prop) {
+            expect($prop['default'])->not->toBe('passed on', "{$slug}: {$prop['name']} is not declared")
+                ->and($prop['description'])->not->toBeEmpty("{$slug}: {$prop['name']} is undocumented");
+        }
+    }
 });

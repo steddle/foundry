@@ -6,7 +6,7 @@
 
     @group Navigation
     @prop user An object with `name` and `email`, and `initials` where the model uses `Steddle\Foundry\Concerns\HasInitials`; without them Flux's avatar draws its own from the name.
-    @slot default The imprint's items, each a `flux:menu.item`, between the name and logging out.
+    @slot slot The imprint's items, each a `flux:menu.item`, between the name and logging out.
 
     @example With a settings item
     <div class="flex justify-end">

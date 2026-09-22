@@ -5,8 +5,8 @@
     ramp's 50 as the ground and its 700 as the text, and on ink or in the
     dark its 300 as the text over a wash of it, as the foundry sets colour on
     ink. Neutral is the grey, 100 under 700 on bone and 800 under 300 on ink.
-    A hairline ring inside the edge, in the text's colour at a tenth, holds
-    the badge off a ground of the same wash.
+    A hairline ring inside the edge, in the text's colour at 10% on bone and
+    15% on ink, holds the badge off a ground of the same wash.
 
     @group Elements
     @prop tone neutral, info, success, warning, danger or action: the ramp the badge is drawn in. Action, in lichen, is the one tone that asks the reader to do something.

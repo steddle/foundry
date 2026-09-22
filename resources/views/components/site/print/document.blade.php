@@ -1,7 +1,12 @@
 @props(['title', 'paper' => 'A4', 'footer' => null])
 
 {{--
-    A page for `Steddle\Foundry\Pdf\Printer`: the whole HTML document, bone in both themes, on A4 or Letter. Every page keeps 20 mm at the sides, and its foot carries the footer on the left and the page count on the right. Chrome sets the foot, so a long document needs no running markup of its own. A heading never ends a page, and a paragraph never leaves fewer than three lines on either side of a break.
+    A page for `Steddle\Foundry\Pdf\Printer`: the whole HTML document, bone
+    in both themes, on A4 or Letter. Every page keeps 20 mm at the sides, and
+    its foot carries the footer on the left and the page count on the right.
+    Chrome sets the foot, so a long document needs no running markup of its
+    own. A heading never ends a page, and a paragraph never leaves fewer than
+    three lines on either side of a break.
 
     @prop title The document's title, which a PDF reader shows.
     @prop paper A4 or Letter.
@@ -14,7 +19,6 @@
         <x-site.print.section title="The agreement">…</x-site.print.section>
     </x-site.print.document>
 --}}
-
 @php
     // Chrome writes the foot from a CSS string, which a name a reader typed could close, and the <style> with it: everything outside plain text is escaped.
     $escape = fn (?string $text): string => preg_replace_callback('/[^\p{L}\p{N} .,|:()\/-]/u', fn (array $match): string => '\\'.dechex(mb_ord($match[0])).' ', (string) $text);

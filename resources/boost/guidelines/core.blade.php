@@ -85,21 +85,21 @@ is its own.
   across `wire:navigate`, which `x-site.ink-page` sets too. `x-site.app-nav`
   is its bar, in flow and ruled off: the lockup, the `links` with the one
   whose address the current one equals or lies under marked, the `actions`
-  slot and `x-site.account-menu`, the reader's Flux avatar (`$user->initials`
-  from `Steddle\Foundry\Concerns\HasInitials`, over Nameable) opening their name
-  and address, the `menu` slot's items and logging out where `logout` is a
-  route. `x-site.page-head` opens the content: the `breadcrumbs` above
-  it, the title at heading-2 with a `status` beside it, a line under it and
-  the page's `actions`.
+  slot and `x-site.account-menu`, the reader's Flux avatar
+  (`$user->initials` from `Steddle\Foundry\Concerns\HasInitials`, over
+  Nameable) opening their name and address, the `menu` slot's items and
+  logging out where `logout` is a route. `x-site.page-head` opens the
+  content: the `breadcrumbs` above it, the title at heading-2 with a
+  `status` beside it, a line under it and the page's `actions`.
   `x-site.rows` rules a list of `x-site.record-row`s, each a link over its
   title, status and `meta` with its `actions` outside it; `x-site.empty`
   stands where a list holds nothing yet; `x-site.field-row` sets one
   setting's label and description beside its control, the parent ruling
   the rows. A step that can't be undone takes three presses, never a
   dialog: `x-site.confirm-button`, or `x-site.confirm-item` in a menu. The
-  words go from the label to 'Click again' to 'One more time' as the danger ramp
-  fills the control a third at a time, and only the third press runs its
-  `action`, an Alpine expression, never a `wire:click` on the control.
+  words go from the label to 'Click again' to 'One more time' as the danger
+  ramp fills the control a third at a time, and only the third press runs
+  its `action`, an Alpine expression, never a `wire:click` on the control.
 - **Script**: a foundry component that holds state uses Alpine, which
   Livewire loads on the page, and `[x-cloak]` holds it back until Alpine has
   read it. A page with such a component loads Livewire's scripts; what only
