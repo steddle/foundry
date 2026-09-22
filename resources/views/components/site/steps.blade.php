@@ -21,7 +21,8 @@
     <flux:timeline horizontal class="min-w-max [--flux-timeline-item-gap:2.5rem]">
         @foreach ($steps as $index => $step)
             <flux:timeline.item :status="$step['status']">
-                <flux:timeline.indicator>
+                {{-- Flux rings an open step in zinc-100, which a sunken band hides. --}}
+                <flux:timeline.indicator class="[[data-flux-timeline-status=incomplete]_&]:border-zinc-300! dark:[[data-flux-timeline-status=incomplete]_&]:border-zinc-600!">
                     @if ($step['status'] === 'complete')
                         <flux:icon.check variant="micro" />
                     @elseif (isset($step['icon']))

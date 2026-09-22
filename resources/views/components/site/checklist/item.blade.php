@@ -1,1 +1,1 @@
-<li {{ $attributes->class('flex items-baseline gap-2') }}><span class="text-primary-700 dark:text-primary-300" aria-hidden="true">✓</span>{{ $slot }}</li>
+<li {{ $attributes->class('flex items-start gap-2') }}><span class="flex h-[1lh] shrink-0 items-center text-primary-700 dark:text-primary-300" aria-hidden="true"><flux:icon.check variant="micro" /></span>{{ $slot }}</li>

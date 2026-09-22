@@ -7,7 +7,7 @@
     third at a time, left to right, inverting the words it covers. The third
     press fills it, and the action runs once the fill has landed. When the
     action has finished (a `$wire` call's promise included) the filled button
-    reads '✓ Done' for a second, then drains back to its label, slower than
+    reads 'Done' beside a check for a second, then drains back to its label, slower than
     it filled; an action that fails drains it without the Done. Pressing
     nothing for a second and a half after a pointer press, moving the pointer
     off the button or leaving it by keyboard starts over, until the third

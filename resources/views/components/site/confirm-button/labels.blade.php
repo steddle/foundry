@@ -13,6 +13,6 @@
     </span>
     <span class="invisible col-start-1 row-start-1" x-bind:class="{ invisible: step !== 2 && step !== 3 }" aria-hidden="true">{{ __('foundry::nav.confirm_last') }}</span>
     @if ($done)
-        <span class="invisible col-start-1 row-start-1" x-bind:class="{ invisible: step !== 4 }" aria-hidden="true">✓ {{ __('foundry::nav.confirm_done') }}</span>
+        <span class="invisible col-start-1 row-start-1 inline-flex items-center gap-1.5" x-bind:class="{ invisible: step !== 4 }" aria-hidden="true"><flux:icon.check variant="micro" />{{ __('foundry::nav.confirm_done') }}</span>
     @endif
 </span>
