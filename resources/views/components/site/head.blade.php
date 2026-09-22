@@ -9,7 +9,7 @@
     speaks more than one language, its counterpart in each; its Open Graph
     image, from OG Kit where a key is set; the icons; the imprint's
     stylesheet and script; and Plausible and Visitors in production where the
-    imprint names them.
+    imprint names them and the page is not kept out of search.
 
     @group Shell
     @prop title The page's `<title>`, and its Open Graph title and image alt, as given.
@@ -77,15 +77,17 @@
 {{ $slot }}
 
 @production
-    @if (config('imprint.plausible'))
-        <script defer data-domain="{{ config('imprint.plausible') }}" src="https://plausible.io/js/plausible.js"></script>
-    @endif
-    @if (config('imprint.visitors'))
-        <script src="https://cdn.visitors.now/v.js" data-token="{{ config('imprint.visitors') }}"></script>
+    @if ($indexed)
+        @if (config('imprint.plausible'))
+            <script defer data-domain="{{ config('imprint.plausible') }}" src="https://plausible.io/js/plausible.js"></script>
+        @endif
+        @if (config('imprint.visitors'))
+            <script src="https://cdn.visitors.now/v.js" data-token="{{ config('imprint.visitors') }}"></script>
 
-        {{-- An event the page handed on through the session for this one request. --}}
-        @session('visitors')
-            <script>window.visitors?.track(@js($value['name']), @js($value['props']))</script>
-        @endsession
+            {{-- An event the page handed on through the session for this one request. --}}
+            @session('visitors')
+                <script>window.visitors?.track(@js($value['name']), @js($value['props']))</script>
+            @endsession
+        @endif
     @endif
 @endproduction
