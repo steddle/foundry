@@ -37,10 +37,11 @@ final class Content
      */
     public static function docs(?string $locale = null): array
     {
-        return collect(self::read('docs', $locale))
+        // Once per request and locale: a page reads it for its nav and its pager, the routes for their names.
+        return once(fn (): array => collect(self::read('docs', $locale))
             ->map(fn (array $topic): array => [...$topic, 'articles' => array_filter($topic['articles'], fn (string $slug): bool => self::view('docs.articles', $slug, $locale) !== null, ARRAY_FILTER_USE_KEY)])
             ->filter(fn (array $topic): bool => $topic['articles'] !== [])
-            ->all();
+            ->all());
     }
 
     /**
@@ -50,13 +51,15 @@ final class Content
      */
     public static function legal(?string $locale = null): array
     {
-        $legal = self::read('legal', $locale);
-        $legal['audiences'] = collect($legal['audiences'])
-            ->map(fn (array $audience): array => [...$audience, 'documents' => array_filter($audience['documents'], fn (string $slug): bool => self::view('legal.documents', $slug, $locale) !== null, ARRAY_FILTER_USE_KEY)])
-            ->filter(fn (array $audience): bool => $audience['documents'] !== [])
-            ->all();
+        return once(function () use ($locale): array {
+            $legal = self::read('legal', $locale);
+            $legal['audiences'] = collect($legal['audiences'])
+                ->map(fn (array $audience): array => [...$audience, 'documents' => array_filter($audience['documents'], fn (string $slug): bool => self::view('legal.documents', $slug, $locale) !== null, ARRAY_FILTER_USE_KEY)])
+                ->filter(fn (array $audience): bool => $audience['documents'] !== [])
+                ->all();
 
-        return $legal;
+            return $legal;
+        });
     }
 
     /** A value from `imprint.{section}`, a translation key or the words themselves. */

@@ -11,7 +11,7 @@
     $docs = Content::copy('docs', 'title');
     ['html' => $body, 'headings' => $headings] = Outline::of(view(Content::view('docs.articles', $slug))->render());
     $nav = [
-        __('foundry::docs.on_this_page') => collect($headings)->map(fn (string $label, string $id): array => ['label' => $label, 'href' => '#'.$id])->values()->all(),
+        __('foundry::docs.on_this_page') => Outline::links($headings),
         $topic['title'] => collect($topic['articles'])->map(fn (array $entry, string $key): array => [
             'label' => $entry[0],
             'href' => localized_route('docs.article.'.$key),

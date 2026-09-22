@@ -44,14 +44,17 @@ if (! function_exists('localized_alternates')) {
      */
     function localized_alternates(bool $absolute = true): array
     {
-        $alternates = [];
+        // The head and both of the nav's switches ask for them on one page.
+        return once(function () use ($absolute): array {
+            $alternates = [];
 
-        foreach (Locales::all() as $locale) {
-            $alternates[$locale] = Locales::counterpart(request(), $locale, $absolute)
-                ?? route("{$locale}.home", absolute: $absolute);
-        }
+            foreach (Locales::all() as $locale) {
+                $alternates[$locale] = Locales::counterpart(request(), $locale, $absolute)
+                    ?? route("{$locale}.home", absolute: $absolute);
+            }
 
-        return $alternates;
+            return $alternates;
+        });
     }
 }
 

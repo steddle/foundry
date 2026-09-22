@@ -37,9 +37,9 @@ final class Catalog
      */
     public static function shared(): array
     {
-        $entries = [...self::read(__DIR__.'/../../resources/views/components/site', 'foundry'), ...self::supplied()];
-
-        return collect($entries)->sortBy(fn (array $entry, string $slug): string => sprintf('%02d', array_search($entry['group'], self::GROUPS)).$slug)->all();
+        return once(fn (): array => collect([...self::read(__DIR__.'/../../resources/views/components/site', 'foundry'), ...self::supplied()])
+            ->sortBy(fn (array $entry, string $slug): string => sprintf('%02d', array_search($entry['group'], self::GROUPS)).$slug)
+            ->all());
     }
 
     /**

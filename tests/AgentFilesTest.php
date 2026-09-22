@@ -21,7 +21,8 @@ final class TestPages implements Sitemap
 beforeEach(function () {
     config()->set('imprint.name', 'Imprint');
     config()->set('imprint.sitemap', TestPages::class);
-    config()->set('markdown-response.cache.store', 'array');
+    config()->set('markdown-response.cache.store', 'file');
+    cache()->store('file')->flush();
     require __DIR__.'/../routes/foundry.php';
     app('router')->getRoutes()->refreshNameLookups();
 });

@@ -36,4 +36,15 @@ final class Outline
 
         return ['html' => $html, 'headings' => $headings];
     }
+
+    /**
+     * The headings as the links of an "On this page" list.
+     *
+     * @param  array<string, string>  $headings  id => label
+     * @return list<array{label: string, href: string}>
+     */
+    public static function links(array $headings): array
+    {
+        return collect($headings)->map(fn (string $label, string $id): array => ['label' => $label, 'href' => '#'.$id])->values()->all();
+    }
 }

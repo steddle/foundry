@@ -3,6 +3,7 @@
 namespace Steddle\Foundry\Http\Controllers;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Spatie\MarkdownResponse\Facades\Markdown;
 use Steddle\Foundry\Locales;
@@ -18,7 +19,7 @@ final class AgentFiles
 {
     public function sitemap(Pages $pages): Response
     {
-        $pages = $pages->byLocale();
+        $pages = $this->listed($pages);
         $urls = [];
 
         foreach ($pages[Locales::root()] as $key => $page) {
@@ -36,7 +37,7 @@ final class AgentFiles
 
     public function llms(Pages $site): Response
     {
-        $pages = $site->byLocale();
+        $pages = $this->listed($site);
         $lines = ['# '.config('imprint.name'), '', '> '.(array_values($pages[Locales::root()])[0]['description'] ?? ''), ''];
 
         foreach ($pages as $locale => $list) {
@@ -66,12 +67,37 @@ final class AgentFiles
      */
     public function full(Pages $pages): Response
     {
-        $markdown = Cache::store(config('markdown-response.cache.store'))
-            ->remember('llms-full.txt', config('markdown-response.cache.ttl', 3600), fn (): string => collect($pages->rendered())
-                ->map(fn (array $page): string => '# '.$page['url']."\n\n".Markdown::convert($page['html']))
-                ->implode("\n\n---\n\n")."\n");
+        $markdown = $this->cached('llms-full.txt', fn (): string => collect($pages->rendered())
+            ->map(fn (array $page): string => '# '.$page['url']."\n\n".Markdown::convert($page['html']))
+            ->implode("\n\n---\n\n")."\n");
 
         return $this->respond($markdown);
+    }
+
+    /**
+     * Every page's title, description and address in every locale, without
+     * the closure that renders it, which no cache store can hold.
+     *
+     * @return array<string, array<string, array{title: string, description: string, url: string}>>
+     */
+    private function listed(Pages $pages): array
+    {
+        return $this->cached('pages', fn (): array => collect($pages->byLocale())
+            ->map(fn (array $list): array => collect($list)->map(fn (array $page): array => Arr::except($page, 'render'))->all())
+            ->all());
+    }
+
+    /**
+     * For as long as a page's markdown is cached, since all three read what those pages say.
+     *
+     * @template T
+     *
+     * @param  \Closure(): T  $callback
+     * @return T
+     */
+    private function cached(string $key, \Closure $callback): mixed
+    {
+        return Cache::store(config('markdown-response.cache.store'))->remember("foundry.{$key}", config('markdown-response.cache.ttl', 3600), $callback);
     }
 
     /**

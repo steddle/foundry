@@ -11,7 +11,7 @@
     $legalTitle = Content::copy('legal', 'title');
     ['html' => $body, 'headings' => $headings] = Outline::of(view(Content::view('legal.documents', $document))->render());
     $nav = [
-        __('foundry::legal.on_this_page') => collect($headings)->map(fn (string $label, string $id): array => ['label' => $label, 'href' => '#'.$id])->values()->all(),
+        __('foundry::legal.on_this_page') => Outline::links($headings),
         __('foundry::legal.every_document') => $all->map(fn (array $entry, string $key): array => [
             'label' => $entry[0],
             'href' => localized_route('legal.show', $key),
