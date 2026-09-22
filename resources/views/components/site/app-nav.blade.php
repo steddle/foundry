@@ -11,8 +11,10 @@
     The bar over a signed-in page, in flow on the page's bone and ruled off
     below it: the lockup, the links with the current one marked, the actions
     and the account menu. Below lg the links and the actions fold into a
-    panel under the bar, through Alpine, which Livewire loads on the page; the
-    account menu stays in the bar.
+    panel under the bar, through Alpine, which Livewire loads on every
+    x-site.app-page through its toast group's @persist; the account menu
+    stays in the bar. Escape closes the panel, and focus inside it goes back
+    to the button that opened it.
 
     @group Shell
     @prop links label => href, shown from lg up. The current link is the one whose address the current one equals or lies under, marked by a rule in the accent and aria-current="page".
@@ -50,7 +52,7 @@
 @endphp
 
 <header {{ $attributes->class($overlay ? 'absolute inset-x-0 top-0 z-10 ink' : 'border-b border-zinc-200 dark:border-zinc-700') }}>
-    <nav aria-label="Main" @if ($folds) x-data="{ open: false }" @keydown.escape.window="open = false" @endif>
+    <nav aria-label="{{ __('foundry::nav.main') }}" @if ($folds) x-data="{ open: false }" x-id="['app-menu']" @keydown.escape.window="if (open) { open = false; $el.contains(document.activeElement) && $refs.toggle.focus() }" @endif>
         <x-site.container class="flex h-14 items-center gap-8">
             <a href="{{ $home }}" aria-label="{{ $homeLabel }}" class="shrink-0 text-zinc-950 dark:text-zinc-50">
                 <x-site.lockup class="h-5" />
@@ -74,7 +76,7 @@
                 <x-site.account-menu :user="$user">{{ $menu ?? '' }}</x-site.account-menu>
 
                 @if ($folds)
-                    <button type="button" aria-controls="app-menu" :aria-expanded="open" aria-label="{{ $menuLabel }}" @click="open = ! open"
+                    <button type="button" x-ref="toggle" :aria-controls="$id('app-menu')" :aria-expanded="open" aria-label="{{ $menuLabel }}" @click="open = ! open"
                         class="group relative -mr-2 shrink-0 cursor-pointer rounded-md p-2 text-zinc-950 dark:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800 lg:hidden">
                         <span class="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden" aria-hidden="true"></span>
                         <svg class="size-6 group-aria-expanded:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
@@ -89,7 +91,7 @@
         </x-site.container>
 
         @if ($folds)
-            <div id="app-menu" x-cloak x-show="open" @click="$event.target.closest('a') && (open = false)"
+            <div :id="$id('app-menu')" x-cloak x-show="open" @click="$event.target.closest('a') && (open = false)"
                 x-transition:enter="transition duration-200 ease-out" x-transition:enter-start="-translate-y-2 opacity-0"
                 x-transition:leave="transition duration-150 ease-in" x-transition:leave-end="-translate-y-2 opacity-0"
                 @class(['border-t border-zinc-200 dark:border-zinc-700 lg:hidden', 'bg-zinc-900' => $overlay])>

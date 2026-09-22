@@ -76,11 +76,12 @@ class Printer
     /**
      * A printed page can carry text its readers typed, so a url() in it could
      * send the server to an internal address and print the answer. Only the
-     * imprint's own host is fetched, and a redirect off it is refused.
+     * imprint's own origin is fetched, scheme and port included, and a
+     * redirect off it is refused.
      */
     private function fetch(string $url): ?string
     {
-        if (parse_url($url, PHP_URL_HOST) !== parse_url($this->origin(), PHP_URL_HOST)) {
+        if (! str_starts_with($url, $this->origin().'/')) {
             return null;
         }
 

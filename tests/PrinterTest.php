@@ -80,3 +80,18 @@ it("refuses to fetch anything off the imprint's own host", function () {
 
     Http::assertNothingSent();
 });
+
+it('fetches nothing from its own host on another port or scheme', function () {
+    Http::fake(['*' => Http::response('LEAK')]);
+
+    $html = inlineAssets(
+        '<html><head><style>@font-face{src:url(https://imprint.test:6379/x.woff2)}@font-face{src:url(http://imprint.test/storage/fonts/x.woff2)}</style></head></html>'
+    );
+
+    expect($html)
+        ->not->toContain('data:font')
+        ->toContain('url(https://imprint.test:6379/x.woff2)')
+        ->toContain('url(http://imprint.test/storage/fonts/x.woff2)');
+
+    Http::assertNothingSent();
+});

@@ -5,6 +5,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Livewire\Component;
+use Livewire\Livewire;
+use Livewire\LivewireServiceProvider;
 use Steddle\Foundry\Concerns\HasInitials;
 
 beforeEach(function () {
@@ -153,3 +156,62 @@ test('a flush app page lays its bar over the band and sets its slot edge to edge
         ->and($main($flush))->toContain('bg-zinc-900 ink grain')->toContain('<p>Band</p>')->not->toContain('py-10')
         ->and($main($contained))->toContain('py-10')->toContain('<p>Body</p>');
 });
+
+test('a confirm button tells a screen reader each step, and a keyboard press starts no timer', function () {
+    $html = Blade::render('<x-site.confirm-button label="Delete account" action="$wire.deleteAccount()" />', deleteCachedView: true);
+
+    expect($html)
+        ->toMatch('#</flux:button>\s*<span role="status" class="sr-only"#')
+        ->toContain('Press again to confirm')
+        ->toContain('if ($event.detail > 0) timer = setTimeout(() => step = 0, 1500)')
+        ->toContain('x-on:blur="if (step < 3) { clearTimeout(timer); step = 0 }"');
+});
+
+test('a confirm item tells a screen reader each step, and starts over when focus leaves it', function () {
+    $html = Blade::render('<x-site.confirm-item icon="trash" action="$wire.delete(\'abc\')">Delete</x-site.confirm-item>', deleteCachedView: true);
+
+    expect($html)
+        ->toMatch('#</flux:menu.item>\s*<span role="status" class="sr-only"#')
+        ->toContain('Press again to confirm')
+        ->toContain('if ($event.detail > 0) timer = setTimeout(() => step = 0, 1500)')
+        ->toContain('x-on:focusout="if (step < 3) { clearTimeout(timer); step = 0 }"');
+});
+
+test('the app bar\'s panel takes an id of its own and hands focus back on escape', function () {
+    $html = Blade::render('<x-site.app-nav :links="[\'Agreements\' => \'/agreements\']" :user="$user" />', ['user' => $this->user], deleteCachedView: true);
+
+    expect($html)
+        ->toContain('x-id="[\'app-menu\']"')
+        ->toContain(':aria-controls="$id(\'app-menu\')"')
+        ->toContain(':id="$id(\'app-menu\')"')
+        ->toContain('x-ref="toggle"')
+        ->toContain('$el.contains(document.activeElement) && $refs.toggle.focus()')
+        ->not->toContain('id="app-menu"');
+});
+
+test('the app bar names its navigation in the page\'s language', function () {
+    app()->setLocale('nl');
+
+    $html = Blade::render('<x-site.app-nav :user="$user" />', ['user' => $this->user], deleteCachedView: true);
+
+    expect($html)->toContain('<nav aria-label="Hoofdmenu"');
+});
+
+test('a signed-in page loads Livewire, Alpine with it, once, with a component on it or without', function (string $content) {
+    $this->app->register(LivewireServiceProvider::class);
+    Livewire::component('shell-probe', ShellProbe::class);
+    Route::get('/shell', fn () => Blade::render('<x-site.app-page title="Shell" :user="$user">'.$content.'</x-site.app-page>', ['user' => $this->user], deleteCachedView: true));
+
+    expect(substr_count($this->get('/shell')->assertOk()->getContent(), 'data-csrf='))->toBe(1);
+})->with([
+    'a plain page' => ['<p>Body</p>'],
+    'a page with a component' => ['<livewire:shell-probe />'],
+]);
+
+class ShellProbe extends Component
+{
+    public function render(): string
+    {
+        return '<div>Probe</div>';
+    }
+}

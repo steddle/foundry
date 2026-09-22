@@ -3,7 +3,8 @@
 {{--
     A signed-in page's document, on bone and kept out of search: x-site.app-nav,
     the page's own content in a container, the service line under a rule, the
-    toast group and Flux's scripts.
+    toast group and Flux's scripts. The toast group's @persist makes Livewire
+    inject its assets, Alpine with them, on a page without a component too.
 
     @group Shell
     @prop title The page's title, followed in `<title>` by the imprint's name.
