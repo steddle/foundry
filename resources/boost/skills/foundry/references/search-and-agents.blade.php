@@ -13,6 +13,10 @@ A public page enters the sitemap by entering `pages()`. The site's suite renders
 
 `Steddle\Foundry\Markdown\*` extends spatie/laravel-markdown-response. The provider binds the table-aware driver and the `/index.md` rewrite; a site's `config/markdown-response.php` names the detector, `DetectsMarkdownRequest`, which never answers a HEAD in markdown, and `RemoveMarkdownSkipPreprocessor`. `MarkdownUrl::of()` is the one statement of a page's markdown address, `/index.md` for a root. `x-site.copy-menu` offers a page's markdown to a reader, with its words from `foundry::agents`, in English and Dutch.
 
+## The read-docs tool
+
+An imprint with an MCP server registers `Steddle\Foundry\Mcp\ReadDocs` in its `$tools`, and needs `laravel/mcp`, which the foundry only suggests. The tool reads `Pages` in English, whatever the root language: without a path it lists every page with its path, and with one it returns that page's markdown, rendered in English. A full address, a path and its `.md` twin name the same page. Its description names `imprint.name` and says what `imprint.docs.description` says.
+
 ## Out of search
 
 `Steddle\Foundry\Http\Middleware\Noindex` sets `X-Robots-Tag: noindex`, also on the redirect or 403 an `auth` or `can` guard throws. `x-site.app-page` and the lab are kept out of search.
