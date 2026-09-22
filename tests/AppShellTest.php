@@ -67,12 +67,12 @@ test('a record row keeps its actions outside its link', function () {
         ->and((string) str($html)->after('</a>'))->toContain('<button>Resend</button>');
 });
 
-test('a page head sets the way back, the status beside the title and the actions', function () {
-    $html = Blade::render('<x-site.page-head :back="[\'Agreements\', \'/agreements\']" title="Mutual NDA" lead="Sent today."><x-slot:status><span>Signed</span></x-slot:status><x-slot:actions><a href="/pdf">Download</a></x-slot:actions></x-site.page-head>', deleteCachedView: true);
+test('a page head sets the trail above it, the status beside the title and the actions', function () {
+    $html = Blade::render('<x-site.page-head :breadcrumbs="[\'Agreements\' => \'/agreements\']" title="Mutual NDA" lead="Sent today."><x-slot:status><span>Signed</span></x-slot:status><x-slot:actions><a href="/pdf">Download</a></x-slot:actions></x-site.page-head>', deleteCachedView: true);
 
     expect($html)
-        ->toContain('href="/agreements"')
-        ->toContain('← Agreements')
+        ->toContain('breadcrumbs')
+        ->toContain('Agreements')
         ->toContain('Mutual NDA')
         ->toContain('<span>Signed</span>')
         ->toContain('Sent today.')

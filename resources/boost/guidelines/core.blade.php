@@ -87,8 +87,9 @@ is its own.
   whose address the current one equals or lies under marked, the `actions`
   slot and `x-site.account-menu`, the reader's initials opening their name
   and address, the `menu` slot's items and logging out where `logout` is a
-  route. `x-site.page-head` opens the content: a way `back`, the title
-  with a `status` beside it, the lede and the page's `actions`.
+  route. `x-site.page-head` opens the content: the `breadcrumbs` above
+  it, the title at heading-2 with a `status` beside it, a line under it and
+  the page's `actions`.
   `x-site.rows` rules a list of `x-site.record-row`s, each a link over its
   title, status and `meta` with its `actions` outside it; `x-site.empty`
   stands where a list holds nothing yet; `x-site.field-row` sets one

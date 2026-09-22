@@ -49,9 +49,9 @@
 
 <header {{ $attributes->class('border-b border-zinc-200 dark:border-zinc-700') }}>
     <nav aria-label="Main" @if ($folds) x-data="{ open: false }" @keydown.escape.window="open = false" @endif>
-        <x-site.container class="flex h-16 items-center gap-8">
+        <x-site.container class="flex h-14 items-center gap-8">
             <a href="{{ $home }}" aria-label="{{ $homeLabel }}" class="shrink-0 text-zinc-950 dark:text-zinc-50">
-                <x-site.lockup class="h-6" />
+                <x-site.lockup class="h-5" />
             </a>
 
             <div class="flex items-stretch gap-7 self-stretch max-lg:hidden">
