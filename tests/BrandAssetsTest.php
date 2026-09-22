@@ -11,7 +11,6 @@ beforeEach(function () {
     File::ensureDirectoryExists($directory);
     File::put($directory.'/lockup.blade.php', '<span {{ $attributes }}>Imprint</span>');
     File::put($directory.'/mark.blade.php', '<svg viewBox="0 0 32 32" {{ $attributes }}><path fill="currentColor" d="M1 1h30v30H1Z" /></svg>');
-    File::put($directory.'/marker.blade.php', '<mark>{{ $slot }}</mark>');
 
     config()->set('imprint', [
         'name' => 'Imprint',
@@ -34,7 +33,7 @@ test('every asset is filled from the imprint', function () {
 
     expect(array_keys($assets))->toBe(['og-image', 'social-preview', 'readme-banner-light', 'readme-banner-dark', 'favicon-96', 'apple-touch-icon', 'manifest-192', 'icon-512', 'icon-maskable-512'])
         ->and($assets['og-image']->markup())
-        ->toContain('Dutch law, <mark>at the source.</mark>')
+        ->toMatch('/Dutch law, <mark [^>]*>at the source\.<\/mark>/')
         ->toContain('Legal sources')
         ->and($assets['readme-banner-dark']->markup())->toContain('ink bg-zinc-900')
         ->and($assets['readme-banner-light']->markup())->toContain('bg-zinc-50')->not->toContain('ink');

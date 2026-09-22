@@ -218,7 +218,7 @@
             <div class="flex flex-col gap-4">
                 <x-site.text variant="label" tone="muted">Marker: once per viewport, on ink</x-site.text>
                 <div class="ink rounded-lg bg-zinc-900 p-8">
-                    <p class="font-serif text-heading-1 font-semibold text-zinc-950 dark:text-zinc-50"><x-site.marked :text="$design['marked'][0] ?? $name" :marked="$design['marked'][1] ?? null" /></p>
+                    <p class="font-serif text-heading-1 font-semibold text-zinc-950 dark:text-zinc-50"><x-site.marker :text="$design['marked'][0] ?? $name" :marked="$design['marked'][1] ?? null" /></p>
                 </div>
             </div>
         </div>

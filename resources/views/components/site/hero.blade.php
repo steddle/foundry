@@ -42,7 +42,7 @@
             <x-site.text variant="label" tone="accent">{{ $eyebrow }}</x-site.text>
         @endif
         @if ($title)
-            <x-site.heading :size="$tall ? 'display' : '1'" level="1" @class(['max-w-[16ch]' => $tall, 'max-w-[20ch]' => ! $tall])><x-site.marked :text="$title" :marked="$marked" /></x-site.heading>
+            <x-site.heading :size="$tall ? 'display' : '1'" level="1" @class(['max-w-[16ch]' => $tall, 'max-w-[20ch]' => ! $tall])><x-site.marker :text="$title" :marked="$marked" /></x-site.heading>
         @endif
         @if ($lead)
             <x-site.text variant="lede" class="max-w-[48ch]">{{ $lead }}</x-site.text>

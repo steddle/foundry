@@ -31,7 +31,7 @@
     <x-site.lockup class="relative h-[40px] self-start text-zinc-950 dark:text-zinc-50" />
 
     <div class="relative mt-[88px] flex max-w-[900px] flex-col">
-        <p class="text-pretty font-serif text-[64px] leading-[1.08] font-semibold tracking-[-0.03em] text-zinc-950 dark:text-zinc-50"><x-site.marked :text="$heading" :marked="$marked" /></p>
+        <p class="text-pretty font-serif text-[64px] leading-[1.08] font-semibold tracking-[-0.03em] text-zinc-950 dark:text-zinc-50"><x-site.marker :text="$heading" :marked="$marked" /></p>
         @if ($lede)
             <p class="mt-[24px] max-w-[700px] text-pretty text-[20px] leading-[1.5] text-zinc-800 dark:text-zinc-200">{{ $lede }}</p>
         @endif

@@ -34,7 +34,7 @@
     </div>
 
     <div class="relative flex flex-col">
-        <p class="max-w-[940px] text-pretty font-serif text-[72px] leading-[1.04] font-semibold tracking-[-0.03em] text-zinc-950 dark:text-zinc-50"><x-site.marked :text="$heading" :marked="$marked" /></p>
+        <p class="max-w-[940px] text-pretty font-serif text-[72px] leading-[1.04] font-semibold tracking-[-0.03em] text-zinc-950 dark:text-zinc-50"><x-site.marker :text="$heading" :marked="$marked" /></p>
         @if ($lede)
             <p class="mt-[24px] max-w-[780px] text-pretty text-[26px] leading-[1.5] text-zinc-800 dark:text-zinc-200">{{ $lede }}</p>
         @endif
