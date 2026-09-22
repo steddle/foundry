@@ -137,7 +137,9 @@ is its own.
   renders them through Playwright's own Chromium, never the reader's browser,
   so `playwright` is a devDependency of every imprint. `foundry:assets --check`
   fails where the copy or markup moved since, and every imprint's suite runs
-  it. Change the copy in `config/imprint.php`, never the PNG. The copy is
+  it. An imprint's README opens on its banner, light and dark, as the
+  foundry's does, then its name, one line and a paragraph, and the
+  sections What this codebase does, Local development and Documentation. Change the copy in `config/imprint.php`, never the PNG. The copy is
   English whatever languages the site speaks: a Dutch reader reads English, a
   reader in the US does not read Dutch, and a README is English.
 - **Icons**: the same command draws the favicons, the touch and manifest
@@ -202,11 +204,12 @@ included. A site's own guidelines add what its readers need; they never
 loosen these.
 
 - **Mono is for code, nothing else.** Chivo Mono sets what a reader could
-  paste into a terminal or a config file. Never an eyebrow, a label, a
-  caption, a citation, a path, an identifier, a date, a table or a field
-  name: those are Chivo, with tabular numerals where they hold figures. Mono
-  set after a `font` shorthand takes `slashed-zero tabular-nums`, or its zero
-  reads as an O.
+  paste into a terminal or a config file: a terminal panel, its prompt and
+  its output alike, an install field, and a command in running text. Never
+  an eyebrow, a label, a caption, a citation, a path, an identifier, a date,
+  a table or a field name: those are Chivo, with tabular numerals where they
+  hold figures. Mono set after a `font` shorthand takes `slashed-zero
+  tabular-nums`, or its zero reads as an O.
 - **No middle dot.** A separator is ` | `.
 - **No em or en dash in copy.** A colon, a comma or a new sentence.
 - **One marker per viewport.** `x-site.marker` lays lichen behind one phrase
