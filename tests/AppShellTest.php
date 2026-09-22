@@ -84,6 +84,15 @@ test('a page head sets the trail above it, the status beside the title and the a
         ->toContain('<a href="/pdf">Download</a>');
 });
 
+test('a page head leads back to the one page above it', function () {
+    $html = Blade::render('<x-site.page-head :back="[\'All agreements\' => \'/agreements\']" title="Mutual NDA" />', deleteCachedView: true);
+
+    expect($html)
+        ->toContain('<a href="/agreements"')
+        ->toContain('<flux:icon.arrow-left variant="micro" />All agreements')
+        ->not->toContain('<flux:breadcrumbs');
+});
+
 test('a field row links its label to its control', function () {
     $html = Blade::render('<x-site.field-row label="Email" description="Where links go." for="email"><input id="email" /></x-site.field-row>', deleteCachedView: true);
 

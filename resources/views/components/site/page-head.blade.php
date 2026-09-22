@@ -1,4 +1,4 @@
-@props(['breadcrumbs' => [], 'eyebrow' => null, 'title', 'lead' => null])
+@props(['breadcrumbs' => [], 'back' => [], 'eyebrow' => null, 'title', 'lead' => null])
 
 {{--
     The top of a signed-in page: the trail of pages above it, the eyebrow, the
@@ -9,6 +9,7 @@
 
     @group Type
     @prop breadcrumbs label => href for each page above this one, outermost first, as x-site.breadcrumb.
+    @prop back label => href of the one page to go back to, e.g. a list above a record, as a link with an arrow: for a page the bar's links don't name.
     @prop eyebrow A label in the accent above the title.
     @prop title The page's h1.
     @prop lead A line under the title.
@@ -16,7 +17,7 @@
     @slot actions The page's buttons, set in x-site.actions.
 
     @example A record's page
-    <x-site.page-head :breadcrumbs="['Agreements' => '#']" title="Mutual NDA with Northwind" lead="Sent 21 Sep 2026, 10:42 UTC | 2 years + 3 years confidential">
+    <x-site.page-head :back="['All agreements' => '#']" title="Mutual NDA with Northwind" lead="Sent 21 Sep 2026, 10:42 UTC | 2 years + 3 years confidential">
         <x-slot:status><x-site.badge tone="warning" dot>Awaiting signature</x-site.badge></x-slot:status>
         <x-slot:actions>
             <x-site.button href="#" variant="secondary">Resend</x-site.button>
@@ -36,6 +37,11 @@
         @if ($breadcrumbs)
             <x-site.breadcrumb :items="$breadcrumbs" data-markdown-skip />
         @endif
+        @foreach ($back as $label => $href)
+            <a href="{{ $href }}" class="inline-flex w-fit items-center gap-1 text-small font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50" data-markdown-skip>
+                <flux:icon.arrow-left variant="micro" />{{ $label }}
+            </a>
+        @endforeach
         @if ($eyebrow)
             <x-site.text variant="label" tone="accent">{{ $eyebrow }}</x-site.text>
         @endif
