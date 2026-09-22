@@ -7,8 +7,14 @@
 ])
 
 {{--
-    The bar every page lays over its first band: the lockup, the links and the
-    actions, folded into a menu on a phone.
+    The bar every page lays over the hero, which carries the ink: the lockup,
+    the links, and `actions` closing the bar after the language switch where
+    the imprint speaks more than one. With `menu`, a phone folds the links
+    and the actions into a panel below the bar, through Alpine, which
+    Livewire loads on the page; without one, the lockup and the actions are
+    the whole bar there and the bar needs no script. The lab's own pages take
+    the lab's bar, and wherever the lab is registered, which is never in
+    production, the links end on it.
 
     @group Bands
 
@@ -27,15 +33,6 @@
     }
 @endphp
 
-{{--
-    Overlays the hero, which carries the ink. `actions` closes the bar, after
-    the language switch where the imprint speaks more than one. With
-    `menu`, a phone folds the links and the actions into a panel below the bar,
-    through Alpine, which Livewire loads on the page; without one, the lockup
-    and the actions are the whole bar there and the bar needs no script.
-    The lab's own pages take the lab's bar instead, and wherever the lab is
-    registered, which is never in production, the links end on it.
---}}
 @if ($lab)
 <x-foundry::site.lab-nav :home="$home" :home-label="$homeLabel" />
 @else

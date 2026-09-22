@@ -1,9 +1,13 @@
 @props(['title', 'description', 'scene' => null, 'card' => false, 'home' => null])
 
 {{--
-    A page of its own on ink, for an error or for signing in: the lockup, the
-    slot, and the service line, kept out of search. A scene lays a photo under
-    it; a card sets the slot in the middle.
+    A page of its own on ink, for an error or for signing in: the lockup and
+    the language switch, the slot, and the service line, kept out of search.
+    `scene` lays a photo under one even scrim, measured on bron's well: the
+    heading at 10.6:1 and the disclaimer over the brightest corner at 4.6:1;
+    without one the page is grain and the mark ghosted in its corner. `card`
+    sets the slot on a card in the middle, with `ink` on the bands around it
+    rather than the body, so Flux's dark variant keeps out of the card.
 
     @group Bands
 
@@ -18,15 +22,6 @@
     $home ??= \Steddle\Foundry\Locales::multilingual() ? localized_route('home') : url('/');
 @endphp
 
-{{--
-    A page of its own on ink, for an error and for signing in: the lockup and
-    the language switch, the slot, and the service line, kept out of search.
-    `scene` lays a photo under one even scrim, measured on bron's well: the
-    heading at 10.6:1 and the disclaimer over the brightest corner at 4.6:1;
-    without one the page is grain and the mark ghosted in its corner. `card`
-    sets the slot on a card in the middle, with `ink` on the bands around it
-    rather than the body, so Flux's dark variant keeps out of the card.
---}}
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
     <head>

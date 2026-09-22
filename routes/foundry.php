@@ -31,8 +31,9 @@ if (Locales::multilingual()) {
 }
 
 // Off a public deployment's route list altogether: the page Playwright renders
-// a brand asset from, and the imprint's pages about itself, open locally and
-// behind what config/imprint.php names as `pages.guard` elsewhere.
+// a brand asset from, kept out of search and nothing more, and the imprint's
+// pages about itself, the lab, the design page and the components, behind
+// `pages.middleware` and, outside local, `pages.guard` from config/imprint.php.
 if (! app()->isProduction()) {
     Route::get('foundry/brand/{asset}', RenderBrandAsset::class)
         ->middleware(Noindex::class)

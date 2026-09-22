@@ -3,8 +3,9 @@
 @props(['group' => 'social'])
 
 {{--
-    What foundry:assets renders, as /design shows it: the social images, or
-    the icons with the files written beside them.
+    What foundry:assets renders, as /design shows it: the social images in
+    pairs of one height, or the icons at a glance with the files written
+    beside them. No card ground: a section on ink keeps its own.
 
     @group Images
 
@@ -17,7 +18,6 @@
     $version = fn (string $name): string => substr($manifest[$name] ?? '', 0, 8);
 @endphp
 
-{{-- What foundry:assets makes, as each imprint's /design shows it. Social images in pairs of one height; icons at a glance, with the files written beside them. No card ground: a section on ink keeps its own. --}}
 <div {{ $attributes->class('flex flex-col gap-8') }}>
     <x-site.text tone="muted" class="max-w-[64ch] hyphens-manual">
         @if ($group === 'social')

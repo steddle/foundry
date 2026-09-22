@@ -2,7 +2,11 @@
 
 {{--
     The photo an ink band carries behind its content, with the scrim that
-    keeps the content legible on it.
+    keeps the content legible on it. `name` is a folder under public/ holding
+    home-{768,1280,1672}.{avif,webp}; config/imprint.php frames it under
+    `scenes.{name}`, where its subject stays in view as the band narrows.
+    `scrim` is `start` or `center`, for content set there, or a band's own
+    measured classes.
 
     @group Bands
 
@@ -20,7 +24,6 @@
     ][$scrim] ?? $scrim;
 @endphp
 
-{{-- A scene: the photo an ink band carries behind its content, and the scrim that keeps the content legible on it. $name is a folder under public/ holding home-{768,1280,1672}.{avif,webp}; config/imprint.php frames it under `scenes.{$name}`, where its subject stays in view as the band narrows. `scrim` is `start` or `center`, for content set there, or a band's own measured classes. --}}
 <picture data-markdown-skip>
     <source type="image/avif" srcset="/{{ $name }}/home-768.avif 768w, /{{ $name }}/home-1280.avif 1280w, /{{ $name }}/home-1672.avif 1672w" sizes="100vw">
     <img src="/{{ $name }}/home-1280.webp" srcset="/{{ $name }}/home-768.webp 768w, /{{ $name }}/home-1280.webp 1280w, /{{ $name }}/home-1672.webp 1672w" sizes="100vw"

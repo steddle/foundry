@@ -1,7 +1,8 @@
 @props(['size' => '2', 'level' => null, 'tone' => 'strong'])
 
 {{--
-    Spectral, on the imprint's scale. Colour comes from the tone alone.
+    Spectral, on the imprint's scale. Colour comes from `tone` alone, strong,
+    accent or inherit, so no caller sets two.
 
     @group Type
 
@@ -25,5 +26,4 @@
     $tones = ['strong' => 'text-zinc-950 dark:text-zinc-50', 'accent' => 'text-primary-700 dark:text-primary-300', 'inherit' => ''];
 @endphp
 
-{{-- A heading in Spectral. Colour comes from `tone` alone, so no caller sets two. --}}
 <flux:heading :$level {{ $attributes->class(['font-serif text-balance', $sizes[$size], $tones[$tone]]) }}>{{ $slot }}</flux:heading>

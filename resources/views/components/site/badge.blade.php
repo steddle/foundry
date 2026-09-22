@@ -1,9 +1,9 @@
 @props(['tone' => 'neutral', 'dot' => false])
 
 {{--
-    A short status beside what it describes: a status ramp's 50 as the ground
-    and its 700 as the text. Action, in lichen, is the one tone that asks the
-    reader to do something.
+    A short status beside what it describes, drawn by Flux: a status ramp's
+    50 as the ground and its 700 as the text, in both themes. Action, in
+    lichen, is the one tone that asks the reader to do something.
 
     @group Actions
 
@@ -29,7 +29,6 @@
     ];
 @endphp
 
-{{-- A short status beside what it describes, drawn by Flux in the family's colours. --}}
 <flux:badge size="sm" {{ $attributes->class(['w-fit gap-1.5 rounded-sm! font-semibold', $tones[$tone]]) }}>
     @if ($dot)
         <span class="size-1.5 shrink-0 rounded-full bg-current" aria-hidden="true"></span>

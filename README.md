@@ -35,12 +35,32 @@ Import the stylesheet after Tailwind and Flux:
 @import '../../vendor/steddle/foundry/resources/css/foundry.css';
 ```
 
-Give the imprint its `config/imprint.php` (name, ink and paper, scenes, og and banner copy), its `x-site.lockup`, `x-site.mark` and `x-site.marker`, and its `zinc` and `primary` ramps. Then build a page:
+Then give the imprint what is its own:
+
+- `config/imprint.php`: name, ink and paper, scenes (`docs-hero` and `legal-hero` where it has docs and legal pages), og and banner copy, and `locales` where it speaks more than one language
+- `resources/views/layouts/site.blade.php`, wrapping `<x-site.page>`
+- `x-site.nav` and `x-site.footer`, wrapping `x-foundry::site.nav` and `x-foundry::site.footer` (which needs a `scene`) with its links
+- `x-site.lockup` and `x-site.mark`, and its `zinc` and `primary` ramps
+- `config/markdown-response.php` naming `Steddle\Foundry\Markdown\DetectsMarkdownRequest` and `RemoveMarkdownSkipPreprocessor`, with `ProvideMarkdownResponse` on its public routes
+
+The layout:
 
 ```blade
-<x-site.hero title="What the page is for." marked="for." lead="One sentence under it." />
-<x-site.section>…</x-site.section>
-<x-site.footer />
+@props(['title', 'description'])
+
+<x-site.page :$title :$description :og="$og ?? []">
+    {{ $slot }}
+    <x-slot:closing>{{ $closing ?? '' }}</x-slot:closing>
+</x-site.page>
+```
+
+A page:
+
+```blade
+<x-layouts::site title="Pricing" description="What it costs.">
+    <x-site.hero scene="hero" title="What the page is for." marked="for." lead="One sentence under it." />
+    <x-site.section>…</x-site.section>
+</x-layouts::site>
 ```
 
 Outside production, `/components` shows every component the imprint renders, live and as Blade.
@@ -50,6 +70,9 @@ Outside production, `/components` shows every component the imprint renders, liv
 - Spectral, Chivo and Chivo Mono, the type scale and the radii in `foundry.css`
 - Seven ramps, written out as pairs: no role tokens
 - Layout, hero, section, nav and footer components under `x-site.*`, overridable per site
+- Languages: every page per locale under `Route::localized()`, translated paths, the language switch and the visitor's language followed
+- Docs and legal pages from a table of contents, with `Route::docs()` and `Route::legal()`
+- `sitemap.xml`, `llms.txt` and `llms-full.txt` from the imprint's page list
 - `/labs`, `/design` and `/components` outside production
 - `php artisan foundry:assets` renders the OG image, the social preview, the README banners and the icons, and `--check` fails when they drift from the copy
 - Markdown for agents: every page answers as markdown at `.md`, chrome left out

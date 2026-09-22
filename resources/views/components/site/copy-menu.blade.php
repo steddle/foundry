@@ -20,9 +20,9 @@
 {{--
     Fetches each address once, on the visitor's first hover or focus rather
     than on page load, and keeps the text: the token count is that response's
-    own `X-Markdown-Tokens` header, and copying needs no second request. A GET
-    carries both; a HEAD, though `ProvideMarkdownResponse` does answer it with
-    the header, still leaves the text to fetch again at the click that copies it.
+    own `X-Markdown-Tokens` header, and copying needs no second request. A GET,
+    because `DetectsMarkdownRequest` never answers a HEAD in markdown, so a
+    HEAD carries neither the text nor the header.
 
     data-markdown-skip goes on the root: RemoveMarkdownSkipPreprocessor reads
     a quoted attribute value whole, so the `=>` in the x-data below does not
