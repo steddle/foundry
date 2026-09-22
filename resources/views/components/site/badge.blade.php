@@ -5,7 +5,7 @@
     50 as the ground and its 700 as the text, in both themes. Action, in
     lichen, is the one tone that asks the reader to do something.
 
-    @group Actions
+    @group Elements
 
     @example Every tone
     <div class="flex flex-wrap items-center gap-2.5">

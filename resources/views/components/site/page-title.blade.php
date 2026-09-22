@@ -3,7 +3,7 @@
 {{--
     The first band of a page with no hero, under the bar on bone: its title and lede, then the slot in the same band.
 
-    @group Bands
+    @group Sections
 
     @example A title and a lede
     @ground bare

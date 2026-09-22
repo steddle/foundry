@@ -1,7 +1,7 @@
 {{--
     What something may do or includes: a list of x-site.checklist.item, each ticked in the accent.
 
-    @group Forms
+    @group Elements
 
     @example What a client may do
     <x-site.checklist>

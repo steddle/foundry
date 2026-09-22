@@ -7,7 +7,7 @@
     Copies or opens the page's own markdown, or every page's at once, with the
     token count of each. It fetches both on the first hover or focus.
 
-    @group Actions
+    @group Navigation
 
     @example Beside a page title
     <x-site.copy-menu />

@@ -16,7 +16,7 @@
     the lab's bar, and wherever the lab is registered, which is never in
     production, the links end on it.
 
-    @group Bands
+    @group Shell
 
     @example As this imprint sets it
     @ground bare

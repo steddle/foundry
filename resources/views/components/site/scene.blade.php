@@ -8,7 +8,7 @@
     `scrim` is `start` or `center`, for content set there, or a band's own
     measured classes.
 
-    @group Bands
+    @group Brand
 
     @example Behind a band
     <div class="relative isolate flex h-72 items-end overflow-hidden bg-zinc-900 ink p-8">

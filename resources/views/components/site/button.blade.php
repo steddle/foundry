@@ -3,7 +3,7 @@
 {{--
     One primary per viewport. Ghost belongs on ink, secondary on a card. A button without an href is a form's.
 
-    @group Actions
+    @group Elements
 
     @example Primary and secondary
     <div class="flex flex-wrap gap-4">

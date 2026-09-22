@@ -3,7 +3,7 @@
 {{--
     $groups: title => list of ['label', 'href', 'current' => bool]. Closed behind a disclosure below lg.
 
-    @group Layout
+    @group Navigation
 
     @example Two groups
     <x-site.side-nav :groups="[

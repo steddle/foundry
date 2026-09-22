@@ -3,7 +3,7 @@
 {{--
     Who is signed in, where a page acts as them: their initials, name and address.
 
-    @group Forms
+    @group Elements
 
     @example Above a consent
     <x-site.account-row :user="(object) ['name' => 'Ada Visser', 'email' => 'ada@example.com']" class="max-w-md" />

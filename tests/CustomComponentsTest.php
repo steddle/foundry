@@ -15,6 +15,7 @@ beforeEach(function () {
 {{--
     The imprint's own stamp,
     in red.
+    @group Brand
     @prop ink The colour it is pressed in.
     @slot date The day under the stamp.
     @example Alone
@@ -23,7 +24,7 @@ beforeEach(function () {
 <span>the stamp {{ $label ?? '' }}</span>
 BLADE);
     File::ensureDirectoryExists(resource_path('views/components/site/signing'));
-    File::put(resource_path('views/components/site/signing/seal.blade.php'), '<span>the seal</span>');
+    File::put(resource_path('views/components/site/signing/seal.blade.php'), "{{-- @group Elements --}}\n<span>the seal</span>");
     File::put(resource_path('views/layouts/site.blade.php'), '<main>{{ $slot }}</main>');
     Blade::anonymousComponentPath(resource_path('views/layouts'), 'layouts');
 });
@@ -54,21 +55,31 @@ test('the toggle lists the foundry\'s or the imprint\'s components alone, and th
     $this->get('/labs')->assertSee('href="'.route('foundry.components', ['from' => 'custom']).'"', false);
 });
 
-test('a component without an example shows its tag, grouped by its folder', function () {
+test('a component without an example shows its tag', function () {
     $this->get('/components/signing-seal')->assertOk()
         ->assertSee('x-site.signing.seal')
         ->assertSee('Add an @example')
-        ->assertDontSee('<span>the seal</span>', false)
-        ->assertSee('aria-label="Signing"', false);
+        ->assertDontSee('<span>the seal</span>', false);
+});
+
+test('a folder that names a group groups its files, and a component in no group of the index is refused', function () {
+    File::ensureDirectoryExists(resource_path('views/components/site/sections'));
+    File::put(resource_path('views/components/site/sections/pricing.blade.php'), '<section>Pricing</section>');
+
+    expect(Catalog::custom()['sections-pricing']['group'])->toBe('Sections');
+
+    File::put(resource_path('views/components/site/loose.blade.php'), '<p>Loose</p>');
+
+    expect(fn () => Catalog::custom())->toThrow(LogicException::class, 'loose.blade.php names no group of the index');
 });
 
 test('a folder with an index is one component, its other files its parts', function () {
     File::ensureDirectoryExists(resource_path('views/components/site/lifecycle'));
-    File::put(resource_path('views/components/site/lifecycle/index.blade.php'), '<ol>{{ $slot }}</ol>');
+    File::put(resource_path('views/components/site/lifecycle/index.blade.php'), "{{-- @group Elements --}}\n<ol>{{ \$slot }}</ol>");
     File::put(resource_path('views/components/site/lifecycle/step.blade.php'), '<li>{{ $slot }}</li>');
 
     expect(Catalog::custom())->toHaveKey('lifecycle')->not->toHaveKey('lifecycle-step')
-        ->and(Catalog::custom()['lifecycle']['group'])->toBe('Custom');
+        ->and(Catalog::custom()['lifecycle']['group'])->toBe('Elements');
 });
 
 test('a file the foundry keeps, or an entry its catalogue names, is no custom component', function () {
@@ -80,9 +91,9 @@ test('a file the foundry keeps, or an entry its catalogue names, is no custom co
 });
 
 test('an opening comment is read only where it opens the component', function () {
-    File::put(resource_path('views/components/site/late.blade.php'), "@props(['a' => 1])\n\n<p>{{ \$a }}</p>\n{{-- Not the description. --}}");
+    File::put(resource_path('views/components/site/late.blade.php'), "@props(['a' => 1])\n\n<p>{{ \$a }}</p>\n{{-- Not the description. @group Elements --}}");
 
-    expect(Catalog::custom()['late']['description'])->toBe('');
+    expect(fn () => Catalog::custom())->toThrow(LogicException::class, 'late.blade.php names no group');
 });
 
 test('without component files of its own an imprint has no custom components', function () {

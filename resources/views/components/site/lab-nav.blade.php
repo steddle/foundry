@@ -4,7 +4,7 @@
     The bar of the lab's own pages, on bone: the lockup home, then the lab,
     the design page and the components.
 
-    @group Bands
+    @group Shell
 
     @example As this imprint sets it
     @ground bare

@@ -11,7 +11,7 @@
     stylesheet and script; and Plausible and Visitors in production where the
     imprint names them. The slot adds what is the page's own.
 
-    @group Bands
+    @group Shell
 
     @example In a page's head
     @code

@@ -3,7 +3,7 @@
     and the house that serves it where `imprint.endorsed` holds, as it does
     for every imprint but Steddle itself. On ink.
 
-    @group Bands
+    @group Shell
 
     @example On ink
     @ground ink

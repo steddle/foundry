@@ -3,7 +3,7 @@
 {{--
     One row in a ruled list: a serif title, a sentence, an arrow. The parent draws the rules.
 
-    @group Layout
+    @group Navigation
 
     @example Two rows
     <div class="flex flex-col divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-zinc-700 dark:border-zinc-700">

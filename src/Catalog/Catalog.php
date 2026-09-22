@@ -19,8 +19,8 @@ use Symfony\Component\Finder\Finder;
  */
 final class Catalog
 {
-    /** The index's groups, in order. An imprint's own component without a group is `Custom`. */
-    private const GROUPS = ['Layout', 'Type', 'Actions', 'Forms', 'Brand', 'Bands', 'Sections', 'Images'];
+    /** The index's groups, in order. Every component names one, the imprint's as the foundry's. */
+    private const GROUPS = ['Shell', 'Sections', 'Layout', 'Navigation', 'Type', 'Elements', 'Forms', 'Brand'];
 
     /**
      * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}>
@@ -56,9 +56,14 @@ final class Catalog
 
         $entries = collect(self::read($root, 'custom'))
             ->reject(fn (array $entry, string $slug): bool => isset($shared[$slug]) || is_file(__DIR__.'/../../resources/views/components/site/'.$entry['file']))
-            ->map(fn (array $entry): array => $entry['examples'] === [] ? [...$entry, 'examples' => [['title' => 'Its tag', 'code' => true, 'blade' => "<{$entry['tag']} />"]]] : $entry);
+            ->map(fn (array $entry): array => $entry['examples'] === [] ? [...$entry, 'examples' => [['title' => 'Its tag', 'code' => true, 'blade' => "<{$entry['tag']} />"]]] : $entry)
+            ->each(function (array $entry): void {
+                if (! in_array($entry['group'], self::GROUPS, true)) {
+                    throw new LogicException("The imprint's {$entry['file']} names no group of the index. Give its opening comment `@group` and one of: ".implode(', ', self::GROUPS).'.');
+                }
+            });
 
-        return $entries->sortBy(fn (array $entry): string => ($entry['group'] === 'Custom' ? '0' : '1').$entry['group'].$entry['name'])->all();
+        return $entries->sortBy(fn (array $entry): string => sprintf('%02d', array_search($entry['group'], self::GROUPS)).$entry['name'])->all();
     }
 
     /**
@@ -106,7 +111,7 @@ final class Catalog
 
             $entries[str_replace(['/', '.'], '-', $path)] = [
                 'name' => Str::ucfirst(str_replace('-', ' ', Str::afterLast($path, '/'))),
-                'group' => $group ?? (str_contains($path, '/') ? Str::ucfirst(str_replace('-', ' ', Str::before($path, '/'))) : 'Custom'),
+                'group' => $group ?? (str_contains($path, '/') ? Str::ucfirst(str_replace('-', ' ', Str::before($path, '/'))) : null),
                 'from' => $from,
                 'tag' => 'x-site.'.str_replace('/', '.', $path),
                 'file' => $relative.'.blade.php',

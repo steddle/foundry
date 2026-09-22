@@ -9,7 +9,7 @@
     with it Livewire's Alpine; a page that renders no control can leave them
     out. No @fluxAppearance: the site follows the system theme itself.
 
-    @group Bands
+    @group Shell
 
     @example A site's layout
     @code

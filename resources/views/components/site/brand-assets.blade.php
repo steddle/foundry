@@ -7,7 +7,7 @@
     pairs of one height, or the icons at a glance with the files written
     beside them. No card ground: a section on ink keeps its own.
 
-    @group Images
+    @group Brand
 
     @example Icons
     <x-site.brand-assets group="icon" />

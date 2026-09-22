@@ -6,7 +6,7 @@
     the topic itself. Its three rows are the grid's own, so the rule above the
     links lines up across a row whatever each description's length.
 
-    @group Layout
+    @group Elements
 
     @example In a grid of one
     <x-site.tile-grid :count="1">

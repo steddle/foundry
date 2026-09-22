@@ -9,7 +9,7 @@
     sets the slot on a card in the middle, with `ink` on the bands around it
     rather than the body, so Flux's dark variant keeps out of the card.
 
-    @group Bands
+    @group Shell
 
     @example An error page
     @code

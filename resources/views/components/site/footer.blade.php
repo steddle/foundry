@@ -16,7 +16,7 @@
     rule, the imprint's disclaimer and its copyright, and the house that
     serves it where the imprint is endorsed.
 
-    @group Bands
+    @group Shell
 
     @example As this imprint sets it
     @ground bare

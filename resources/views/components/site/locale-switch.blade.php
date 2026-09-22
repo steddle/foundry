@@ -9,7 +9,7 @@
     browser's own preference. The page names its counterparts to a crawler in
     its head.
 
-    @group Bands
+    @group Shell
 
     @example In the bar, where the imprint speaks more than one language
     @code

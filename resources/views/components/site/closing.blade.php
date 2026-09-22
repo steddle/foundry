@@ -6,7 +6,7 @@
     on the dark side of the footer's scrim, clear of the scene's subject,
     which every scene keeps to the right.
 
-    @group Bands
+    @group Sections
 
     @example Centred
     @ground ink

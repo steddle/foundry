@@ -5,7 +5,7 @@
     `previous`, `next` and `back` is [label, href]; `back` leads up rather
     than along, to the list the page belongs to.
 
-    @group Layout
+    @group Navigation
 
     @example Along
     <x-site.pager :previous="['Two dates', '#']" :next="['Two lanes', '#']">Checked against the API on 21 September 2026.</x-site.pager>

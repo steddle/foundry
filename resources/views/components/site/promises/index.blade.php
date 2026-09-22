@@ -3,7 +3,7 @@
     x-site.promises.item. A CSS counter numbers them, so an item needs no
     index of its own.
 
-    @group Layout
+    @group Elements
 
     @example Two promises
     <x-site.promises>

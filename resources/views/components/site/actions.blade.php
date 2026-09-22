@@ -1,7 +1,7 @@
 {{--
     The row of buttons a band, a page or a form ends on. Chrome, so a page's markdown leaves it out.
 
-    @group Actions
+    @group Elements
 
     @example Two buttons
     <x-site.actions>

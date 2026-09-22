@@ -9,7 +9,7 @@
 {{--
     1600×520, for a README's <picture>: a light source and a dark one, which GitHub picks by the reader's theme.
 
-    @group Images
+    @group Brand
 
     @example Light
     @ground bare

@@ -16,7 +16,7 @@
     `width` and `height` set the canvas, for a format of another size, and a
     `footer` slot sets a row below the lede.
 
-    @group Images
+    @group Brand
 
     @example Heading, marker, lede and eyebrow
     @ground bare
