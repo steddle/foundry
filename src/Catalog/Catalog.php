@@ -97,10 +97,10 @@ final class Catalog
     }
 
     /**
-     * The components under a directory. A folder with an index is one
-     * component and its other files are its parts; a file in a folder named
-     * after a group is in that group, and every other names its own, or the
-     * read throws.
+     * The components under a directory, the Livewire ones left out. A folder
+     * with an index is one component and its other files are its parts; a
+     * file in a folder named after a group is in that group, and every other
+     * names its own, or the read throws.
      *
      * @return array<string, array{name: string, group: string, from: string, tag: string, file: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array<string, mixed>>}>
      */
@@ -113,6 +113,10 @@ final class Catalog
         $entries = [];
 
         foreach (Finder::create()->files()->in($root)->name('*.blade.php')->sortByName() as $file) {
+            if (self::livewire($file->getPathname(), $file->getContents())) {
+                continue;
+            }
+
             $relative = Str::before(str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePathname()), '.blade.php');
             $path = Str::replaceLast('/index', '', $relative);
 
@@ -144,6 +148,21 @@ final class Catalog
         }
 
         return $entries;
+    }
+
+    /**
+     * Whether the file is Livewire's rather than Blade's: a single-file
+     * component, which declares its class itself, or anything inside a
+     * multi-file component's folder, which holds the class beside the view.
+     */
+    private static function livewire(string $path, string $source): bool
+    {
+        $directory = dirname($path);
+
+        return is_file($directory.'/'.basename($directory).'.php')
+            || is_file($directory.'/index.php')
+            || is_file(Str::replaceLast('.blade.php', '.php', $path))
+            || (bool) preg_match('/^\s*(?:<\?php|@php).*?\bnew class\b.*?\bextends\b/s', $source);
     }
 
     /**

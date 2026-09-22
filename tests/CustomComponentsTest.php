@@ -127,3 +127,14 @@ test('an example renders alone on a page of its own, for the frame at a viewport
     $this->get('/components/stamp/examples/9')->assertNotFound();
     $this->get('/components/nothing/examples/0')->assertNotFound();
 });
+
+test('a Livewire component, single-file or multi-file, is no catalogue component', function () {
+    File::put(resource_path('views/components/counter.blade.php'), "<?php\n\nnew class extends \\Livewire\\Component {};\n?>\n<div>0</div>");
+
+    File::ensureDirectoryExists(resource_path('views/components/meter'));
+    File::put(resource_path('views/components/meter/meter.blade.php'), '<div>0</div>');
+    File::put(resource_path('views/components/meter/meter.php'), "<?php\n\nnew class extends \\Livewire\\Component {};");
+    File::put(resource_path('views/components/meter/placeholder.blade.php'), '<div></div>');
+
+    expect(array_keys(Catalog::custom()))->toContain('stamp')->not->toContain('counter', 'meter', 'meter-placeholder');
+});
