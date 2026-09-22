@@ -58,3 +58,11 @@ test('the footer lists its links, or the items a site sets, above the service li
         ->toContain('Imprint by Steddle')
         ->and($items)->toContain('<li>Services</li>')->not->toContain('by Steddle')->not->toContain('A service by');
 });
+
+test('the site bar closes on a signed-in reader\'s account menu, with the imprint\'s items, at every width', function () {
+    $html = Blade::render('<x-site.nav :links="[\'Docs\' => \'/docs\']" :user="$user"><x-slot:account><flux:menu.item href="/settings">Settings</flux:menu.item></x-slot:account></x-site.nav>', ['user' => (object) ['name' => 'Ada Visser', 'email' => 'ada@example.com']], deleteCachedView: true);
+
+    expect($html)->toContain('<flux:avatar')->toContain('href="/settings">Settings');
+
+    expect(Blade::render('<x-site.nav :links="[\'Docs\' => \'/docs\']" />', deleteCachedView: true))->not->toContain('<flux:avatar');
+});

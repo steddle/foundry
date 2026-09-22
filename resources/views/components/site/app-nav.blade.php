@@ -1,6 +1,6 @@
 @props([
     'links' => [],
-    'user',
+    'user' => null,
     'home' => null,
     'homeLabel' => null,
     'menuLabel' => null,
@@ -18,7 +18,7 @@
 
     @group Shell
     @prop links label => href, shown from lg up. The current link is the one whose address the current one equals or lies under, marked by a rule in the accent and aria-current="page".
-    @prop user An object with `name` and `email`, for the account menu.
+    @prop user An object with `name` and `email`, for the account menu; without one, as for a guest, the bar has no account menu.
     @prop home Where the lockup leads; without one, the `dashboard` route where the imprint has one, and the root otherwise.
     @prop homeLabel The lockup link's accessible name; without one, `foundry::nav.home` with the imprint's name.
     @prop menuLabel The accessible name of the button that opens the panel; without one, `foundry::nav.menu`.
@@ -73,7 +73,9 @@
                     <div class="flex items-center gap-3 max-lg:hidden">{{ $actions }}</div>
                 @endif
 
-                <x-site.account-menu :user="$user">{{ $menu ?? '' }}</x-site.account-menu>
+                @if ($user)
+                    <x-site.account-menu :user="$user">{{ $menu ?? '' }}</x-site.account-menu>
+                @endif
 
                 @if ($folds)
                     <button type="button" x-ref="toggle" :aria-controls="$id('app-menu')" :aria-expanded="open" aria-label="{{ $menuLabel }}" @click="open = ! open"

@@ -84,6 +84,18 @@ test('a page head sets the trail above it, the status beside the title and the a
         ->toContain('<a href="/pdf">Download</a>');
 });
 
+test('an app bar without a user has no account menu', function () {
+    $html = Blade::render('<x-site.app-nav :links="[\'Docs\' => \'/docs\']" />', deleteCachedView: true);
+
+    expect($html)->toContain('>Docs</a>')->not->toContain('<flux:avatar');
+});
+
+test('a signed-in page takes the imprint\'s own bar in place of the app bar', function () {
+    $html = Blade::render('<x-site.app-page title="Agreements" :user="$user"><x-slot:nav><header>Own bar</header></x-slot:nav><p>Body</p></x-site.app-page>', ['user' => $this->user], deleteCachedView: true);
+
+    expect($html)->toContain('<header>Own bar</header>')->toContain('<p>Body</p>')->not->toContain('<flux:avatar');
+});
+
 test('a page head leads back to the one page above it', function () {
     $html = Blade::render('<x-site.page-head :back="[\'All agreements\' => \'/agreements\']" title="Mutual NDA" />', deleteCachedView: true);
 
