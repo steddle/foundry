@@ -37,7 +37,18 @@ final class Content
      */
     public static function docs(?string $locale = null): array
     {
-        // Once per request and locale: a page reads it for its nav and its pager, the routes for their names.
+        return self::docsIn($locale ?? app()->getLocale());
+    }
+
+    /**
+     * Once a request for each locale: a page reads it for its nav and its
+     * pager, the routes for their names. The locale is an argument so `once`
+     * keys on it.
+     *
+     * @return array<string, array{title: string, icon: string, description: string, articles: array<string, array<int|string, mixed>>}>
+     */
+    private static function docsIn(string $locale): array
+    {
         return once(fn (): array => collect(self::read('docs', $locale))
             ->map(fn (array $topic): array => [...$topic, 'articles' => array_filter($topic['articles'], fn (string $slug): bool => self::view('docs.articles', $slug, $locale) !== null, ARRAY_FILTER_USE_KEY)])
             ->filter(fn (array $topic): bool => $topic['articles'] !== [])
@@ -50,6 +61,16 @@ final class Content
      * @return array{promises: list<array{0: string, 1: string}>, audiences: array<string, array<string, mixed>>}
      */
     public static function legal(?string $locale = null): array
+    {
+        return self::legalIn($locale ?? app()->getLocale());
+    }
+
+    /**
+     * Once a request for each locale, as `docsIn()`.
+     *
+     * @return array{promises: list<array{0: string, 1: string}>, audiences: array<string, array<string, mixed>>}
+     */
+    private static function legalIn(string $locale): array
     {
         return once(function () use ($locale): array {
             $legal = self::read('legal', $locale);

@@ -82,7 +82,7 @@ final class AgentFiles
      */
     private function listed(Pages $pages): array
     {
-        return $this->cached('pages', fn (): array => collect($pages->byLocale())
+        return $this->cached('foundry.pages', fn (): array => collect($pages->byLocale())
             ->map(fn (array $list): array => collect($list)->map(fn (array $page): array => Arr::except($page, 'render'))->all())
             ->all());
     }
@@ -97,7 +97,7 @@ final class AgentFiles
      */
     private function cached(string $key, \Closure $callback): mixed
     {
-        return Cache::store(config('markdown-response.cache.store'))->remember("foundry.{$key}", config('markdown-response.cache.ttl', 3600), $callback);
+        return Cache::store(config('markdown-response.cache.store'))->remember($key, config('markdown-response.cache.ttl', 3600), $callback);
     }
 
     /**

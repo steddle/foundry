@@ -27,3 +27,14 @@ test('a document\'s outline is its own h2s, each given an id from its words unle
     expect($outline['headings'])->toBe(['what-it-is' => 'What it is', 'kept' => 'Kept'])
         ->and($outline['html'])->toContain('<h2 id="what-it-is">What it is</h2>');
 });
+
+test('the docs are read once a request for each locale, not once for all', function () {
+    File::ensureDirectoryExists(resource_path('content/nl'));
+    File::put(resource_path('content/nl/docs.php'), "<?php return ['start' => ['title' => 'Begin', 'icon' => 'x', 'description' => 'D', 'articles' => ['written' => ['Geschreven', 'D']]]];");
+
+    app()->setLocale('en');
+    $english = Content::docs()['start']['title'];
+    app()->setLocale('nl');
+
+    expect($english)->toBe('Start')->and(Content::docs()['start']['title'])->toBe('Begin');
+});
