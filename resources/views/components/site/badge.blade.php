@@ -1,9 +1,10 @@
 @props(['tone' => 'neutral', 'dot' => false])
 
 {{--
-    A short status beside what it describes, drawn by Flux: a status ramp's
-    50 as the ground and its 700 as the text, in both themes, and neutral in
-    the grey, 100 under 700 on bone and 800 under 300 in the dark.
+    A short status beside what it describes, drawn by Flux: on bone a status
+    ramp's 50 as the ground and its 700 as the text, and on ink or in the
+    dark its 300 as the text over a wash of it, as the foundry sets colour on
+    ink. Neutral is the grey, 100 under 700 on bone and 800 under 300 on ink.
 
     @group Elements
     @prop tone neutral, info, success, warning, danger or action: the ramp the badge is drawn in. Action, in lichen, is the one tone that asks the reader to do something.
@@ -22,11 +23,11 @@
 @php
     $tones = [
         'neutral' => 'bg-zinc-100! text-zinc-700! dark:bg-zinc-800! dark:text-zinc-300!',
-        'info' => 'bg-info-50! text-info-700!',
-        'success' => 'bg-success-50! text-success-700!',
-        'warning' => 'bg-warning-50! text-warning-700!',
-        'danger' => 'bg-danger-50! text-danger-700!',
-        'action' => 'bg-secondary-50! text-secondary-700!',
+        'info' => 'bg-info-50! text-info-700! dark:bg-info-300/15! dark:text-info-300!',
+        'success' => 'bg-success-50! text-success-700! dark:bg-success-300/15! dark:text-success-300!',
+        'warning' => 'bg-warning-50! text-warning-700! dark:bg-warning-300/15! dark:text-warning-300!',
+        'danger' => 'bg-danger-50! text-danger-700! dark:bg-danger-300/15! dark:text-danger-300!',
+        'action' => 'bg-secondary-50! text-secondary-700! dark:bg-secondary-300/15! dark:text-secondary-300!',
     ];
 @endphp
 
