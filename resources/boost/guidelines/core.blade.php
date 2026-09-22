@@ -95,9 +95,11 @@ is its own.
   title, status and `meta` with its `actions` outside it; `x-site.empty`
   stands where a list holds nothing yet; `x-site.field-row` sets one
   setting's label and description beside its control, the parent ruling
-  the rows. A step that can't be undone sits in a menu as
-  `x-site.confirm-item`: the second click arms it, only the third runs its
-  `action`, an Alpine expression, never a `wire:click` on the item.
+  the rows. A step that can't be undone takes three presses, never a
+  dialog: `x-site.confirm-button`, or `x-site.confirm-item` in a menu. The
+  words go from the label to 'Click again' to 'One more time' as the danger ramp
+  fills the control a third at a time, and only the third press runs its
+  `action`, an Alpine expression, never a `wire:click` on the control.
 - **Script**: a foundry component that holds state uses Alpine, which
   Livewire loads on the page, and `[x-cloak]` holds it back until Alpine has
   read it. A page with such a component loads Livewire's scripts; what only

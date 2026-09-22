@@ -85,15 +85,28 @@ test('a field row links its label to its control', function () {
     expect($html)->toContain('<label for="email"')->toContain('<input id="email" />')->toContain('Where links go.');
 });
 
-test('a confirm item arms before it acts, and runs its action only when armed', function () {
+test('a confirm item asks twice in the menu and acts on the third press', function () {
     $html = Blade::render('<x-site.confirm-item icon="trash" action="$wire.delete(\'abc\')">Delete</x-site.confirm-item>', deleteCachedView: true);
 
     expect($html)
         ->toContain('Delete')
-        ->toContain('Click again to confirm')
-        ->toContain('if (! armed)')
-        ->toContain("else { armed = false; clearTimeout(timer); \$wire.delete(&#039;abc&#039;) }")
+        ->toContain('Click again')
+        ->toContain('Tap again')
+        ->toContain('One more time')
         ->toContain('x-on:click.capture')
+        ->toContain('if (step === 2) { step = 0; $wire.delete(&#039;abc&#039;) }')
+        ->toContain('x-on:lofi-close-popovers="step === 2 || $event.stopPropagation()"')
+        ->not->toContain('wire:click');
+});
+
+test('a confirm button fills a third per press and acts on the third', function () {
+    $html = Blade::render('<x-site.confirm-button label="Delete account" action="$wire.deleteAccount()" />', deleteCachedView: true);
+
+    expect($html)
+        ->toContain('aria-label="Delete account"')
+        ->toContain('if (step === 2) { step = 3; $wire.deleteAccount();')
+        ->toContain('clip-path: inset(0 ${100 - (step / 3) * 100}% 0 0)')
+        ->toContain('One more time')
         ->not->toContain('wire:click');
 });
 

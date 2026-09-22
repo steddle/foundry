@@ -1,20 +1,18 @@
-@props(['action', 'icon' => null, 'confirm' => null])
+@props(['action', 'icon' => null])
 
 {{--
-    A menu item for a step that can't be undone, taken in three clicks: the
-    menu opens, the item arms, and only the click on the armed item acts.
-    Armed, it reads 'Click again to confirm' in the danger ramp and the menu
-    stays open; it disarms after four seconds or when the pointer leaves it.
-    The action is an Alpine expression rather than a wire:click on the item,
-    which would fire on the arming click too. A Flux item closes its menu by
-    dispatching `lofi-close-popovers` on mouseup, before the click, so the
-    wrapper stops that event until the item is armed and lets the confirming
-    press close the menu.
+    x-site.confirm-button as a row in a menu: three presses, the words going
+    from the label to 'Click again' to 'One more time' while a danger wash grows
+    behind the icon and the words a third at a time, and the third press runs
+    the action. The menu stays open exactly as long as the question does. The
+    action is an Alpine expression rather than a wire:click on the item, which
+    would fire on the first press. A Flux item closes its menu by dispatching
+    `lofi-close-popovers` on mouseup, before the click, so the wrapper stops
+    that event until the third press.
 
     @group Navigation
-    @prop action The Alpine expression the confirming click runs, e.g. `$wire.delete('…')` or `$el.closest('form').requestSubmit()`.
+    @prop action The Alpine expression the third press runs, e.g. `$wire.delete('…')`.
     @prop icon A Flux icon before the words.
-    @prop confirm The armed words; without them, `foundry::nav.confirm`.
 
     @example In a row's menu
     <flux:dropdown>
@@ -26,12 +24,12 @@
         </flux:menu>
     </flux:dropdown>
 --}}
-<div class="contents" x-data="{ armed: false, timer: null }"
-    x-on:click.capture="if (! armed) { $event.preventDefault(); $event.stopPropagation(); armed = true; clearTimeout(timer); timer = setTimeout(() => armed = false, 4000) } else { armed = false; clearTimeout(timer); {{ $action }} }"
-    x-on:lofi-close-popovers="armed || $event.stopPropagation()"
-    x-on:mouseleave="armed = false; clearTimeout(timer)">
-    <flux:menu.item variant="danger" :$icon x-bind:data-armed="armed" x-bind:class="armed && 'bg-danger-50! text-danger-700! dark:bg-danger-300/15! dark:text-danger-300!'" {{ $attributes }}>
-        <span x-show="! armed">{{ $slot }}</span>
-        <span x-show="armed" x-cloak>{{ $confirm ?? __('foundry::nav.confirm') }}</span>
+<div class="contents" x-data="{ step: 0, timer: null }"
+    x-on:click.capture="clearTimeout(timer); if (step === 2) { step = 0; {{ $action }} } else { $event.preventDefault(); $event.stopPropagation(); step++; timer = setTimeout(() => step = 0, 1500) }"
+    x-on:lofi-close-popovers="step === 2 || $event.stopPropagation()">
+    <flux:menu.item variant="danger" :$icon x-bind:data-step="step" {{ $attributes->class('relative isolate overflow-hidden text-danger-700! dark:text-danger-300! **:data-flux-menu-item-icon:text-current!') }}>
+        <span aria-hidden="true" class="absolute inset-y-0 left-0 -z-10 bg-danger-700/15 dark:bg-danger-300/20 transition-[width] duration-180 ease-(--ease-settle)"
+            style="width: 0%" x-bind:style="`width: ${(step / 3) * 100}%`"></span>
+        <x-site.confirm-button.labels :label="$slot" align="start" />
     </flux:menu.item>
 </div>

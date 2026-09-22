@@ -6,5 +6,7 @@ return [
     'menu' => 'Menu',
     'account' => 'Accountmenu van :name',
     'log_out' => 'Uitloggen',
-    'confirm' => 'Klik nogmaals om te bevestigen',
+    'confirm_again' => 'Klik nog eens',
+    'confirm_again_touch' => 'Tik nog eens',
+    'confirm_last' => 'Nog één keer',
 ];

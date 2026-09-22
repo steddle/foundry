@@ -6,5 +6,7 @@ return [
     'menu' => 'Menu',
     'account' => 'Account menu for :name',
     'log_out' => 'Log out',
-    'confirm' => 'Click again to confirm',
+    'confirm_again' => 'Click again',
+    'confirm_again_touch' => 'Tap again',
+    'confirm_last' => 'One more time',
 ];
