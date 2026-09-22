@@ -66,7 +66,8 @@
         };
 
         document.addEventListener('click', (event) => {
-            const button = event.target.closest('[data-example] button');
+            {{-- Only the example's own controls: an example's content has buttons of its own. --}}
+            const button = event.target.closest('[data-example] button:is([data-copy-example], [data-width], [data-ground])');
 
             if (! button) {
                 return;
