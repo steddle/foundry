@@ -9,4 +9,5 @@ return [
     'confirm_again' => 'Klik nog eens',
     'confirm_again_touch' => 'Tik nog eens',
     'confirm_last' => 'Nog één keer',
+    'confirm_done' => 'Klaar',
 ];

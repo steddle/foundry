@@ -9,4 +9,5 @@ return [
     'confirm_again' => 'Click again',
     'confirm_again_touch' => 'Tap again',
     'confirm_last' => 'One more time',
+    'confirm_done' => 'Done',
 ];

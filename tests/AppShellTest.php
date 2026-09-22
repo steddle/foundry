@@ -104,8 +104,9 @@ test('a confirm button fills a third per press and acts on the third', function 
 
     expect($html)
         ->toContain('aria-label="Delete account"')
-        ->toContain('step = 3; timer = setTimeout(() => { $wire.deleteAccount();')
-        ->toContain('clip-path: inset(0 ${100 - (step / 3) * 100}% 0 0)')
+        ->toContain('step = 3; timer = setTimeout(() => Promise.resolve().then(() => $wire.deleteAccount())')
+        ->toContain('✓ Done')
+        ->toContain('clip-path: inset(0 ${100 - (Math.min(step, 3) / 3) * 100}% 0 0)')
         ->toContain('One more time')
         ->not->toContain('wire:click');
 });
