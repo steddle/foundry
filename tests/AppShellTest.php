@@ -60,7 +60,7 @@ test('the account menu leaves out logging out where the imprint has no logout ro
 test('an ink page sets its toast group through x-site.toasts', function () {
     $html = Blade::render('<x-site.ink-page title="Sign in" description="Sign in." card>Form</x-site.ink-page>', deleteCachedView: true);
 
-    expect($html)->toContain('<flux:toast.group>')->toContain('Form');
+    expect($html)->toContain('<flux:toast.group>')->toContain('Form')->toContain('[&_h1]:text-3xl!');
 });
 
 test('a record row keeps its actions outside its link', function () {

@@ -8,7 +8,7 @@
     @prop title The page's title, followed in `<title>` by the imprint's name.
     @prop description The page's meta description.
     @prop scene A photo under one even scrim, measured on bron's well: the heading at 10.6:1 and the disclaimer over the brightest corner at 4.6:1. Without one the page is grain and the mark ghosted in its corner.
-    @prop card Sets the slot on a card in the middle, with `ink` on the bands around it rather than the body, so Flux's dark variant keeps out of the card. A card page shows no language switch.
+    @prop card Sets the slot on a card in the middle, its title at heading-1's phone size, with `ink` on the bands around it rather than the body, so Flux's dark variant keeps out of the card. A card page shows no language switch.
     @prop home Where the lockup leads; without one, the `home` route in the current language where the imprint speaks more than one, and the root otherwise.
 
     @example An error page
@@ -50,7 +50,8 @@
 
         @if ($card)
             <main class="flex flex-1 items-center justify-center px-4 py-12">
-                <div class="flex w-full max-w-md flex-col gap-6 rounded-lg bg-zinc-25 dark:bg-zinc-800 p-6 sm:p-9">
+                {{-- The title holds heading-1's phone size: at its desktop size a card this narrow breaks it over three lines. --}}
+                <div class="flex w-full max-w-md flex-col gap-6 rounded-lg bg-zinc-25 dark:bg-zinc-800 p-6 sm:p-9 [&_h1]:text-3xl!">
                     {{ $slot }}
                 </div>
             </main>
