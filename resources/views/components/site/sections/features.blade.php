@@ -21,18 +21,16 @@
 <x-site.section :$sunken {{ $attributes }}>
     <x-site.section-head :$eyebrow :$title>{{ $slot }}</x-site.section-head>
 
-    <dl @class([
+    <ol role="list" @class([
         'grid grid-cols-1 border-t border-zinc-200 dark:border-zinc-700',
         match (count($features)) { 2 => 'lg:grid-cols-2', 4 => 'lg:grid-cols-4', default => 'lg:grid-cols-3' },
     ])>
         @foreach ($features as [$feature, $body])
-            <div class="flex flex-col gap-3 border-b border-zinc-200 dark:border-zinc-700 py-8 lg:border-b-0 lg:px-8 lg:first:pl-0 lg:last:pr-0 lg:[&:not(:first-child)]:border-l">
-                <dt class="flex flex-col gap-4">
-                    <p class="text-sm font-medium text-zinc-600 dark:text-zinc-400 tabular-nums" data-markdown-skip>{{ sprintf('%02d', $loop->iteration) }}</p>
-                    <x-site.heading size="2" level="3">{{ $feature }}</x-site.heading>
-                </dt>
-                <dd class="max-w-[44ch] text-copy text-pretty">{{ $body }}</dd>
-            </div>
+            <li class="flex flex-col gap-3 border-b border-zinc-200 dark:border-zinc-700 py-8 lg:border-b-0 lg:px-8 lg:first:pl-0 lg:last:pr-0 lg:[&:not(:first-child)]:border-l">
+                <x-site.text variant="meta" tone="muted" data-markdown-skip>{{ sprintf('%02d', $loop->iteration) }}</x-site.text>
+                <x-site.heading size="2" level="3" class="mt-1">{{ $feature }}</x-site.heading>
+                <x-site.text class="max-w-[44ch]">{{ $body }}</x-site.text>
+            </li>
         @endforeach
-    </dl>
+    </ol>
 </x-site.section>

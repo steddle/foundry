@@ -389,11 +389,14 @@
     --font-serif: 'Spectral', Georgia, 'Times New Roman', serif;
     --font-mono: 'Chivo Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
-    /* Sizes are set for a 390px phone and reach display 88, heading-1 56, heading-2 24 and lede 19 on a wide screen. */
+    /* Sizes are set for a 390px phone and reach display 88, figure and heading-1 56, heading-2 24 and lede 19 on a wide screen. */
     --text-display: clamp(2.25rem, 1.2rem + 5vw, 5.5rem);
     --text-display--line-height: 1.02;
     --text-display--letter-spacing: -0.03em;
     --text-display--font-weight: 600;
+    --text-figure: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+    --text-figure--line-height: 1;
+    --text-figure--letter-spacing: -0.03em;
     --text-heading-1: clamp(1.875rem, 1.2rem + 2.8vw, 3.5rem);
     --text-heading-1--line-height: 1.04;
     --text-heading-1--letter-spacing: -0.03em;

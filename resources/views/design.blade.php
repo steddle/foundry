@@ -36,6 +36,7 @@
     $sample = $design['type'] ?? [];
     $type = [
         ['display', 'Spectral 600 | 1.02 | -0.03em', 'font-serif text-display font-semibold text-zinc-950 dark:text-zinc-50', $sample['display'] ?? $name],
+        ['figure', 'Spectral 600 | 1 | -0.03em | tabular', 'font-serif text-figure font-semibold text-zinc-950 dark:text-zinc-50 tabular-nums', $sample['figure'] ?? '95'],
         ['heading-1', 'Spectral 600 | 1.04 | -0.03em', 'font-serif text-heading-1 font-semibold text-zinc-950 dark:text-zinc-50', $sample['heading-1'] ?? $name],
         ['heading-2', 'Spectral 600 | 1.15 | -0.02em', 'font-serif text-heading-2 font-semibold text-zinc-950 dark:text-zinc-50', $sample['heading-2'] ?? $name],
         ['heading-3', 'Spectral 600 | 1.25 | -0.01em', 'font-serif text-heading-3 font-semibold text-zinc-950 dark:text-zinc-50', $sample['heading-3'] ?? $name],
