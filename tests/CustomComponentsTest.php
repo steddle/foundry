@@ -114,3 +114,11 @@ test('the index lists every group with each component\'s description', function 
         ->assertSee('href="'.route('foundry.components', 'stamp').'"', false)
         ->assertSee('The imprint\'s own stamp, in red.');
 });
+
+test('an example renders alone on a page of its own, for the frame at a viewport\'s width', function () {
+    File::put(resource_path('views/components/site/head.blade.php'), '<title>{{ $title }}</title>');
+
+    $this->get('/components/stamp/examples/0')->assertOk()->assertSee('<span>the stamp', false);
+    $this->get('/components/stamp/examples/9')->assertNotFound();
+    $this->get('/components/nothing/examples/0')->assertNotFound();
+});

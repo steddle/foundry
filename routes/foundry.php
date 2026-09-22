@@ -5,6 +5,7 @@ use Steddle\Foundry\Http\Controllers\AgentFiles;
 use Steddle\Foundry\Http\Controllers\RenderBrandAsset;
 use Steddle\Foundry\Http\Controllers\RootLanguagePrefix;
 use Steddle\Foundry\Http\Controllers\ShowComponent;
+use Steddle\Foundry\Http\Controllers\ShowExample;
 use Steddle\Foundry\Http\Controllers\ShowLab;
 use Steddle\Foundry\Http\Controllers\UpdateLocale;
 use Steddle\Foundry\Http\Middleware\Noindex;
@@ -50,5 +51,9 @@ if (! app()->isProduction()) {
             Route::get('components/{component?}', ShowComponent::class)
                 ->where('component', '[a-z0-9_-]+')
                 ->name('foundry.components');
+
+            Route::get('components/{component}/examples/{example}', ShowExample::class)
+                ->where(['component' => '[a-z0-9_-]+', 'example' => '[0-9]+'])
+                ->name('foundry.components.example');
         });
 }

@@ -30,8 +30,8 @@
                     @endif
                 </div>
 
-                @foreach ($entry['examples'] as $example)
-                    <x-foundry::catalog.example :example="$example" />
+                @foreach ($entry['examples'] as $index => $example)
+                    <x-foundry::catalog.example :$example :$slug :$index />
                 @endforeach
 
                 @foreach (['Props' => $entry['props'], 'Slots' => $entry['slots']] as $heading => $rows)
