@@ -4,6 +4,7 @@ namespace Steddle\Foundry\Catalog;
 
 use Closure;
 use Composer\InstalledVersions;
+use Illuminate\Support\Facades\View as ViewFactory;
 use Illuminate\Support\Str;
 use LogicException;
 use Symfony\Component\Finder\Finder;
@@ -58,6 +59,25 @@ final class Catalog
 
             return self::sorted(array_map(fn (array $entry): array => $entry['examples'] === [] ? [...$entry, 'examples' => [['title' => 'Its tag', 'code' => true, 'blade' => "<{$entry['tag']} />"]]] : $entry, $entries));
         });
+    }
+
+    /**
+     * How the imprint holds a foundry component: `wraps` where its own file
+     * hands content to x-foundry::site.*, `copies` where the file stands in
+     * for the foundry's, the thing /components exists to show, and null where
+     * it keeps no file of its own.
+     */
+    public static function held(string $tag): ?string
+    {
+        $name = Str::after($tag, 'x-site.');
+
+        if (! ViewFactory::exists("components.site.{$name}")) {
+            return null;
+        }
+
+        $source = file_get_contents(ViewFactory::getFinder()->find("components.site.{$name}"));
+
+        return str_contains($source, "x-foundry::site.{$name}") ? 'wraps' : 'copies';
     }
 
     /**

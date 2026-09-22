@@ -3,7 +3,7 @@
 # The imprints that install steddle/foundry, and the round a foundry change
 # makes through them before it is pushed and after.
 #
-#   bin/imprints sync   [name...]  copy this checkout into each vendor/, clear views, build
+#   bin/imprints sync   [name...]  copy this checkout into each vendor/, boost:install, clear views, build
 #   bin/imprints test   [name...]  run each imprint's suite
 #   bin/imprints update [name...]  composer update steddle/foundry, then boost:install
 #   bin/imprints status [name...]  open files and commits not pushed
@@ -44,6 +44,7 @@ for imprint in "${IMPRINTS[@]}"; do
     case "$command" in
         sync)
             rsync -a --delete --exclude vendor --exclude .git --exclude composer.lock --exclude node_modules --exclude '/workbench' "$FOUNDRY/" vendor/steddle/foundry/ \
+                && php artisan boost:install --guidelines --skills --no-interaction > /dev/null \
                 && php artisan view:clear -q \
                 && npm run build > /dev/null 2>&1 \
                 || failed=1

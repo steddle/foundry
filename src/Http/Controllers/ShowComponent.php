@@ -4,8 +4,6 @@ namespace Steddle\Foundry\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View as ViewFactory;
-use Illuminate\Support\Str;
 use Steddle\Foundry\Catalog\Catalog;
 
 final class ShowComponent
@@ -52,26 +50,7 @@ final class ShowComponent
             'groups' => $groups,
             'from' => $from,
             'hasCustom' => $hasCustom,
-            'own' => $entry['from'] === 'foundry' ? $this->own($entry['tag']) : null,
+            'own' => $entry['from'] === 'foundry' ? Catalog::held($entry['tag']) : null,
         ]);
-    }
-
-    /**
-     * How the imprint holds a foundry component: `wraps` where its own file
-     * hands content to x-foundry::site.*, `copies` where the file stands in
-     * for the foundry's, the thing /components exists to show, and null where
-     * it keeps no file of its own.
-     */
-    private function own(string $tag): ?string
-    {
-        $name = Str::after($tag, 'x-site.');
-
-        if (! ViewFactory::exists("components.site.{$name}")) {
-            return null;
-        }
-
-        $source = file_get_contents(ViewFactory::getFinder()->find("components.site.{$name}"));
-
-        return str_contains($source, "x-foundry::site.{$name}") ? 'wraps' : 'copies';
     }
 }

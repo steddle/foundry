@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Process;
+use Steddle\Foundry\Boost\Skill;
 use Steddle\Foundry\Catalog\Catalog;
 use Steddle\Foundry\Markdown\MarkdownUrl;
 use Steddle\Foundry\Pages;
@@ -33,6 +34,16 @@ final class Imprint
 
         test('the published images are rendered from the copy the imprint states', function () {
             $this->artisan('foundry:assets --check')->assertSuccessful();
+        });
+
+        test('the foundry skill states the imprint as it stands', function () {
+            $installed = Skill::installed();
+
+            expect($installed)->not->toBeEmpty('The foundry skill is not installed: run `php artisan boost:update`.');
+
+            foreach ($installed as $path => $fingerprint) {
+                expect($fingerprint)->toBe(Skill::fingerprint(), "{$path} was rendered before the components or the config moved: run `php artisan boost:update`.");
+            }
         });
 
         test('every component in the catalogue renders', function (string $slug) use ($asViewer) {

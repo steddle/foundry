@@ -20,10 +20,10 @@ The rules the imprints follow are the foundry's guideline, the same text Laravel
 ## Carrying a change through
 
 1. `vendor/bin/pest --compact` and `vendor/bin/pint --dirty` here.
-2. `bin/imprints sync`, then `bin/imprints test`: every imprint runs this checkout from its `vendor/`.
+2. `bin/imprints sync`, then `bin/imprints test`: every imprint runs this checkout from its `vendor/`, with the guideline and the `foundry` skill installed from it.
 3. Commit and push the foundry once every suite passes.
 4. `bin/imprints update` (`composer update steddle/foundry` and `boost:install`), then `bin/imprints test` again.
-5. Commit each imprint by pathspec: its `composer.lock`, its `CLAUDE.md` and `AGENTS.md`, and what the change touched in it. Push an imprint only on Mischa's word.
+5. Commit each imprint by pathspec: its `composer.lock`, its `CLAUDE.md` and `AGENTS.md`, its skills directories, and what the change touched in it. Push an imprint only on Mischa's word.
 
 A change to the copy or markup of the published images needs `php artisan foundry:assets --url=https://<imprint>.test` in each imprint, or its suite fails the asset check.
 
@@ -35,7 +35,7 @@ A change to the copy or markup of the published images needs `php artisan foundr
 
 ## Tests
 
-`Steddle\Foundry\Testing\Imprint::tests()` is the suite every imprint runs for what the foundry gives it: the catalogue, every framed example, the lab behind its guard and absent in production, every public page with its markdown, the sitemap and the llms files, and the published images. Each imprint registers it in `tests/Feature/FoundryTest.php`, with a `viewer` where its lab is guarded. A test of foundry behaviour goes there, never into one imprint's suite. The foundry's own suite (`tests/`) runs on Testbench with `workbench/` as its imprint.
+`Steddle\Foundry\Testing\Imprint::tests()` is the suite every imprint runs for what the foundry gives it: the catalogue, every framed example, the lab behind its guard and absent in production, every public page with its markdown, the sitemap and the llms files, the published images, and the `foundry` skill's fingerprint. Each imprint registers it in `tests/Feature/FoundryTest.php`, with a `viewer` where its lab is guarded. A test of foundry behaviour goes there, never into one imprint's suite. The foundry's own suite (`tests/`) runs on Testbench with `workbench/` as its imprint.
 
 ## Laravel conventions
 
