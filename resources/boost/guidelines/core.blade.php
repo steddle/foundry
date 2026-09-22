@@ -31,6 +31,16 @@ is its own.
   and `x-site.numbered-section`, each with `sunken` for a band a step below
   the page. `x-site.copy-menu` reads its words from `foundry::agents`, in
   English and Dutch.
+- **Sections**: a page is a run of sections. The foundry holds the base
+  ones under `x-site.sections.*`, `split` (words beside a `figure` slot),
+  `steps`, `features`, `faq` and `cta`, beside `x-site.hero`; each takes
+  its words as props, its items as a list of pairs, and passes `id`,
+  `sunken` or `scene` to the band. A section that is a base one filled with
+  copy is written in the page, never kept as a component. A section with
+  markup of its own is the imprint's, under
+  `resources/views/components/site/sections/`, built on a base one where
+  its shape allows; a figure the labs show alone is a component of its own
+  beside it. A base section enters the foundry when a page uses it.
 - **Header and footer**: `x-foundry::site.nav` takes the links, the home
   address, an `actions` slot and whether a phone folds them into a menu;
   `x-foundry::site.footer` takes the scene, the links or an `items` slot and

@@ -20,7 +20,7 @@ use Symfony\Component\Finder\Finder;
 final class Catalog
 {
     /** The index's groups, in order. An imprint's own component without a group is `Custom`. */
-    private const GROUPS = ['Layout', 'Type', 'Actions', 'Forms', 'Brand', 'Bands', 'Images'];
+    private const GROUPS = ['Layout', 'Type', 'Actions', 'Forms', 'Brand', 'Bands', 'Sections', 'Images'];
 
     /**
      * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}>

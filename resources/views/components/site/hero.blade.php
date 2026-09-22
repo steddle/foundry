@@ -10,7 +10,7 @@
     lede come first, one gap apart; the slot follows at the same gap. An
     eyebrow that is more than a label, a breadcrumb or a status, is a slot.
 
-    @group Bands
+    @group Sections
 
     @example A page
     @ground bare
