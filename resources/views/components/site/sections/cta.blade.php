@@ -12,6 +12,7 @@
     @prop lead The lede under the title.
     @prop scene The scene the band is ink over, by its name in config/imprint.php.
     @slot actions The buttons under the lede.
+    @slot slot What follows the rest of the section, in the same band.
 
     @example On a scene
     @ground bare
@@ -23,15 +24,10 @@
 --}}
 <x-site.section :$scene {{ $attributes }}>
     <div class="flex max-w-[34rem] flex-col items-start gap-6">
-        @if ($eyebrow)
-            <x-site.text variant="label" tone="accent">{{ $eyebrow }}</x-site.text>
-        @endif
-        <x-site.heading size="1" level="2">{{ $title }}</x-site.heading>
-        @if ($lead)
-            <x-site.text variant="lede">{{ $lead }}</x-site.text>
-        @endif
+        <x-site.section-head stacked :$eyebrow :$title :$lead />
         @isset($actions)
             <x-site.actions>{{ $actions }}</x-site.actions>
         @endisset
+        {{ $slot }}
     </div>
 </x-site.section>

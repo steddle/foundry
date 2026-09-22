@@ -2,6 +2,7 @@
 
 namespace Steddle\Foundry\Catalog;
 
+use Closure;
 use Composer\InstalledVersions;
 use Illuminate\Support\Str;
 use LogicException;
@@ -33,37 +34,39 @@ final class Catalog
     /**
      * The foundry's own components, and the two every imprint supplies.
      *
-     * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}>
+     * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}>
      */
     public static function shared(): array
     {
-        return once(fn (): array => collect([...self::read(__DIR__.'/../../resources/views/components/site', 'foundry'), ...self::supplied()])
-            ->sortBy(fn (array $entry, string $slug): string => sprintf('%02d', array_search($entry['group'], self::GROUPS)).$slug)
-            ->all());
+        return once(fn (): array => self::sorted([...self::read(__DIR__.'/../../resources/views/components/site', 'foundry'), ...self::supplied()]));
     }
 
     /**
      * The imprint's own components: every file under its
      * resources/views/components/site that the foundry neither keeps nor names.
      *
-     * @return array<string, array{name: string, group: string, from: string, tag: string, description: string, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}>
+     * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}>
      */
     public static function custom(): array
     {
-        // A test's dataset asks for the entries before the application boots, when Composer still knows the project's root.
-        $root = (app()->bound('path.resources') ? resource_path() : realpath(InstalledVersions::getRootPackage()['install_path']).'/resources').'/views/components/site';
-        $shared = self::shared();
+        return once(function (): array {
+            // A test's dataset asks for the entries before the application boots, when Composer still knows the project's root.
+            $root = (app()->bound('path.resources') ? resource_path() : realpath(InstalledVersions::getRootPackage()['install_path']).'/resources').'/views/components/site';
+            $shared = self::shared();
 
-        $entries = collect(self::read($root, 'custom'))
-            ->reject(fn (array $entry, string $slug): bool => isset($shared[$slug]) || is_file(__DIR__.'/../../resources/views/components/site/'.$entry['file']))
-            ->map(fn (array $entry): array => $entry['examples'] === [] ? [...$entry, 'examples' => [['title' => 'Its tag', 'code' => true, 'blade' => "<{$entry['tag']} />"]]] : $entry)
-            ->each(function (array $entry): void {
-                if (! in_array($entry['group'], self::GROUPS, true)) {
-                    throw new LogicException("The imprint's {$entry['file']} names no group of the index. Give its opening comment `@group` and one of: ".implode(', ', self::GROUPS).'.');
-                }
-            });
+            $entries = self::read($root, 'custom', fn (string $slug, string $file): bool => isset($shared[$slug]) || is_file(__DIR__.'/../../resources/views/components/site/'.$file));
 
-        return $entries->sortBy(fn (array $entry): string => sprintf('%02d', array_search($entry['group'], self::GROUPS)).$entry['name'])->all();
+            return self::sorted(array_map(fn (array $entry): array => $entry['examples'] === [] ? [...$entry, 'examples' => [['title' => 'Its tag', 'code' => true, 'blade' => "<{$entry['tag']} />"]]] : $entry, $entries));
+        });
+    }
+
+    /**
+     * @param  array<string, array{group: string, name: string}>  $entries
+     * @return array<string, array{group: string, name: string}> in index order: by group, then by name
+     */
+    private static function sorted(array $entries): array
+    {
+        return collect($entries)->sortBy(fn (array $entry): string => sprintf('%02d', array_search($entry['group'], self::GROUPS)).$entry['name'])->all();
     }
 
     /**
@@ -80,12 +83,14 @@ final class Catalog
 
     /**
      * The components under a directory. A folder with an index is one
-     * component and its other files are its parts; a folder without one is a
-     * group of its own.
+     * component and its other files are its parts; a file in a folder named
+     * after a group is in that group, and every other names its own, or the
+     * read throws.
      *
+     * @param  (Closure(string, string): bool)|null  $skip  slug, file => whether the file is no component of this read
      * @return array<string, array{name: string, group: string, from: string, tag: string, file: string, description: string, examples: list<array<string, mixed>>}>
      */
-    private static function read(string $root, string $from): array
+    private static function read(string $root, string $from, ?Closure $skip = null): array
     {
         if (! is_dir($root)) {
             return [];
@@ -101,17 +106,23 @@ final class Catalog
                 continue;
             }
 
-            $source = $file->getContents();
-            ['description' => $description, 'group' => $group, 'examples' => $examples, 'props' => $documented, 'slots' => $slots] = self::comment($source);
+            $slug = str_replace(['/', '.'], '-', $path);
 
-            // By the foundry's own convention every component names its group, so one that does not failed to parse.
-            if ($from === 'foundry' && ! in_array($group, self::GROUPS, true)) {
-                throw new LogicException("The foundry's {$relative} names no group of the index, or one it does not have.");
+            if ($skip?->__invoke($slug, $relative.'.blade.php')) {
+                continue;
             }
 
-            $entries[str_replace(['/', '.'], '-', $path)] = [
+            $source = $file->getContents();
+            ['description' => $description, 'group' => $group, 'examples' => $examples, 'props' => $documented, 'slots' => $slots] = self::comment($source);
+            $group ??= str_contains($path, '/') ? Str::ucfirst(str_replace('-', ' ', Str::before($path, '/'))) : null;
+
+            if (! in_array($group, self::GROUPS, true)) {
+                throw new LogicException("{$relative}.blade.php names no group of the index. Give its opening comment `@group` and one of: ".implode(', ', self::GROUPS).'.');
+            }
+
+            $entries[$slug] = [
                 'name' => Str::ucfirst(str_replace('-', ' ', Str::afterLast($path, '/'))),
-                'group' => $group ?? (str_contains($path, '/') ? Str::ucfirst(str_replace('-', ' ', Str::before($path, '/'))) : null),
+                'group' => $group,
                 'from' => $from,
                 'tag' => 'x-site.'.str_replace('/', '.', $path),
                 'file' => $relative.'.blade.php',

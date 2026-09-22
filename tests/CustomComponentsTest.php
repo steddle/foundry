@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Once;
 use Steddle\Foundry\Catalog\Catalog;
 
 beforeEach(function () {
@@ -69,6 +70,7 @@ test('a folder that names a group groups its files, and a component in no group 
     expect(Catalog::custom()['sections-pricing']['group'])->toBe('Sections');
 
     File::put(resource_path('views/components/site/loose.blade.php'), '<p>Loose</p>');
+    Once::flush();
 
     expect(fn () => Catalog::custom())->toThrow(LogicException::class, 'loose.blade.php names no group of the index');
 });

@@ -23,7 +23,7 @@ is its own.
   Tailwind's colour names resolve to the nearest ramp for Flux's `color`
   props, as an interim until no view passes one.
 - **Components**: `/components` is the full catalogue. The contract every
-  imprint writes against: `x-site.heading` (`size` display, 1, 2, 3 and
+  imprint writes against: `x-site.heading` (`size` display, figure, 1, 2, 3 and
   `tone` strong, accent, inherit) and `x-site.text` (`variant` lede, copy,
   small, label, meta and `tone` body, strong, muted, accent, error,
   inherit), both over Flux; `x-site.button`, over `flux:button` with
@@ -35,15 +35,18 @@ is its own.
   ones under `x-site.sections.*`: `hero` and `page-title` to open a page,
   `split` (words beside a `figure` slot), `steps`, `features`, `faq` and
   `cta` between, and `closing` in the footer's slot. Every one takes the
-  same words: `eyebrow` where it has one, `title`, and `lead`, the lede,
-  as props; its items as a list of pairs; the buttons in an `actions` slot,
-  which it sets in `x-site.actions`; and `id`, `sunken` or `scene` for the
-  band. `x-site.section-head` opens a band on the same three words. A
-  section that is a base one filled with copy is written in the page, never
-  kept as a component. A section with markup of its own is the imprint's,
-  under `resources/views/components/site/sections/`, built on a base one
-  where its shape allows; a figure the labs show alone is a component of its
-  own beside it. A base section enters the foundry when a page uses it.
+  same words, `eyebrow`, `title` and `lead`, the lede, as props, or `lead`
+  as a slot where it holds markup; its items as a list of pairs or of rows
+  keyed the same; the buttons in an `actions` slot, which it sets in
+  `x-site.actions`; whatever the default slot holds after the rest; and
+  `id`, `sunken` or `scene` for the band. Every one sets its words through
+  `x-site.section-head`, beside each other or `stacked`, so they read alike
+  on every band. A section that is a base one filled with copy is written
+  in the page, never kept as a component. A section with markup of its own
+  is the imprint's, under `resources/views/components/site/sections/`,
+  built on a base one where its shape allows; a figure a section sets more
+  than once is a component of its own beside it. A base section enters the
+  foundry when a page uses it.
 - **Header and footer**: `x-foundry::site.nav` takes the links, the home
   address, an `actions` slot and whether a phone folds them into a menu;
   `x-foundry::site.footer` takes the scene, the links or an `items` slot and

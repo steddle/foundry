@@ -35,7 +35,7 @@
     @unless ($example['code'] ?? false)
         @if ($ground === 'bare')
             <div class="overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
-                <iframe src="{{ route('foundry.components.example', [$slug, $index]) }}" title="{{ $example['title'] }}" data-width="1280" class="block h-96 origin-top-left border-0"></iframe>
+                <iframe src="{{ route('foundry.components.example', [$slug, $index]) }}" title="{{ $example['title'] }}" data-width="1280" loading="lazy" class="block h-96 origin-top-left border-0"></iframe>
             </div>
         @else
             <div data-canvas class="overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700 p-8 {{ $grounds[$ground] }}">
@@ -97,6 +97,10 @@
 
         {{-- A load does not bubble, so the listener captures it: the frames below this script have not been parsed yet. --}}
         document.addEventListener('load', (event) => event.target.matches?.('[data-example] iframe') && fitExample(event.target), true);
-        addEventListener('resize', () => document.querySelectorAll('[data-example] iframe').forEach(fitExample));
+        let refit = 0;
+        addEventListener('resize', () => {
+            cancelAnimationFrame(refit);
+            refit = requestAnimationFrame(() => document.querySelectorAll('[data-example] iframe').forEach(fitExample));
+        });
     </script>
 @endonce

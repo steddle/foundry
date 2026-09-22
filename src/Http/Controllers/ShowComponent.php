@@ -26,7 +26,10 @@ final class ShowComponent
         $entry = $component === null ? null : ($entries[$component] ?? abort(404));
         $query = $from ? ['from' => $from] : [];
 
-        $groups = collect(Catalog::groups($entries))->map(fn (array $slugs): array => array_map(fn (string $item): array => [
+        $index = Catalog::groups($entries);
+        $hasCustom = Catalog::custom() !== [];
+
+        $groups = collect($index)->map(fn (array $slugs): array => array_map(fn (string $item): array => [
             'label' => $entries[$item]['name'],
             'href' => route('foundry.components', [$item, ...$query]),
             'current' => $item === $component,
@@ -35,11 +38,11 @@ final class ShowComponent
         if ($entry === null) {
             return view('foundry::catalog.index', [
                 'groups' => $groups,
-                'index' => Catalog::groups($entries),
+                'index' => $index,
                 'entries' => $entries,
                 'query' => $query,
                 'from' => $from,
-                'hasCustom' => Catalog::custom() !== [],
+                'hasCustom' => $hasCustom,
             ]);
         }
 
@@ -48,7 +51,7 @@ final class ShowComponent
             'entry' => $entry,
             'groups' => $groups,
             'from' => $from,
-            'hasCustom' => Catalog::custom() !== [],
+            'hasCustom' => $hasCustom,
             'own' => $entry['from'] === 'foundry' ? $this->own($entry['tag']) : null,
         ]);
     }

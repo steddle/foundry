@@ -35,19 +35,19 @@
     ];
 
     $sample = $design['type'] ?? [];
-    // What each step measures is read off the rendered sample, so it is what foundry.css states and nothing typed here.
+    // Each sample is the component a page sets that step with, and what it measures is read off the render.
     $type = [
-        ['display', 'font-serif text-display font-semibold text-zinc-950 dark:text-zinc-50', $sample['display'] ?? $name, null],
-        ['figure', 'font-serif text-figure font-semibold text-zinc-950 dark:text-zinc-50 tabular-nums', $sample['figure'] ?? '95', 'tabular'],
-        ['heading-1', 'font-serif text-heading-1 font-semibold text-zinc-950 dark:text-zinc-50', $sample['heading-1'] ?? $name, null],
-        ['heading-2', 'font-serif text-heading-2 font-semibold text-zinc-950 dark:text-zinc-50', $sample['heading-2'] ?? $name, null],
-        ['heading-3', 'font-serif text-heading-3 font-semibold text-zinc-950 dark:text-zinc-50', $sample['heading-3'] ?? $name, null],
-        ['lede', 'text-lede text-zinc-800 dark:text-zinc-200', $sample['lede'] ?? $name, null],
-        ['copy', 'text-copy text-zinc-800 dark:text-zinc-200', $sample['copy'] ?? $name, null],
-        ['small', 'text-small text-zinc-600 dark:text-zinc-400', $sample['small'] ?? $name, null],
-        ['label', 'text-label text-primary-700 dark:text-primary-300', $sample['label'] ?? $name, 'sentence case'],
-        ['meta', 'text-meta text-zinc-600 dark:text-zinc-400 tabular-nums', $sample['meta'] ?? $name, 'tabular'],
-        ['code', 'font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums', $sample['code'] ?? 'php artisan foundry:assets', 'what a reader could paste into a terminal'],
+        ['display', 'heading', ['size' => 'display'], $sample['display'] ?? $name, null],
+        ['figure', 'heading', ['size' => 'figure'], $sample['figure'] ?? '95', 'tabular'],
+        ['heading-1', 'heading', ['size' => '1'], $sample['heading-1'] ?? $name, null],
+        ['heading-2', 'heading', ['size' => '2'], $sample['heading-2'] ?? $name, null],
+        ['heading-3', 'heading', ['size' => '3'], $sample['heading-3'] ?? $name, null],
+        ['lede', 'text', ['variant' => 'lede'], $sample['lede'] ?? $name, null],
+        ['copy', 'text', ['variant' => 'copy'], $sample['copy'] ?? $name, null],
+        ['small', 'text', ['variant' => 'small', 'tone' => 'muted'], $sample['small'] ?? $name, null],
+        ['label', 'text', ['variant' => 'label', 'tone' => 'accent'], $sample['label'] ?? $name, 'sentence case'],
+        ['meta', 'text', ['variant' => 'meta', 'tone' => 'muted'], $sample['meta'] ?? $name, 'tabular'],
+        ['code', null, [], $sample['code'] ?? 'php artisan foundry:assets', 'what a reader could paste into a terminal'],
     ];
 
     $spacing = [
@@ -198,7 +198,7 @@
             <x-site.text variant="lede" class="max-w-[60ch]">The scale is fluid: each size is set for a 390px phone and grows with the window. What stands beside each step is what the browser measures at this width.</x-site.text>
 
             <div class="flex flex-col border-t border-zinc-200 dark:border-zinc-700">
-                @foreach ($type as [$step, $classes, $text, $note])
+                @foreach ($type as [$step, $component, $props, $text, $note])
                     <div x-data="{ spec: '' }" x-init="
                         const style = getComputedStyle($refs.sample);
                         const size = parseFloat(style.fontSize);
@@ -215,7 +215,13 @@
                             <span class="text-small font-semibold text-zinc-950 dark:text-zinc-50">{{ $step }}</span>
                             <span class="text-meta text-zinc-600 dark:text-zinc-400 tabular-nums" x-text="spec"></span>
                         </div>
-                        <p x-ref="sample" class="{{ $classes }}">{{ $text }}</p>
+                        @if ($component === 'heading')
+                            <x-site.heading x-ref="sample" :size="$props['size']">{{ $text }}</x-site.heading>
+                        @elseif ($component === 'text')
+                            <x-site.text x-ref="sample" :variant="$props['variant']" :tone="$props['tone'] ?? 'body'">{{ $text }}</x-site.text>
+                        @else
+                            <p x-ref="sample" class="font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums">{{ $text }}</p>
+                        @endif
                     </div>
                 @endforeach
                 @foreach ($design['fonts'] ?? [] as $font)

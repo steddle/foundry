@@ -10,6 +10,7 @@
     @prop lead The lede under the title.
     @prop align center or start: at the start everything stays on the dark side of the footer's scrim, clear of the scene's subject, which every scene keeps to the right.
     @slot actions The buttons under the lede.
+    @slot slot What follows the rest of the section, in the same band.
 
     @example Centred
     @ground ink
@@ -33,17 +34,10 @@
         'items-center text-center' => $align === 'center',
         'items-start' => $align === 'start',
     ])>
-        <div @class(['flex flex-col gap-4', 'items-center' => $align === 'center'])>
-            @if ($eyebrow)
-                <x-site.text variant="label" tone="accent">{{ $eyebrow }}</x-site.text>
-            @endif
-            <x-site.heading size="1" level="2" class="max-w-[18ch]">{{ $title }}</x-site.heading>
-            @if ($lead)
-                <x-site.text variant="lede" class="max-w-[48ch]">{{ $lead }}</x-site.text>
-            @endif
-        </div>
+        <x-site.section-head stacked :$align :$eyebrow :$title :$lead />
         @isset($actions)
             <x-site.actions>{{ $actions }}</x-site.actions>
         @endisset
+        {{ $slot }}
     </x-site.container>
 </section>

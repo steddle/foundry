@@ -36,13 +36,7 @@
 <x-site.section :$scene :$sunken {{ $attributes }}>
     <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div class="flex flex-col items-start gap-5">
-            @if ($eyebrow)
-                <x-site.text variant="label" tone="accent">{{ $eyebrow }}</x-site.text>
-            @endif
-            <x-site.heading size="1" level="2" class="max-w-[16ch]">{{ $title }}</x-site.heading>
-            @if ($lead)
-                <x-site.text variant="lede" class="max-w-[44ch]">{{ $lead }}</x-site.text>
-            @endif
+            <x-site.section-head stacked :$eyebrow :$title :$lead />
             @isset($actions)
                 <x-site.actions>{{ $actions }}</x-site.actions>
             @endisset

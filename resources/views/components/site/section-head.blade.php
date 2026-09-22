@@ -1,24 +1,46 @@
-@props(['eyebrow' => null, 'title', 'lead' => null])
+@props(['eyebrow' => null, 'title', 'lead' => null, 'marked' => null, 'stacked' => false, 'align' => 'start', 'size' => '1', 'level' => 2])
 
 {{--
-    A section's opening: the eyebrow and the title, and the lede beside them
-    on a wide screen. A div and not a header: a page's markdown
-    drops every <header> as chrome.
+    The words every section opens on: the eyebrow, the title and the lede,
+    in one place so every section sets them alike. Beside each other on a
+    wide screen, or `stacked`, one above the next, where the section sets
+    something under them. A div and not a header: a page's markdown drops
+    every <header> as chrome.
 
     @group Type
-    @prop eyebrow A label in the accent above the title.
-    @prop title The section's h2, at size 1.
-    @prop lead The lede, beside the title on a wide screen and under it on a phone.
+    @prop eyebrow A label in the accent above the title, or a slot where it is more than a label, a breadcrumb or a status.
+    @prop title The heading, with its `marked` phrase laid on the marker.
+    @prop lead The lede, as text or as a slot where it holds markup.
+    @prop marked The phrase of `title` laid on the marker, on a page's opening title alone.
+    @prop stacked Sets the lede under the title in place of beside it.
+    @prop align start or center: where stacked words set.
+    @prop size display or 1: the title's step of the type scale.
+    @prop level 1 or 2: the title's h element.
 
-    @example With a lede
+    @example Beside each other
     <x-site.section-head eyebrow="How it works" title="One title that says what the section argues." lead="The lede, beside the title on a wide screen and under it on a phone." />
+
+    @example Stacked
+    <x-site.section-head stacked eyebrow="How it works" title="One title that says what the section argues." lead="The lede, under the title." />
 --}}
-<div {{ $attributes->class('grid grid-cols-1 items-end gap-6 lg:grid-cols-2 lg:gap-12') }}>
-    <div class="flex flex-col gap-5">
-        @if ($eyebrow)
+@php
+    $heading = $size === 'display' ? 'max-w-[16ch]' : 'max-w-[20ch]';
+@endphp
+
+<div {{ $attributes->class([
+    'grid grid-cols-1 items-end gap-6 lg:grid-cols-2 lg:gap-12' => ! $stacked,
+    'flex flex-col gap-5' => $stacked,
+    'items-start' => $stacked && $align === 'start',
+    'items-center text-center' => $stacked && $align === 'center',
+]) }}>
+    {{-- Stacked, the eyebrow and the title join the lede in one column, one gap apart. --}}
+    <div @class(['flex flex-col gap-5' => ! $stacked, 'contents' => $stacked])>
+        @if ($eyebrow instanceof \Illuminate\View\ComponentSlot)
+            {{ $eyebrow }}
+        @elseif ($eyebrow)
             <x-site.text variant="label" tone="accent">{{ $eyebrow }}</x-site.text>
         @endif
-        <x-site.heading size="1" level="2" class="max-w-[22ch]">{{ $title }}</x-site.heading>
+        <x-site.heading :$size :$level class="{{ $heading }}"><x-site.marker :text="$title" :$marked /></x-site.heading>
     </div>
     @if ($lead)
         <x-site.text variant="lede" class="max-w-[48ch]">{{ $lead }}</x-site.text>

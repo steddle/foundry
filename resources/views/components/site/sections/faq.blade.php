@@ -10,8 +10,9 @@
     @prop eyebrow A label in the accent above the title.
     @prop title The section's h2, at size 1.
     @prop lead The lede, beside the title on a wide screen.
-    @prop questions A list of [question, answer].
+    @prop questions A list of [question, answer], or of rows keyed `question` and `answer`.
     @prop sunken Sets the section a step below the page.
+    @slot slot What follows the rest of the section, in the same band.
 
     @example Two questions
     @ground bare
@@ -24,7 +25,8 @@
     <x-site.section-head :$eyebrow :$title :$lead />
 
     <div class="flex flex-col border-t border-zinc-200 dark:border-zinc-700">
-        @foreach ($questions as [$question, $answer])
+        @foreach ($questions as $question)
+            @php([$question, $answer] = array_values($question))
             <details class="group border-b border-zinc-200 dark:border-zinc-700">
                 <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-6 [&::-webkit-details-marker]:hidden">
                     <x-site.heading size="3" level="3">{{ $question }}</x-site.heading>
@@ -34,4 +36,6 @@
             </details>
         @endforeach
     </div>
+
+    {{ $slot }}
 </x-site.section>
