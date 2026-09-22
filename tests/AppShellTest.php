@@ -129,7 +129,8 @@ test('a model with HasInitials reads its initials through Nameable', function ()
 
     expect($user->fill(['name' => 'Ada Visser (Northwind)'])->initials)->toBe('AV')
         ->and($user->fill(['name' => 'Madonna'])->initials)->toBe('M')
-        ->and($user->fill(['name' => 'mischa sigtermans'])->initials)->toBe('MS');
+        ->and($user->fill(['name' => 'mischa sigtermans'])->initials)->toBe('MS')
+        ->and($user->fill(['name' => 'Playwright recipient 2'])->initials)->toBe('PR');
 });
 
 test('a flush app page sets its slot edge to edge, for a band and a container of its own', function () {
