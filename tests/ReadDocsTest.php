@@ -4,13 +4,26 @@ use Illuminate\Auth\GenericUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Mcp\Server;
+use Laravel\Mcp\Server\Attributes\Name;
 use Laravel\Mcp\Server\McpServiceProvider;
+use Laravel\Mcp\Server\Tools\Annotations\IsIdempotent;
+use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 use Steddle\Foundry\Contracts\Sitemap;
 use Steddle\Foundry\Mcp\ReadDocs;
 
 final class DocsServer extends Server
 {
     protected array $tools = [ReadDocs::class];
+}
+
+#[Name('read_docs')]
+#[IsReadOnly]
+#[IsIdempotent]
+final class RenamedReadDocs extends ReadDocs {}
+
+final class RenamedDocsServer extends Server
+{
+    protected array $tools = [RenamedReadDocs::class];
 }
 
 final class BilingualPages implements Sitemap
@@ -100,4 +113,12 @@ test('nothing is cached when markdown-response.cache.enabled is off', function (
     DocsServer::tool(ReadDocs::class, ['path' => '/en/docs'])->assertOk();
 
     expect(Cache::store(config('markdown-response.cache.store'))->has('read-docs:/en/docs:guest'))->toBeFalse();
+});
+
+test('a server that names its tools another way renames this one, and keeps what it does', function () {
+    RenamedDocsServer::tool(RenamedReadDocs::class, ['path' => '/en/docs'])->assertName('read_docs')->assertOk()->assertSee('Rendered in en.');
+
+    RenamedDocsServer::tool(RenamedReadDocs::class, ['path' => '/nope'])->assertHasErrors(['Call read_docs without a path to list every page.']);
+
+    expect((new RenamedReadDocs)->annotations())->toBe(['readOnlyHint' => true, 'idempotentHint' => true]);
 });

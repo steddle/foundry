@@ -15,7 +15,7 @@ A public page enters the sitemap by entering `pages()`. The site's suite renders
 
 ## The read-docs tool
 
-An imprint with an MCP server registers `Steddle\Foundry\Mcp\ReadDocs` in its `$tools`, and needs `laravel/mcp`, which the foundry only suggests. The tool reads `Pages` in English, whatever the root language: without a path it lists every page with its path, and with one it returns that page's markdown, rendered in English. A full address, a path and its `.md` twin name the same page. Its description names `imprint.name` and says what `imprint.docs.description` says.
+An imprint with an MCP server registers `Steddle\Foundry\Mcp\ReadDocs` in its `$tools`, and needs `laravel/mcp`, which the foundry only suggests. The tool reads `Pages` in English, whatever the root language: without a path it lists every page with its path, and with one it returns that page's markdown, rendered in English. A full address, a path and its `.md` twin name the same page. Its description names `imprint.name` and says what `imprint.docs.description` says. A server whose other tools are named another way extends the class for a `Name` of its own, and repeats `IsReadOnly` and `IsIdempotent`, which PHP hands down to no subclass.
 
 ## Out of search
 

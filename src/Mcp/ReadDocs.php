@@ -20,11 +20,16 @@ use Steddle\Foundry\Pages;
  * register. Always the English pages, whatever the imprint's root language:
  * the agent translates, and one language keeps one set of paths to cite.
  * Needs laravel/mcp, which the foundry only suggests.
+ *
+ * A server whose other tools are named another way extends this one for a
+ * `Name` of its own. PHP hands an attribute down to no subclass, and
+ * laravel/mcp reads a tool's annotations off its own class, so such a
+ * subclass repeats `IsReadOnly` and `IsIdempotent` as well.
  */
 #[Name('read-docs')]
 #[IsReadOnly]
 #[IsIdempotent]
-final class ReadDocs extends Tool
+class ReadDocs extends Tool
 {
     use Localizable;
 
