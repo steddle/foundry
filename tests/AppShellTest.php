@@ -131,3 +131,22 @@ test('a model with HasInitials reads its initials through Nameable', function ()
         ->and($user->fill(['name' => 'Madonna'])->initials)->toBe('M')
         ->and($user->fill(['name' => 'mischa sigtermans'])->initials)->toBe('MS');
 });
+
+test('a flush app page sets its slot edge to edge, for a band and a container of its own', function () {
+    $this->artisan('view:clear');
+    File::ensureDirectoryExists(resource_path('views/components/site'));
+    File::put(resource_path('views/components/site/lockup.blade.php'), '<span {{ $attributes }}>Imprint</span>');
+
+    try {
+        $user = (object) ['name' => 'Ada Visser', 'email' => 'ada@example.com', 'initials' => 'AV'];
+        $flush = Blade::render('<x-site.app-page title="x" :user="$user" flush><x-site.app-band><p>Band</p></x-site.app-band></x-site.app-page>', ['user' => $user], deleteCachedView: true);
+        $contained = Blade::render('<x-site.app-page title="x" :user="$user"><p>Body</p></x-site.app-page>', ['user' => $user], deleteCachedView: true);
+    } finally {
+        File::deleteDirectory(resource_path('views/components'));
+    }
+
+    $main = fn (string $html): string => (string) str($html)->between('<main class="flex-1">', '</main>');
+
+    expect($main($flush))->toContain('bg-zinc-900 ink grain')->toContain('<p>Band</p>')->not->toContain('py-10')
+        ->and($main($contained))->toContain('py-10')->toContain('<p>Body</p>');
+});

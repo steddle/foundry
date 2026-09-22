@@ -1,4 +1,4 @@
-@props(['title', 'description' => null, 'links' => [], 'user', 'home' => null])
+@props(['title', 'description' => null, 'links' => [], 'user', 'home' => null, 'flush' => false])
 
 {{--
     A signed-in page's document, on bone and kept out of search: x-site.app-nav,
@@ -11,6 +11,7 @@
     @prop links label => href for x-site.app-nav, which marks the one whose address the current one equals or lies under.
     @prop user An object with `name` and `email`, for the account menu.
     @prop home Where the lockup leads, as x-site.app-nav takes it.
+    @prop flush Sets the slot edge to edge, for a page that opens on an x-site.app-band and sets its own container under it.
     @slot actions What stands in the bar before the account menu.
     @slot menu The imprint's items in the account menu, each a `flux:menu.item`.
 
@@ -42,9 +43,13 @@
         </x-site.app-nav>
 
         <main class="flex-1">
-            <x-site.container class="py-10">
+            @if ($flush)
                 {{ $slot }}
-            </x-site.container>
+            @else
+                <x-site.container class="py-10">
+                    {{ $slot }}
+                </x-site.container>
+            @endif
         </main>
 
         <footer>
