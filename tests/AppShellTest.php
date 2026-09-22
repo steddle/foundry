@@ -133,7 +133,7 @@ test('a model with HasInitials reads its initials through Nameable', function ()
         ->and($user->fill(['name' => 'Playwright recipient 2'])->initials)->toBe('PR');
 });
 
-test('a flush app page sets its slot edge to edge, for a band and a container of its own', function () {
+test('a flush app page lays its bar over the band and sets its slot edge to edge', function () {
     $this->artisan('view:clear');
     File::ensureDirectoryExists(resource_path('views/components/site'));
     File::put(resource_path('views/components/site/lockup.blade.php'), '<span {{ $attributes }}>Imprint</span>');
@@ -148,6 +148,8 @@ test('a flush app page sets its slot edge to edge, for a band and a container of
 
     $main = fn (string $html): string => (string) str($html)->between('<main class="flex-1">', '</main>');
 
-    expect($main($flush))->toContain('bg-zinc-900 ink grain')->toContain('<p>Band</p>')->not->toContain('py-10')
+    expect($flush)->toContain('<header class="absolute inset-x-0 top-0 z-10 ink">')
+        ->and($contained)->toContain('<header class="border-b')
+        ->and($main($flush))->toContain('bg-zinc-900 ink grain')->toContain('<p>Band</p>')->not->toContain('py-10')
         ->and($main($contained))->toContain('py-10')->toContain('<p>Body</p>');
 });

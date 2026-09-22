@@ -11,7 +11,7 @@
     @prop links label => href for x-site.app-nav, which marks the one whose address the current one equals or lies under.
     @prop user An object with `name` and `email`, for the account menu.
     @prop home Where the lockup leads, as x-site.app-nav takes it.
-    @prop flush Sets the slot edge to edge, for a page that opens on an x-site.app-band and sets its own container under it.
+    @prop flush Sets the slot edge to edge, for a page that opens on an x-site.app-band and sets its own container under it, and lays the bar over the band.
     @slot actions What stands in the bar before the account menu.
     @slot menu The imprint's items in the account menu, each a `flux:menu.item`.
 
@@ -37,7 +37,7 @@
     </head>
     {{-- A short page would otherwise leave the service line halfway up the screen. --}}
     <body class="isolate flex min-h-dvh flex-col bg-zinc-50 dark:bg-zinc-900">
-        <x-site.app-nav :$links :$user :$home>
+        <x-site.app-nav :$links :$user :$home :overlay="$flush">
             <x-slot:actions>{{ $actions ?? '' }}</x-slot:actions>
             <x-slot:menu>{{ $menu ?? '' }}</x-slot:menu>
         </x-site.app-nav>

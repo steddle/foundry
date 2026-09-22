@@ -1,10 +1,11 @@
 @props(['scene' => null])
 
 {{--
-    The ink band a record's page opens on, under the app bar: a scene, or ink
-    and grain, with an x-site.page-head in it, which reads on ink as it does
-    on bone. Sized for a working page, not a cover. Set it in an
-    x-site.app-page with `flush`, the rest of the page in a container under it.
+    The ink band a record's page opens on, with the app bar lying over it: a
+    scene, or ink and grain, with an x-site.page-head in it, which reads on
+    ink as it does on bone. Sized for a working page, not a cover, with room
+    at the top for the bar. Set it in an x-site.app-page with `flush`, the
+    rest of the page in a container under it.
 
     @group Shell
     @prop scene The photo behind the band, by its name in config/imprint.php; without one the band is ink and grain.
@@ -22,7 +23,7 @@
     @if ($scene)
         <x-site.scene :name="$scene" eager scrim="start" />
     @endif
-    <x-site.container class="relative py-12 lg:py-16">
+    <x-site.container class="relative pt-26 pb-12 lg:pt-30 lg:pb-16">
         {{ $slot }}
     </x-site.container>
 </section>

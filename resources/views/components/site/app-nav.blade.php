@@ -4,6 +4,7 @@
     'home' => null,
     'homeLabel' => null,
     'menuLabel' => null,
+    'overlay' => false,
 ])
 
 {{--
@@ -19,6 +20,7 @@
     @prop home Where the lockup leads; without one, the `dashboard` route where the imprint has one, and the root otherwise.
     @prop homeLabel The lockup link's accessible name; without one, `foundry::nav.home` with the imprint's name.
     @prop menuLabel The accessible name of the button that opens the panel; without one, `foundry::nav.menu`.
+    @prop overlay Lays the bar on the ink band a page opens on, as x-site.nav lies over a hero: no rule, the ink's colours, the folded panel on ink. x-site.app-page sets it where it is `flush`.
     @slot actions What stands before the account menu from lg up, and closes the panel below it.
     @slot menu The imprint's items in the account menu, each a `flux:menu.item`.
 
@@ -47,7 +49,7 @@
     $folds = $links !== [] || $hasActions;
 @endphp
 
-<header {{ $attributes->class('border-b border-zinc-200 dark:border-zinc-700') }}>
+<header {{ $attributes->class($overlay ? 'absolute inset-x-0 top-0 z-10 ink' : 'border-b border-zinc-200 dark:border-zinc-700') }}>
     <nav aria-label="Main" @if ($folds) x-data="{ open: false }" @keydown.escape.window="open = false" @endif>
         <x-site.container class="flex h-14 items-center gap-8">
             <a href="{{ $home }}" aria-label="{{ $homeLabel }}" class="shrink-0 text-zinc-950 dark:text-zinc-50">
@@ -90,7 +92,7 @@
             <div id="app-menu" x-cloak x-show="open" @click="$event.target.closest('a') && (open = false)"
                 x-transition:enter="transition duration-200 ease-out" x-transition:enter-start="-translate-y-2 opacity-0"
                 x-transition:leave="transition duration-150 ease-in" x-transition:leave-end="-translate-y-2 opacity-0"
-                class="border-t border-zinc-200 dark:border-zinc-700 lg:hidden">
+                @class(['border-t border-zinc-200 dark:border-zinc-700 lg:hidden', 'bg-zinc-900' => $overlay])>
                 <x-site.container class="flex flex-col items-start gap-6 py-6">
                     @if ($links !== [])
                         <ul role="list" class="flex w-full flex-col border-l border-zinc-200 dark:border-zinc-700">
