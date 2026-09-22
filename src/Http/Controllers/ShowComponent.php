@@ -5,13 +5,15 @@ namespace Steddle\Foundry\Http\Controllers;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View as ViewFactory;
+use Illuminate\Support\Str;
 use Steddle\Foundry\Catalog\Catalog;
 
 final class ShowComponent
 {
     /**
-     * `?from=foundry` narrows the index to the foundry's components, and
-     * `?from=custom` to the imprint's own.
+     * Without a component the index, every group with each component's
+     * description. `?from=foundry` narrows it to the foundry's components,
+     * and `?from=custom` to the imprint's own.
      */
     public function __invoke(Request $request, ?string $component = null): View
     {
@@ -21,23 +23,33 @@ final class ShowComponent
             'custom' => Catalog::custom(),
             null => Catalog::all(),
         };
-        $slug = $component ?? array_key_first($entries) ?? abort(404);
-        $entry = $entries[$slug] ?? abort(404);
+        $entry = $component === null ? null : ($entries[$component] ?? abort(404));
         $query = $from ? ['from' => $from] : [];
 
         $groups = collect(Catalog::groups($entries))->map(fn (array $slugs): array => array_map(fn (string $item): array => [
             'label' => $entries[$item]['name'],
             'href' => route('foundry.components', [$item, ...$query]),
-            'current' => $item === $slug,
+            'current' => $item === $component,
         ], $slugs))->all();
 
+        if ($entry === null) {
+            return view('foundry::catalog.index', [
+                'groups' => $groups,
+                'index' => Catalog::groups($entries),
+                'entries' => $entries,
+                'query' => $query,
+                'from' => $from,
+                'hasCustom' => Catalog::custom() !== [],
+            ]);
+        }
+
         return view('foundry::catalog.show', [
-            'slug' => $slug,
+            'slug' => $component,
             'entry' => $entry,
             'groups' => $groups,
             'from' => $from,
             'hasCustom' => Catalog::custom() !== [],
-            'own' => $entry['from'] === 'foundry' ? $this->own($slug) : null,
+            'own' => $entry['from'] === 'foundry' ? $this->own($entry['tag']) : null,
         ]);
     }
 
@@ -47,14 +59,16 @@ final class ShowComponent
      * for the foundry's, the thing /components exists to show, and null where
      * it keeps no file of its own.
      */
-    private function own(string $slug): ?string
+    private function own(string $tag): ?string
     {
-        if (! ViewFactory::exists("components.site.{$slug}")) {
+        $name = Str::after($tag, 'x-site.');
+
+        if (! ViewFactory::exists("components.site.{$name}")) {
             return null;
         }
 
-        $source = file_get_contents(ViewFactory::getFinder()->find("components.site.{$slug}"));
+        $source = file_get_contents(ViewFactory::getFinder()->find("components.site.{$name}"));
 
-        return str_contains($source, "x-foundry::site.{$slug}") ? 'wraps' : 'copies';
+        return str_contains($source, "x-foundry::site.{$name}") ? 'wraps' : 'copies';
     }
 }

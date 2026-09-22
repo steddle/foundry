@@ -11,13 +11,16 @@ beforeEach(function () {
     File::put(resource_path('views/components/site/heading.blade.php'), '<h2 {{ $attributes }}>{{ $slot }}</h2>');
     File::put(resource_path('views/components/site/text.blade.php'), '<p {{ $attributes }}>{{ $slot }}</p>');
     File::put(resource_path('views/components/site/stamp.blade.php'), <<<'BLADE'
+@props(['ink' => 'red', 'label'])
 {{--
     The imprint's own stamp,
     in red.
+    @prop ink The colour it is pressed in.
+    @slot date The day under the stamp.
     @example Alone
     <x-site.stamp />
 --}}
-<span>the stamp</span>
+<span>the stamp {{ $label ?? '' }}</span>
 BLADE);
     File::ensureDirectoryExists(resource_path('views/components/site/signing'));
     File::put(resource_path('views/components/site/signing/seal.blade.php'), '<span>the seal</span>');
@@ -33,7 +36,7 @@ afterEach(function () {
 test('an imprint\'s own component files join the foundry\'s, described and shown by their opening comment', function () {
     $this->get('/components/stamp')->assertOk()
         ->assertSee('The imprint\'s own stamp, in red.')
-        ->assertSee('<span>the stamp</span>', false)
+        ->assertSee('<span>the stamp', false)
         ->assertSee('outside steddle/foundry')
         ->assertSee('href="'.route('foundry.components', 'hero').'"', false)
         ->assertSee('href="'.route('foundry.components', ['from' => 'custom']).'"', false);
@@ -86,4 +89,17 @@ test('without component files of its own an imprint has no custom components', f
     File::deleteDirectory(resource_path('views/components'));
 
     expect(Catalog::custom())->toBe([]);
+});
+
+test('a component page lists its props with their defaults and its slots, from the file itself', function () {
+    $this->get('/components/stamp')->assertOk()
+        ->assertSeeInOrder(['Props', 'ink', "'red'", 'The colour it is pressed in.', 'label', 'Required', 'Slots', 'date', 'The day under the stamp.'])
+        ->assertDontSee('@prop');
+});
+
+test('the index lists every group with each component\'s description', function () {
+    $this->get('/components')->assertOk()
+        ->assertSee('Sections')
+        ->assertSee('href="'.route('foundry.components', 'stamp').'"', false)
+        ->assertSee('The imprint\'s own stamp, in red.');
 });

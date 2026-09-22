@@ -3,17 +3,7 @@
         <x-site.document>
             <x-slot:aside>
                 <div class="flex flex-col gap-8">
-                    @if ($hasCustom)
-                        <nav aria-label="Which components" class="flex self-start rounded-md border border-zinc-200 dark:border-zinc-700 p-0.5 text-small font-medium">
-                            @foreach ([null => 'All', 'foundry' => 'Foundry', 'custom' => 'Custom'] as $value => $label)
-                                <a href="{{ route('foundry.components', $value ? ['from' => $value] : []) }}" @if ($from === ($value ?: null)) aria-current="page" @endif @class([
-                                    'rounded-sm px-3 py-1',
-                                    'bg-zinc-200 dark:bg-zinc-700 text-zinc-950 dark:text-zinc-50' => $from === ($value ?: null),
-                                    'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50' => $from !== ($value ?: null),
-                                ])>{{ $label }}</a>
-                            @endforeach
-                        </nav>
-                    @endif
+                    <x-foundry::catalog.from :$from :$hasCustom />
                     <x-site.side-nav :groups="$groups" label="Components" />
                 </div>
             </x-slot:aside>
@@ -42,6 +32,40 @@
 
                 @foreach ($entry['examples'] as $example)
                     <x-foundry::catalog.example :example="$example" />
+                @endforeach
+
+                @foreach (['Props' => $entry['props'], 'Slots' => $entry['slots']] as $heading => $rows)
+                    @if ($rows !== [])
+                        <div class="flex flex-col gap-3">
+                            <x-site.heading size="2" level="2">{{ $heading }}</x-site.heading>
+                            <flux:table>
+                                <flux:table.columns>
+                                    <flux:table.column>Name</flux:table.column>
+                                    @if ($heading === 'Props')
+                                        <flux:table.column>Default</flux:table.column>
+                                    @endif
+                                    <flux:table.column>Description</flux:table.column>
+                                </flux:table.columns>
+                                <flux:table.rows>
+                                    @foreach ($rows as $row)
+                                        <flux:table.row>
+                                            <flux:table.cell class="align-top"><code class="font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero">{{ $row['name'] }}</code></flux:table.cell>
+                                            @if ($heading === 'Props')
+                                                <flux:table.cell class="align-top">
+                                                    @if ($row['default'] === null)
+                                                        <x-site.text variant="small" tone="muted">Required</x-site.text>
+                                                    @else
+                                                        <code class="font-mono text-code text-zinc-600 dark:text-zinc-400 slashed-zero">{{ $row['default'] }}</code>
+                                                    @endif
+                                                </flux:table.cell>
+                                            @endif
+                                            <flux:table.cell class="whitespace-normal align-top"><x-site.text variant="small">{{ $row['description'] }}</x-site.text></flux:table.cell>
+                                        </flux:table.row>
+                                    @endforeach
+                                </flux:table.rows>
+                            </flux:table>
+                        </div>
+                    @endif
                 @endforeach
             </div>
         </x-site.document>

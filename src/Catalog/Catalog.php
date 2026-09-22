@@ -23,7 +23,7 @@ final class Catalog
     private const GROUPS = ['Layout', 'Type', 'Actions', 'Forms', 'Brand', 'Bands', 'Sections', 'Images'];
 
     /**
-     * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}>
+     * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}>
      */
     public static function all(): array
     {
@@ -96,7 +96,8 @@ final class Catalog
                 continue;
             }
 
-            ['description' => $description, 'group' => $group, 'examples' => $examples] = self::comment($file->getContents());
+            $source = $file->getContents();
+            ['description' => $description, 'group' => $group, 'examples' => $examples, 'props' => $documented, 'slots' => $slots] = self::comment($source);
 
             // By the foundry's own convention every component names its group, so one that does not failed to parse.
             if ($from === 'foundry' && ! in_array($group, self::GROUPS, true)) {
@@ -110,6 +111,8 @@ final class Catalog
                 'tag' => 'x-site.'.str_replace('/', '.', $path),
                 'file' => $relative.'.blade.php',
                 'description' => $description,
+                'props' => self::props($source, $documented),
+                'slots' => $slots,
                 'examples' => $examples,
             ];
         }
@@ -126,12 +129,13 @@ final class Catalog
     {
         // Balanced parentheses, so a directive never reads on into the component's body.
         if (! preg_match('/^\s*(?:@(?:props|use)(\((?:[^()]++|(?1))*\))[ \t]*\n\s*)*\{\{--(.*?)--\}\}/s', $source, $match)) {
-            return ['description' => '', 'group' => null, 'examples' => []];
+            return ['description' => '', 'group' => null, 'examples' => [], 'props' => [], 'slots' => []];
         }
 
         $parts = preg_split('/^\s*@example\s+(.+)$/m', $match[2], -1, PREG_SPLIT_DELIM_CAPTURE);
         $intro = array_shift($parts);
         $group = preg_match('/^\s*@group\s+(.+)$/m', $intro, $found) ? trim($found[1]) : null;
+        preg_match_all('/^\s*@(prop|slot)\s+(\S+)\s+(.+)$/m', $intro, $tags, PREG_SET_ORDER);
         $examples = [];
 
         foreach (array_chunk($parts, 2) as [$title, $body]) {
@@ -151,14 +155,61 @@ final class Catalog
         }
 
         return [
-            'description' => trim(preg_replace('/\s+/', ' ', preg_replace('/^\s*@group\s+.+$/m', '', $intro))),
+            'description' => trim(preg_replace('/\s+/', ' ', preg_replace('/^\s*@(group|prop|slot)\s+.+$/m', '', $intro))),
             'group' => $group,
             'examples' => $examples,
+            'props' => collect($tags)->where(1, 'prop')->mapWithKeys(fn (array $tag): array => [$tag[2] => trim($tag[3])])->all(),
+            'slots' => collect($tags)->where(1, 'slot')->map(fn (array $tag): array => ['name' => $tag[2], 'description' => trim($tag[3])])->values()->all(),
         ];
     }
 
     /**
-     * @return array<string, array{name: string, group: string, from: string, description: string, examples: list<array{title: string, blade: string, ground?: string}>}>
+     * Every prop the component's `@props` declares, with its default as PHP
+     * writes it or null where it is required, and the `@prop` line that
+     * describes it; a `@prop` for a name `@props` does not declare, an
+     * attribute the component reads, follows them.
+     *
+     * @param  array<string, string>  $documented  name => description
+     * @return list<array{name: string, default: ?string, description: string}>
+     */
+    private static function props(string $source, array $documented): array
+    {
+        $declared = [];
+
+        if (preg_match('/^\s*@props(\((?:[^()]++|(?1))*\))/m', $source, $match)) {
+            try {
+                // The lab runs outside production only, on the foundry's and the imprint's own files.
+                $declared = eval('return '.$match[1].';');
+            } catch (\Throwable) {
+                $declared = [];
+            }
+        }
+
+        $props = [];
+
+        foreach ($declared as $key => $value) {
+            $name = is_int($key) ? $value : $key;
+            $props[$name] = [
+                'name' => $name,
+                'default' => match (true) {
+                    is_int($key) => null,
+                    is_array($value) => $value === [] ? '[]' : '[…]',
+                    is_string($value) => var_export($value, true),
+                    default => strtolower(var_export($value, true)),
+                },
+                'description' => $documented[$name] ?? '',
+            ];
+        }
+
+        foreach (array_diff_key($documented, $props) as $name => $description) {
+            $props[$name] = ['name' => $name, 'default' => null, 'description' => $description];
+        }
+
+        return array_values($props);
+    }
+
+    /**
+     * @return array<string, array{name: string, group: string, from: string, description: string, props: list<mixed>, slots: list<mixed>, examples: list<array{title: string, blade: string, ground?: string}>}>
      */
     private static function supplied(): array
     {
@@ -167,6 +218,8 @@ final class Catalog
                 'name' => 'Lockup',
                 'group' => 'Brand',
                 'from' => 'imprint',
+                'props' => [],
+                'slots' => [],
                 'description' => 'The mark and the wordmark in the current colour. An imprint endorses it with BY STEDDLE where it stands without the house around it.',
                 'examples' => [
                     ['title' => 'On the page', 'blade' => <<<'BLADE'
@@ -181,6 +234,8 @@ BLADE],
                 'name' => 'Mark',
                 'group' => 'Brand',
                 'from' => 'imprint',
+                'props' => [],
+                'slots' => [],
                 'description' => 'The imprint\'s mark on a 32 by 32 grid, in the current colour. The icons are drawn from it.',
                 'examples' => [
                     ['title' => 'At three sizes', 'blade' => <<<'BLADE'
