@@ -25,7 +25,7 @@
     </flux:dropdown>
 --}}
 <div class="contents" x-data="{ step: 0, timer: null }"
-    x-on:click.capture="$event.preventDefault(); $event.stopPropagation(); clearTimeout(timer); if (step >= 2) { step = 3; timer = setTimeout(() => { $el.closest('ui-menu')?.dispatchEvent(new CustomEvent('lofi-close-popovers')); step = 0; {{ $action }} }, 320) } else { step++; timer = setTimeout(() => step = 0, 1500) }"
+    x-on:click.capture="$event.preventDefault(); $event.stopPropagation(); clearTimeout(timer); if (step >= 2) { step = 3; timer = setTimeout(() => { $el.closest('ui-menu')?.dispatchEvent(new CustomEvent('lofi-close-popovers')); {{ $action }}; timer = setTimeout(() => step = 0, 300) }, 240) } else { step++; timer = setTimeout(() => step = 0, 1500) }"
     x-on:lofi-close-popovers="$event.stopPropagation()">
     <flux:menu.item variant="danger" :$icon x-bind:data-step="step" {{ $attributes->class('relative isolate overflow-hidden text-danger-700! dark:text-danger-300! **:data-flux-menu-item-icon:text-current!') }}>
         <span aria-hidden="true" class="absolute inset-y-0 left-0 -z-10 bg-danger-700/15 dark:bg-danger-300/20 transition-[width] duration-180 ease-(--ease-settle)"

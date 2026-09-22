@@ -94,7 +94,7 @@ test('a confirm item asks twice in the menu and acts on the third press', functi
         ->toContain('Tap again')
         ->toContain('One more time')
         ->toContain('x-on:click.capture')
-        ->toContain("dispatchEvent(new CustomEvent('lofi-close-popovers')); step = 0; \$wire.delete(&#039;abc&#039;) }, 320)")
+        ->toContain("dispatchEvent(new CustomEvent('lofi-close-popovers')); \$wire.delete(&#039;abc&#039;); timer = setTimeout(() => step = 0, 300) }, 240)")
         ->toContain('x-on:lofi-close-popovers="$event.stopPropagation()"')
         ->not->toContain('wire:click');
 });
