@@ -3,14 +3,18 @@
 {{--
     The questions a reader asks first, each closed until opened, so the page
     stays short while every answer stays in the HTML for search and for the
-    page's markdown. `questions` is a list of [question, answer]. A page that wants them in its structured data
-    writes the FAQPage itself, beside what else it states.
+    page's markdown. A page that wants them in its structured data writes the
+    FAQPage itself, beside what else it states.
 
     @group Sections
+    @prop eyebrow A label in the accent above the title.
+    @prop title The section's h2, at size 1.
+    @prop lead The lede, beside the title on a wide screen.
+    @prop questions A list of [question, answer].
+    @prop sunken Sets the section a step below the page.
 
     @example Two questions
     @ground bare
-    @zoom 0.5
     <x-site.sections.faq eyebrow="Questions" title="What it is, and what it is not." :questions="[
         ['Who is it for?', 'For litigation funders, counsel and claim foundations.'],
         ['What does it cost?', 'Nothing up front. We are paid from the outcome.'],

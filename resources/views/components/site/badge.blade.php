@@ -2,10 +2,12 @@
 
 {{--
     A short status beside what it describes, drawn by Flux: a status ramp's
-    50 as the ground and its 700 as the text, in both themes. Action, in
-    lichen, is the one tone that asks the reader to do something.
+    50 as the ground and its 700 as the text, in both themes, and neutral in
+    the grey, 100 under 700 on bone and 800 under 300 in the dark.
 
     @group Elements
+    @prop tone neutral, info, success, warning, danger or action: the ramp the badge is drawn in. Action, in lichen, is the one tone that asks the reader to do something.
+    @prop dot Sets a dot in the text's colour before the words.
 
     @example Every tone
     <div class="flex flex-wrap items-center gap-2.5">

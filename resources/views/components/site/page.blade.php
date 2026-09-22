@@ -4,12 +4,16 @@
 
 {{--
     A page of the site: the head, the nav, the page's own content, and the
-    footer with the `closing` slot. `head` adds to the head. `og` is the
-    og-image's props or the og-image itself as a slot. `flux` loads Flux and
-    with it Livewire's Alpine; a page that renders no control can leave them
-    out. No @fluxAppearance: the site follows the system theme itself.
+    footer with the `closing` slot. No @fluxAppearance: the site follows the
+    system theme itself.
 
     @group Shell
+    @prop title The page's title, for its head; what stands before any ` | ` is the og-image's heading where `og` names none.
+    @prop description The page's meta description, and the og-image's lede where `og` names none.
+    @prop og The og-image's `heading`, `lede`, `eyebrow` and `marked`, or the og-image itself as a slot. Rendered only where `services.ogkit.key` is set.
+    @prop flux Loads Flux's scripts and with them Livewire's Alpine; a page that renders no control can turn it off.
+    @slot head What the page adds to its head.
+    @slot closing The page's closing section, set in the footer on its scene.
 
     @example A site's layout
     @code

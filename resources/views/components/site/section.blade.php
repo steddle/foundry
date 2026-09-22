@@ -2,12 +2,12 @@
 
 {{--
     A band of the page. In dark mode every band shares the page ground, so a
-    hairline separates them; `sunken` sets it a step below the page, to part
-    it from the bands around it. With a `scene` the band is ink over that photo,
-    its content at the start or in the centre as `align` says, under the scrim
-    measured for it.
+    hairline separates bands without a scene.
 
     @group Layout
+    @prop scene The scene the band is ink over, by its name in config/imprint.php; without one the band sits on the page ground.
+    @prop align start or center: where the content sets, and with a `scene` which measured scrim lies under it.
+    @prop sunken Sets a band without a scene a step below the page, to part it from the bands around it.
 
     @example A band with a heading and a lede
     @ground bare

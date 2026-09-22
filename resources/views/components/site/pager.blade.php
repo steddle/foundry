@@ -1,11 +1,13 @@
 @props(['previous' => null, 'next' => null, 'back' => null])
 
 {{--
-    The foot of a long read: a note from the slot, and the ways on. Each of
-    `previous`, `next` and `back` is [label, href]; `back` leads up rather
-    than along, to the list the page belongs to.
+    The foot of a long read: a note, and the ways on.
 
     @group Navigation
+    @prop previous [label, href] of the page before, marked rel="prev".
+    @prop next [label, href] of the page after, marked rel="next".
+    @prop back [label, href] of the list the page belongs to: it leads up rather than along, and stands first.
+    @slot slot The note, small and muted.
 
     @example Along
     <x-site.pager :previous="['Two dates', '#']" :next="['Two lanes', '#']">Checked against the API on 21 September 2026.</x-site.pager>

@@ -1,9 +1,11 @@
 @props(['items'])
 
 {{--
-    $items: label => href, outermost first. The page's own title stands under it, so the trail names only what is above.
+    The trail of pages above the current one, drawn by Flux. The page's own
+    title stands under it, so the trail names only what is above.
 
     @group Navigation
+    @prop items label => href for each page above this one, outermost first.
 
     @example Two levels up
     <x-site.breadcrumb :items="['Docs' => '#', 'Getting started' => '#']" />

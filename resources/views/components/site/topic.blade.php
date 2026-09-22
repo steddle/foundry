@@ -2,11 +2,17 @@
 
 {{--
     One tile of a tile-grid: an icon and a count, the topic's name and what it
-    covers, then its first links, label => href. `more` labels a last link to
-    the topic itself. Its three rows are the grid's own, so the rule above the
-    links lines up across a row whatever each description's length.
+    covers from the slot, then its first links. Its three rows are the grid's
+    own, so the rule above the links lines up across a row whatever each
+    description's length.
 
     @group Elements
+    @prop icon The name of the Flux icon beside the eyebrow, drawn micro.
+    @prop eyebrow The line beside the icon, a count such as `6 articles`.
+    @prop title The topic's name, an h2 at size 2, linking to `href` with the description under it.
+    @prop href The topic's own page.
+    @prop links label => href, the topic's first links under a rule.
+    @prop more The label of a last link, to `href`.
 
     @example In a grid of one
     <x-site.tile-grid :count="1">

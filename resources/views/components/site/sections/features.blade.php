@@ -2,14 +2,17 @@
 
 {{--
     What something offers, side by side: up to four features in one ruled
-    row, numbered, stacked on a phone. `features` is a list of [title, body];
-    the slot is the lede beside the title.
+    row, numbered, stacked on a phone.
 
     @group Sections
+    @prop eyebrow A label in the accent above the title.
+    @prop title The section's h2, at size 1.
+    @prop lead The lede, beside the title on a wide screen.
+    @prop features A list of [title, body]: two or four set that many columns from lg up, any other count three.
+    @prop sunken Sets the section a step below the page.
 
     @example Three features
     @ground bare
-    @zoom 0.5
     <x-site.sections.features eyebrow="What it offers" title="Three things, each checkable." :features="[
         ['Every text', 'Each version a law has had, from the register itself.'],
         ['Any day', 'The text that applied on the day you name.'],

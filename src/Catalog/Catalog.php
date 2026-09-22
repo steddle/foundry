@@ -10,12 +10,12 @@ use Symfony\Component\Finder\Finder;
 /**
  * Every component /components shows. A component describes itself in the
  * comment its file opens on: the prose is its description, `@group` its place
- * in the index, and each `@example Title` a live example, its Blade the lines
- * after it, optionally led by `@ground page|ink|bare`, `@zoom 0.5` to shrink a
- * fixed-size render to the column, and `@code` to print the Blade without
- * rendering it. The foundry's components and the imprint's own are read the
- * same way; the lockup and the mark, which every imprint draws itself, are
- * described here.
+ * in the index, `@prop name …` and `@slot name …` a line each of its props
+ * and slots, and each `@example Title` a live example, its Blade the lines
+ * after it, optionally led by `@ground page|ink|bare`, where `bare` frames it
+ * at a viewport's width, and `@code` to print the Blade without rendering it.
+ * The foundry's components and the imprint's own are read the same way; the
+ * lockup and the mark, which every imprint draws itself, are described here.
  */
 final class Catalog
 {
@@ -23,7 +23,7 @@ final class Catalog
     private const GROUPS = ['Shell', 'Sections', 'Layout', 'Navigation', 'Type', 'Elements', 'Forms', 'Brand'];
 
     /**
-     * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}>
+     * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}>
      */
     public static function all(): array
     {
@@ -33,7 +33,7 @@ final class Catalog
     /**
      * The foundry's own components, and the two every imprint supplies.
      *
-     * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}>
+     * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}>
      */
     public static function shared(): array
     {
@@ -46,7 +46,7 @@ final class Catalog
      * The imprint's own components: every file under its
      * resources/views/components/site that the foundry neither keeps nor names.
      *
-     * @return array<string, array{name: string, group: string, from: string, tag: string, description: string, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}>
+     * @return array<string, array{name: string, group: string, from: string, tag: string, description: string, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}>
      */
     public static function custom(): array
     {
@@ -128,7 +128,7 @@ final class Catalog
     /**
      * What a component's opening comment says of it.
      *
-     * @return array{description: string, group: ?string, examples: list<array{title: string, blade: string, ground?: string, zoom?: float, code?: bool}>}
+     * @return array{description: string, group: ?string, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}
      */
     private static function comment(string $source): array
     {
@@ -147,13 +147,9 @@ final class Catalog
             $example = ['title' => trim($title)];
             $lines = array_map(fn (string $line): string => preg_replace('/^ {4}/', '', $line), explode("\n", trim($body, "\n")));
 
-            while ($lines !== [] && preg_match('/^@(ground|zoom|code)\b\s*(.*)$/', trim($lines[0]), $attribute)) {
+            while ($lines !== [] && preg_match('/^@(ground|code)\b\s*(.*)$/', trim($lines[0]), $attribute)) {
                 array_shift($lines);
-                $example[$attribute[1]] = match ($attribute[1]) {
-                    'zoom' => (float) $attribute[2],
-                    'code' => true,
-                    default => trim($attribute[2]),
-                };
+                $example[$attribute[1]] = $attribute[1] === 'code' ? true : trim($attribute[2]);
             }
 
             $examples[] = [...$example, 'blade' => trim(implode("\n", $lines))];

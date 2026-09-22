@@ -2,11 +2,14 @@
 
 {{--
     The page's last word, set in the footer's slot on its scene: the
-    eyebrow, the title, the lede and the `actions`, stacked. At the start everything stays
-    on the dark side of the footer's scrim, clear of the scene's subject,
-    which every scene keeps to the right.
+    eyebrow, the title, the lede and the actions, stacked.
 
     @group Sections
+    @prop eyebrow A label in the accent above the title.
+    @prop title The section's h2, at size 1.
+    @prop lead The lede under the title.
+    @prop align center or start: at the start everything stays on the dark side of the footer's scrim, clear of the scene's subject, which every scene keeps to the right.
+    @slot actions The buttons under the lede.
 
     @example Centred
     @ground ink

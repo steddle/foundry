@@ -2,15 +2,20 @@
 
 {{--
     A section in two halves: the eyebrow, the title and the lede on the left,
-    what shows it on the right. The `figure` slot holds that right half,
-    `actions` the buttons under the lede, and the default slot a note after
-    them. On a phone the figure goes under the words.
+    what shows it on the right. On a phone the figure goes under the words.
 
     @group Sections
+    @prop eyebrow A label in the accent above the title.
+    @prop title The section's h2, at size 1.
+    @prop lead The lede under the title.
+    @prop scene The scene the band is ink over, by its name in config/imprint.php.
+    @prop sunken Sets a section without a scene a step below the page.
+    @slot slot A note after the actions.
+    @slot figure The right half.
+    @slot actions The buttons under the lede.
 
     @example With a figure
     @ground bare
-    @zoom 0.5
     <x-site.sections.split eyebrow="The book" title="Graded before it counts." lead="Every claimant passes four checks, and every check keeps its date and its source.">
         <x-slot:figure>
             <div class="h-64 rounded-lg border border-zinc-200 bg-zinc-25 dark:border-zinc-700 dark:bg-zinc-800"></div>
@@ -19,7 +24,6 @@
 
     @example On a scene, with an action
     @ground bare
-    @zoom 0.5
     <x-site.sections.split :scene="array_key_first(config('imprint.scenes'))" eyebrow="For agents" title="Send one from Claude." lead="Connect it once, and your assistant does the rest.">
         <x-slot:actions>
             <x-site.button href="#">Connect</x-site.button>

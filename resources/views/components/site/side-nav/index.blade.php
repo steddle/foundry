@@ -1,9 +1,12 @@
 @props(['groups', 'label' => 'Contents'])
 
 {{--
-    $groups: title => list of ['label', 'href', 'current' => bool]. Closed behind a disclosure below lg.
+    Links to a document's pages, in titled groups. Closed behind a
+    disclosure below lg, open beside the text from lg up.
 
     @group Navigation
+    @prop groups title => list of ['label' => …, 'href' => …, 'current' => bool]; the current link is marked in the accent and as aria-current="page".
+    @prop label What the disclosure reads below lg.
 
     @example Two groups
     <x-site.side-nav :groups="[

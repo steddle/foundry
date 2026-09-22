@@ -1,13 +1,15 @@
 @props(['text', 'marked' => null])
 
 {{--
-    `text` with the one phrase `marked` names laid on the lichen highlighter,
-    or plain where `marked` names nothing `text` holds. Once per viewport,
-    never on body copy or anything clickable. `inline-block leading-none`
-    sizes the mark to the glyphs: an inline box is as tall as the face's
-    content area, which at display sizes spills onto the next line.
+    One phrase of a headline laid on the lichen highlighter. Once per
+    viewport, never on body copy or anything clickable. `inline-block
+    leading-none` sizes the mark to the glyphs: an inline box is as tall as
+    the face's content area, which at display sizes spills onto the next
+    line.
 
     @group Type
+    @prop text The whole line.
+    @prop marked The phrase of `text` to mark, at its first occurrence; where `text` does not hold it, or it is empty, the line is plain.
 
     @example On a headline, on ink
     @ground ink

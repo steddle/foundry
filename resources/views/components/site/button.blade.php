@@ -1,9 +1,11 @@
 @props(['href' => null, 'variant' => 'primary'])
 
 {{--
-    One primary per viewport. Ghost belongs on ink, secondary on a card. A button without an href is a form's.
+    A link or a form's button, drawn by Flux. One primary per viewport.
 
     @group Elements
+    @prop href Where the button leads; without one it is a button, a form's.
+    @prop variant primary, secondary or ghost: ghost belongs on ink, secondary on a card. Any other value draws primary.
 
     @example Primary and secondary
     <div class="flex flex-wrap gap-4">

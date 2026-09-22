@@ -7,16 +7,21 @@
 
 {{--
     Ink closes the page on the imprint's scene: the lockup, the links and the
-    colophon. The slot is the page's closing section, set on the same scene.
-    The graded scrim is measured against the tall band a closing section
-    makes; without one only the scene's floor shows, under a flat scrim.
-    Measured on 2026-09-21 against the brightest pixel behind each word, over
-    all three imprints' scenes at 1440 and 390 wide: every line of the footer
-    at 4.6:1 or more. `items` replaces the list `links` would make. Below the
-    rule, the imprint's disclaimer and its copyright, and the house that
-    serves it where the imprint is endorsed.
+    colophon. The graded scrim is measured against the tall band a closing
+    section makes; without one only the scene's floor shows, under a flat
+    scrim. Measured on 2026-09-21 against the brightest pixel behind each
+    word, over all three imprints' scenes at 1440 and 390 wide: every line of
+    the footer at 4.6:1 or more. Below the rule, the imprint's disclaimer and
+    its copyright, and the house that serves it where the imprint is
+    endorsed.
 
     @group Shell
+    @prop scene The scene the footer is ink over, by its name in config/imprint.php.
+    @prop links label => href, listed beside the lockup.
+    @prop home Where the lockup leads.
+    @prop homeLabel The lockup link's accessible name; without one, `foundry::nav.home` with the imprint's name.
+    @slot slot The page's closing section, set on the same scene above a rule.
+    @slot items The list's own items, in place of the list `links` would make.
 
     @example As this imprint sets it
     @ground bare

@@ -1,9 +1,12 @@
 @props(['href', 'title'])
 
 {{--
-    One row in a ruled list: a serif title, a sentence, an arrow. The parent draws the rules.
+    One row in a ruled list: a serif title, a sentence from the slot, an
+    arrow. The parent draws the rules.
 
     @group Navigation
+    @prop href Where the whole row leads.
+    @prop title The row's heading, at size 2.
 
     @example Two rows
     <div class="flex flex-col divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-zinc-700 dark:border-zinc-700">

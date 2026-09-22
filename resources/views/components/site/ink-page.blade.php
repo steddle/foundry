@@ -3,13 +3,13 @@
 {{--
     A page of its own on ink, for an error or for signing in: the lockup and
     the language switch, the slot, and the service line, kept out of search.
-    `scene` lays a photo under one even scrim, measured on bron's well: the
-    heading at 10.6:1 and the disclaimer over the brightest corner at 4.6:1;
-    without one the page is grain and the mark ghosted in its corner. `card`
-    sets the slot on a card in the middle, with `ink` on the bands around it
-    rather than the body, so Flux's dark variant keeps out of the card.
 
     @group Shell
+    @prop title The page's title, followed in `<title>` by the imprint's name.
+    @prop description The page's meta description.
+    @prop scene A photo under one even scrim, measured on bron's well: the heading at 10.6:1 and the disclaimer over the brightest corner at 4.6:1. Without one the page is grain and the mark ghosted in its corner.
+    @prop card Sets the slot on a card in the middle, with `ink` on the bands around it rather than the body, so Flux's dark variant keeps out of the card. A card page shows no language switch.
+    @prop home Where the lockup leads; without one, the `home` route in the current language where the imprint speaks more than one, and the root otherwise.
 
     @example An error page
     @code

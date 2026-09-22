@@ -1,9 +1,15 @@
 @props(['number', 'name', 'note' => null, 'sunken' => false])
 
 {{--
-    A section that opens on a ruled row: its number, its name, one fact about what follows, and the actions on it. `sunken` sets it a step below the page.
+    A section that opens on a ruled row: its number, its name, one fact about
+    what follows, and the actions on it.
 
     @group Layout
+    @prop number The section's number as printed, `04`.
+    @prop name The section's name, its h2.
+    @prop note One fact about what follows, at the row's end; hidden on a phone.
+    @prop sunken Sets the section a step below the page.
+    @slot actions The actions on the section, at the row's end after the note.
 
     @example With a note
     <x-site.numbered-section number="04" name="Social images" note="4 files">

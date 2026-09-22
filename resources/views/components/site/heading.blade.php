@@ -1,10 +1,13 @@
 @props(['size' => '2', 'level' => null, 'tone' => 'strong'])
 
 {{--
-    Spectral, on the imprint's scale. Colour comes from `tone` alone, strong,
-    accent or inherit, so no caller sets two.
+    Spectral, on the imprint's scale, drawn by Flux. Colour comes from `tone`
+    alone, so no caller sets two.
 
     @group Type
+    @prop size display, 1, 2 or 3: the step of the type scale.
+    @prop level 1 to 4: the h element Flux renders; without one the heading is a div.
+    @prop tone strong, accent or inherit: the colour, or none of its own.
 
     @example The four sizes
     <div class="flex flex-col gap-6">

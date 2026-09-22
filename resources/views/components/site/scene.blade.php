@@ -2,13 +2,12 @@
 
 {{--
     The photo an ink band carries behind its content, with the scrim that
-    keeps the content legible on it. `name` is a folder under public/ holding
-    home-{768,1280,1672}.{avif,webp}; config/imprint.php frames it under
-    `scenes.{name}`, where its subject stays in view as the band narrows.
-    `scrim` is `start` or `center`, for content set there, or a band's own
-    measured classes.
+    keeps the content legible on it.
 
     @group Brand
+    @prop name A folder under public/ holding home-{768,1280,1672}.{avif,webp}; config/imprint.php frames it under `scenes.{name}`, where its subject stays in view as the band narrows.
+    @prop scrim start or center, for content set there, or a band's own measured classes.
+    @prop eager Loads the photo with high fetch priority rather than lazily, for a scene in the first viewport.
 
     @example Behind a band
     <div class="relative isolate flex h-72 items-end overflow-hidden bg-zinc-900 ink p-8">

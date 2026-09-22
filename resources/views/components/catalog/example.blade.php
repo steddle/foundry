@@ -39,11 +39,7 @@
             </div>
         @else
             <div data-canvas class="overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700 p-8 {{ $grounds[$ground] }}">
-                @isset($example['zoom'])
-                    <div style="zoom: {{ $example['zoom'] }}">{!! Blade::render($example['blade']) !!}</div>
-                @else
-                    {!! Blade::render($example['blade']) !!}
-                @endisset
+                {!! Blade::render($example['blade']) !!}
             </div>
         @endif
     @endunless

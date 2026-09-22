@@ -12,15 +12,18 @@
     `<template data-og-template>`, at a fixed 1200×630: the page's type scale
     is fluid and would not mean the same thing there, so every size here is a
     literal pixel value instead of the site's `text-heading-*` tokens.
-    `marked` is the one phrase of the heading that carries the marker.
-    `width` and `height` set the canvas, for a format of another size, and a
-    `footer` slot sets a row below the lede.
 
     @group Brand
+    @prop heading The image's headline, in Spectral at 72px.
+    @prop lede The line under the heading.
+    @prop eyebrow A label in the accent, opposite the lockup.
+    @prop marked The one phrase of the heading that carries the marker.
+    @prop width The canvas's width in pixels, for a format of another size.
+    @prop height The canvas's height in pixels, for a format of another size.
+    @slot footer A row below the lede, at the canvas's foot.
 
     @example Heading, marker, lede and eyebrow
     @ground bare
-    @zoom 0.6
     <x-site.og-image heading="A heading with its phrase marked." marked="phrase marked." lede="The lede under it, as long as a line or two." eyebrow="An eyebrow" />
 --}}
 <div class="grain ink relative flex flex-col justify-between overflow-hidden bg-zinc-900 p-[64px] font-sans" style="width: {{ $width }}px; height: {{ $height }}px">

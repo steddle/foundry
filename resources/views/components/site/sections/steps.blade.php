@@ -2,14 +2,17 @@
 
 {{--
     How something runs, in steps: a ledger where the numeral carries the row
-    and a rule closes it. `steps` is a list of [title, body]; the slot is the
-    lede beside the title.
+    and a rule closes it.
 
     @group Sections
+    @prop eyebrow A label in the accent above the title.
+    @prop title The section's h2, at size 1.
+    @prop lead The lede, beside the title on a wide screen.
+    @prop steps A list of [title, body].
+    @prop sunken Sets the section a step below the page.
 
     @example Three steps
     @ground bare
-    @zoom 0.5
     <x-site.sections.steps eyebrow="How it works" title="One team, from the first claimant to the transfer." :steps="[
         ['Find the case', 'Harm a court or regulator has already established.'],
         ['Build the book', 'Every claimant verified before they count.'],

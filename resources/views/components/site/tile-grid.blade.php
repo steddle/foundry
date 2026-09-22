@@ -1,9 +1,10 @@
 @props(['count'])
 
 {{--
-    Tiles on a hairline grid, one to three columns, each three rows tall. `count` is how many the slot holds; blank tiles close the last row at every width.
+    Tiles on a hairline grid, one to three columns, each three rows tall.
 
     @group Layout
+    @prop count How many tiles the slot holds, so blank tiles close the last row at every width.
 
     @example Two topics
     <x-site.tile-grid :count="2">

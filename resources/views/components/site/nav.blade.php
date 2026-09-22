@@ -8,15 +8,17 @@
 
 {{--
     The bar every page lays over the hero, which carries the ink: the lockup,
-    the links, and `actions` closing the bar after the language switch where
-    the imprint speaks more than one. With `menu`, a phone folds the links
-    and the actions into a panel below the bar, through Alpine, which
-    Livewire loads on the page; without one, the lockup and the actions are
-    the whole bar there and the bar needs no script. The lab's own pages take
-    the lab's bar, and wherever the lab is registered, which is never in
-    production, the links end on it.
+    the links, the language switch where the imprint speaks more than one,
+    and the actions. The lab's own pages take the lab's bar, and wherever the
+    lab is registered, which is never in production, the links end on it.
 
     @group Shell
+    @prop links label => href, shown from lg up.
+    @prop home Where the lockup leads.
+    @prop homeLabel The lockup link's accessible name; without one, `foundry::nav.home` with the imprint's name.
+    @prop menu Below lg, folds the links, the language switch and the actions into a panel under the bar, through Alpine, which Livewire loads on the page. Off, the lockup, the switch and the actions are the whole bar there and it needs no script.
+    @prop menuLabel The accessible name of the button that opens the panel.
+    @slot actions What closes the bar, after the language switch.
 
     @example As this imprint sets it
     @ground bare

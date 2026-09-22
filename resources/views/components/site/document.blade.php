@@ -2,6 +2,7 @@
     A reading layout: navigation beside the text on wide screens, above it on narrow ones.
 
     @group Layout
+    @slot aside The navigation, 15rem wide and sticky beside the text on a wide screen, and left out of the page's markdown.
 
     @example Side navigation and text
     <x-site.document>

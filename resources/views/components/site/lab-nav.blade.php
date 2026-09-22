@@ -5,6 +5,8 @@
     the design page and the components.
 
     @group Shell
+    @prop home Where the lockup leads.
+    @prop homeLabel The lockup link's accessible name; without one, `foundry::nav.home` with the imprint's name.
 
     @example As this imprint sets it
     @ground bare

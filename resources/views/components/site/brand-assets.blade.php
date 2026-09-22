@@ -3,11 +3,11 @@
 @props(['group' => 'social'])
 
 {{--
-    What foundry:assets renders, as /design shows it: the social images in
-    pairs of one height, or the icons at a glance with the files written
-    beside them. No card ground: a section on ink keeps its own.
+    What foundry:assets renders, as /design shows it. No card ground: a
+    section on ink keeps its own.
 
     @group Brand
+    @prop group social or icon: the social images in pairs of one height, each with a download link, or the icons at a glance with the files written beside them.
 
     @example Icons
     <x-site.brand-assets group="icon" />

@@ -4,6 +4,7 @@
     Who is signed in, where a page acts as them: their initials, name and address.
 
     @group Elements
+    @prop user An object with `name` and `email`; the initials are the first letters of the name's first two words.
 
     @example Above a consent
     <x-site.account-row :user="(object) ['name' => 'Ada Visser', 'email' => 'ada@example.com']" class="max-w-md" />

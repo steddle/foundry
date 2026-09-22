@@ -9,9 +9,12 @@
     speaks more than one language, its counterpart in each; its Open Graph
     image, from OG Kit where a key is set; the icons; the imprint's
     stylesheet and script; and Plausible and Visitors in production where the
-    imprint names them. The slot adds what is the page's own.
+    imprint names them.
 
     @group Shell
+    @prop title The page's `<title>`, and its Open Graph title and image alt, as given.
+    @prop description The meta and Open Graph description.
+    @slot slot What is the page's own, after the stylesheet and script.
 
     @example In a page's head
     @code

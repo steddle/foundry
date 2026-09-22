@@ -6,6 +6,9 @@
     drops every <header> as chrome.
 
     @group Type
+    @prop eyebrow A label in the accent above the title.
+    @prop title The section's h2, at size 1.
+    @prop lead The lede, beside the title on a wide screen and under it on a phone.
 
     @example With a lede
     <x-site.section-head eyebrow="How it works" title="One title that says what the section argues." lead="The lede, beside the title on a wide screen and under it on a phone." />

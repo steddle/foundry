@@ -1,9 +1,13 @@
 @props(['variant' => 'copy', 'tone' => 'body', 'inline' => false])
 
 {{--
-    Chivo, in a variant for its role and a tone for its colour.
+    Chivo, in a variant for its role and a tone for its colour, drawn by
+    Flux.
 
     @group Type
+    @prop variant lede, copy, small, label or meta: the step of the type scale; meta sets tabular numerals.
+    @prop tone body, strong, muted, accent, error or inherit: the colour, or none of its own.
+    @prop inline Renders a span instead of a paragraph.
 
     @example Variants
     <div class="flex flex-col gap-4">

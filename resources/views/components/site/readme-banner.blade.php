@@ -10,15 +10,18 @@
     1600×520, for a README's <picture>: a light source and a dark one, which GitHub picks by the reader's theme.
 
     @group Brand
+    @prop heading The banner's headline, in Spectral at 64px.
+    @prop lede The line under the heading.
+    @prop marked The one phrase of the heading that carries the marker.
+    @prop eyebrow Declared and not drawn: the banner shows no eyebrow.
+    @prop dark Draws the dark source, ink and grain; without it the light one, on zinc-50.
 
     @example Light
     @ground bare
-    @zoom 0.45
     <x-site.readme-banner heading="A heading for the README." lede="What the repository holds, in a sentence." />
 
     @example Dark
     @ground bare
-    @zoom 0.45
     <x-site.readme-banner heading="A heading for the README." lede="What the repository holds, in a sentence." dark />
 --}}
 <div @class([

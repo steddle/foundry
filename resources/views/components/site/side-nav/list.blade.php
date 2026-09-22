@@ -1,5 +1,11 @@
 @props(['groups'])
 
+{{--
+    The groups of x-site.side-nav, each a nav under its title.
+
+    @prop groups title => list of ['label' => …, 'href' => …, 'current' => bool], as x-site.side-nav takes them.
+--}}
+
 <div {{ $attributes->class('flex flex-col gap-8') }}>
     @foreach ($groups as $title => $links)
         <nav aria-label="{{ $title }}" class="flex flex-col gap-3">

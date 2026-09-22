@@ -1,8 +1,7 @@
 @props(['locales' => null])
 
 {{--
-    Every language the imprint speaks, the current one marked. `$locales`:
-    locale => this page in that locale. Sits on ink.
+    Every language the imprint speaks, the current one marked. Sits on ink.
 
     A form and not a link: the choice is remembered, and an address in the
     root language reached by a link would be sent straight back by the
@@ -10,6 +9,7 @@
     its head.
 
     @group Shell
+    @prop locales locale => this page in that locale; without one, localized_alternates() as relative paths.
 
     @example In the bar, where the imprint speaks more than one language
     @code

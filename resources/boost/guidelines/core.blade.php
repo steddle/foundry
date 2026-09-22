@@ -6,8 +6,8 @@ in `~/Github/steddle/foundry`, never in a site's copy: a site holds only what
 is its own.
 
 - **Type**: `resources/css/foundry.css` declares Spectral, Chivo and Chivo Mono,
-  the type scale (`display`, `heading-1` to `-3`, `lede`, `copy`, `small`,
-  `label`, `meta`, `code`) and the radii, and sources the foundry's views. A
+  the type scale (`display`, `figure`, `heading-1` to `-3`, `lede`, `copy`,
+  `small`, `label`, `meta`, `code`) and the radii, and sources the foundry's views. A
   site's `app.css` imports it after `tailwindcss` and Flux.
 - **Colour**: seven ramps on steps 25 to 950 and nothing else; Tailwind's
   palettes are reset. `secondary` (lichen), `info`, `success`, `warning` and
@@ -151,35 +151,44 @@ is its own.
   `foundry.components`), behind `pages.middleware` and, outside local,
   `pages.guard` from `config/imprint.php`. `/labs` lists the design page,
   the components and the experiments `imprint.labs` names, slug => [title,
-  summary], each the imprint's own view `labs.{slug}`. `/design` is the
+  summary], each the imprint's own view `labs.{slug}`: a question still
+  open. An experiment that ships is deleted: its answer lives in the page
+  it shipped to. `/design` is the
   foundry's own page, the same sections in the same order on every imprint:
   brand, family, colour, type, space, scenes, icons, social images,
   buttons, forms and feedback. What is the imprint's own comes from
   `config/imprint.php` under `design`: the accent's name, the rules for the
   mark, the ramps' names, a sample per type step, the marked phrase, each
-  scene's place and any face of its own under `fonts`, as Blade. A
-  component of its own belongs on `/components`, never on `/design`. On
+  scene's place and any face of its own under `fonts`, as Blade. What each
+  type step and radius measures is read off the page as it renders, and
+  the badges are the badge's own example. A component of its own belongs
+  on `/components`, never on `/design`. On
   those pages the nav is the lab's bar on bone, and elsewhere the links end
   on Lab. A page with no hero opens on `x-site.sections.page-title`.
-- **`/components`** shows every component an imprint renders, from the
-  catalogue in `Steddle\Foundry\Catalog\Catalog`: each example rendered
-  live on its ground and printed as Blade. A component, the foundry's or
-  the imprint's, describes itself in the comment its file opens on: the
-  prose is its description, `@group` its place in the index, and each
-  `@example Title` a live example, its Blade the lines after it, optionally
-  led by `@ground page|ink|bare`, `@zoom 0.5` or `@code`. An imprint's own
-  components join it on their own: every file under its
-  `resources/views/components/site` the foundry neither keeps nor names.
-  Under that directory a folder with an `index` is one component and its
-  other files are its parts; a folder without one is a group of its own,
-  named after the folder. `@group` wins over both, an imprint's component
-  with no group is Custom, and a foundry component without a valid group
-  throws. Where the imprint has components of its own, a toggle on
-  `/components` shows all, the foundry's or the imprint's, and the lab's
-  Custom components row opens `/components?from=custom`. `/components`
-  marks a foundry component the imprint keeps a copy of, in place of
-  wrapping it, which is the thing to fix. Add a component to the catalogue
-  when it enters the foundry, and every imprint's suite renders it.
+- **`/components`** opens on an index of every component an imprint
+  renders, by group, from the catalogue in
+  `Steddle\Foundry\Catalog\Catalog`; a component's page shows each example
+  live with its Blade and a copy button, then its props, with their
+  defaults, and its slots. A component, the foundry's or the imprint's,
+  describes itself in the comment its file opens on: the prose is its
+  description, `@group` its place in the index, `@prop name …` and
+  `@slot name …` one line each, and each `@example Title` a live example,
+  its Blade the lines after it, optionally led by `@ground page|ink|bare` or
+  `@code`. A `bare` example is a band or a page: it renders on a page of its
+  own, framed at a desktop's or a phone's width. The groups are Shell,
+  Sections, Layout, Navigation, Type, Elements, Forms and Brand. An
+  imprint's own components join the index on their own: every file under
+  its `resources/views/components/site` the foundry neither keeps nor
+  names. Under that directory a folder with an `index` is one component and
+  its other files are its parts; a file in a folder named after a group,
+  `sections/`, is in that group, and every other names its group with
+  `@group`, or the catalogue throws. Where the imprint has components of
+  its own, a toggle on `/components` shows all, the foundry's or the
+  imprint's, and the lab's Custom components row opens
+  `/components?from=custom`. `/components` marks a foundry component the
+  imprint keeps a copy of, in place of wrapping it, which is the thing to
+  fix. Add a component to the catalogue when it enters the foundry, and
+  every imprint's suite renders it.
 
 ## Design language
 

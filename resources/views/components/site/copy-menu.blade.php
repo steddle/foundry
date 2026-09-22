@@ -8,6 +8,8 @@
     token count of each. It fetches both on the first hover or focus.
 
     @group Navigation
+    @prop page The page's markdown address; without one, the current address's, as MarkdownUrl::of() states it.
+    @prop all The address of every page's markdown at once; without one, the `llms.full` route.
 
     @example Beside a page title
     <x-site.copy-menu />
