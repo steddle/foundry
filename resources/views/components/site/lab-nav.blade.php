@@ -21,7 +21,7 @@
     <nav aria-label="Lab">
         <x-site.container class="flex items-center justify-between gap-6 py-5">
             <a href="{{ $home }}" aria-label="{{ $homeLabel }}" class="shrink-0 text-zinc-950 dark:text-zinc-50">
-                <x-site.lockup class="h-6" />
+                <x-site.lockup class="h-5" />
             </a>
             <div class="flex items-center gap-5 sm:gap-7">
                 @foreach ($pages as $label => $name)

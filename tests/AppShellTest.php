@@ -36,7 +36,7 @@ test('a signed-in page is a noindex document with its links, the current one mar
         ->toMatch('#<a href="'.preg_quote(url('/agreements')).'"\s+aria-current="page"#')
         ->not->toMatch('#<a href="'.preg_quote(url('/settings')).'"\s+aria-current="page"#')
         ->toContain('aria-label="Account menu for Ada Visser"')
-        ->toMatch('#>\s*AV\s*</button>#')
+        ->toContain('<flux:avatar as="button"')
         ->toContain('ada@example.com')
         ->toContain('href="/settings"')
         ->toContain('action="'.url('/logout').'"')
@@ -83,4 +83,35 @@ test('a field row links its label to its control', function () {
     $html = Blade::render('<x-site.field-row label="Email" description="Where links go." for="email"><input id="email" /></x-site.field-row>', deleteCachedView: true);
 
     expect($html)->toContain('<label for="email"')->toContain('<input id="email" />')->toContain('Where links go.');
+});
+
+test('a confirm item arms before it acts, and runs its action only when armed', function () {
+    $html = Blade::render('<x-site.confirm-item icon="trash" action="$wire.delete(\'abc\')">Delete</x-site.confirm-item>', deleteCachedView: true);
+
+    expect($html)
+        ->toContain('Delete')
+        ->toContain('Click again to confirm')
+        ->toContain('if (! armed)')
+        ->toContain("else { armed = false; clearTimeout(timer); \$wire.delete(&#039;abc&#039;) }")
+        ->toContain('x-on:click.capture')
+        ->not->toContain('wire:click');
+});
+
+test('a badge draws a hairline ring in its own ramp', function () {
+    expect(Blade::render('<x-site.badge tone="success">Signed</x-site.badge>', deleteCachedView: true))
+        ->toContain('ring-1 ring-inset')
+        ->toContain('ring-success-700/10');
+});
+
+test('a model with HasInitials reads its initials through Nameable', function () {
+    $user = new class extends Illuminate\Database\Eloquent\Model
+    {
+        use Steddle\Foundry\Concerns\HasInitials;
+
+        protected $guarded = [];
+    };
+
+    expect($user->fill(['name' => 'Ada Visser (Northwind)'])->initials)->toBe('AV')
+        ->and($user->fill(['name' => 'Madonna'])->initials)->toBe('M')
+        ->and($user->fill(['name' => 'mischa sigtermans'])->initials)->toBe('MS');
 });

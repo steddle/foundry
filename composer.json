@@ -9,7 +9,8 @@
         "livewire/flux": "^2.20",
         "livewire/flux-pro": "^2.20",
         "spatie/browsershot": "^5.0",
-        "spatie/laravel-markdown-response": "^1.2"
+        "spatie/laravel-markdown-response": "^1.2",
+        "watson/nameable": "^4.1"
     },
     "require-dev": {
         "laravel/pint": "^1.32",

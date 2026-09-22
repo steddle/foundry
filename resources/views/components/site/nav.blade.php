@@ -42,7 +42,7 @@
     <nav aria-label="Main" @if ($menu) x-data="{ open: false }" @keydown.escape.window="open = false" @endif>
         <x-site.container class="flex items-center justify-between gap-6 py-5">
             <a href="{{ $home }}" aria-label="{{ $homeLabel }}" class="shrink-0 text-zinc-950 dark:text-zinc-50">
-                <x-site.lockup class="h-6" />
+                <x-site.lockup class="h-5" />
             </a>
 
             <div @class(['flex items-center gap-7', 'max-lg:hidden' => $menu])>

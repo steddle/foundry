@@ -18,7 +18,7 @@ test('every entry names itself, its group, where it comes from and one example',
 
 test('the index keeps its groups in order and each group alphabetical', function () {
     expect(array_keys(Catalog::groups()))->toBe(['Shell', 'Sections', 'Layout', 'Navigation', 'Type', 'Elements', 'Forms', 'Brand', 'Print'])
-        ->and(Catalog::groups()['Navigation'])->toBe(['account-menu', 'breadcrumb', 'copy-menu', 'link-row', 'pager', 'side-nav'])
+        ->and(Catalog::groups()['Navigation'])->toBe(['account-menu', 'breadcrumb', 'confirm-item', 'copy-menu', 'link-row', 'pager', 'side-nav'])
         ->and(Catalog::shared()['sections-split']['name'])->toBe('Split');
 });
 

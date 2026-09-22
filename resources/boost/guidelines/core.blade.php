@@ -85,7 +85,8 @@ is its own.
   across `wire:navigate`, which `x-site.ink-page` sets too. `x-site.app-nav`
   is its bar, in flow and ruled off: the lockup, the `links` with the one
   whose address the current one equals or lies under marked, the `actions`
-  slot and `x-site.account-menu`, the reader's initials opening their name
+  slot and `x-site.account-menu`, the reader's Flux avatar (`$user->initials`
+  from `Steddle\Foundry\Concerns\HasInitials`, over Nameable) opening their name
   and address, the `menu` slot's items and logging out where `logout` is a
   route. `x-site.page-head` opens the content: the `breadcrumbs` above
   it, the title at heading-2 with a `status` beside it, a line under it and
@@ -94,7 +95,9 @@ is its own.
   title, status and `meta` with its `actions` outside it; `x-site.empty`
   stands where a list holds nothing yet; `x-site.field-row` sets one
   setting's label and description beside its control, the parent ruling
-  the rows.
+  the rows. A step that can't be undone sits in a menu as
+  `x-site.confirm-item`: the second click arms it, only the third runs its
+  `action`, an Alpine expression, never a `wire:click` on the item.
 - **Script**: a foundry component that holds state uses Alpine, which
   Livewire loads on the page, and `[x-cloak]` holds it back until Alpine has
   read it. A page with such a component loads Livewire's scripts; what only
