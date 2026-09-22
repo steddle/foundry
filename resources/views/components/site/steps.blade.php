@@ -18,8 +18,8 @@
     ]" />
 --}}
 <div {{ $attributes->class('-mx-4 overflow-x-auto px-4 [scrollbar-width:none]') }} x-data x-init="$el.querySelector('[data-flux-timeline-status=current]')?.scrollIntoView({ block: 'nearest', inline: 'center' })">
-    {{-- Equal columns, so a step whose words change never moves the others. --}}
-    <flux:timeline horizontal class="[grid-auto-columns:minmax(8rem,1fr)] [--flux-timeline-item-gap:2.5rem]">
+    {{-- Equal columns, so a step whose words change never moves the others; fixed below sm, so the row is as wide as its steps and the scroll keeps its end padding. --}}
+    <flux:timeline horizontal class="w-max [grid-auto-columns:10rem] [--flux-timeline-item-gap:1rem] sm:w-auto sm:[grid-auto-columns:minmax(10rem,1fr)]">
         @foreach ($steps as $index => $step)
             <flux:timeline.item :status="$step['status']">
                 {{-- Flux rings an open step in zinc-100, which a sunken band hides. --}}
