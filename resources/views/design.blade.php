@@ -1,5 +1,6 @@
 @use('Illuminate\Support\Facades\Blade')
 @use('Steddle\Foundry\Brand\Family')
+@use('Steddle\Foundry\Catalog\Catalog')
 
 @php
     $name = config('imprint.name');
@@ -34,18 +35,19 @@
     ];
 
     $sample = $design['type'] ?? [];
+    // What each step measures is read off the rendered sample, so it is what foundry.css states and nothing typed here.
     $type = [
-        ['display', 'Spectral 600 | 1.02 | -0.03em', 'font-serif text-display font-semibold text-zinc-950 dark:text-zinc-50', $sample['display'] ?? $name],
-        ['figure', 'Spectral 600 | 1 | -0.03em | tabular', 'font-serif text-figure font-semibold text-zinc-950 dark:text-zinc-50 tabular-nums', $sample['figure'] ?? '95'],
-        ['heading-1', 'Spectral 600 | 1.04 | -0.03em', 'font-serif text-heading-1 font-semibold text-zinc-950 dark:text-zinc-50', $sample['heading-1'] ?? $name],
-        ['heading-2', 'Spectral 600 | 1.15 | -0.02em', 'font-serif text-heading-2 font-semibold text-zinc-950 dark:text-zinc-50', $sample['heading-2'] ?? $name],
-        ['heading-3', 'Spectral 600 | 1.25 | -0.01em', 'font-serif text-heading-3 font-semibold text-zinc-950 dark:text-zinc-50', $sample['heading-3'] ?? $name],
-        ['lede', 'Chivo 400 | 1.62', 'text-lede text-zinc-800 dark:text-zinc-200', $sample['lede'] ?? $name],
-        ['copy', 'Chivo 400 | 1.62', 'text-copy text-zinc-800 dark:text-zinc-200', $sample['copy'] ?? $name],
-        ['small', 'Chivo 400 | 1.5', 'text-small text-zinc-600 dark:text-zinc-400', $sample['small'] ?? $name],
-        ['label', 'Chivo 500 | sentence case', 'text-label text-primary-700 dark:text-primary-300', $sample['label'] ?? $name],
-        ['meta', 'Chivo 500 | tabular', 'text-meta text-zinc-600 dark:text-zinc-400 tabular-nums', $sample['meta'] ?? $name],
-        ['code', 'Chivo Mono 400 | 1.7 | what a reader could paste into a terminal', 'font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums', $sample['code'] ?? 'php artisan foundry:assets'],
+        ['display', 'font-serif text-display font-semibold text-zinc-950 dark:text-zinc-50', $sample['display'] ?? $name, null],
+        ['figure', 'font-serif text-figure font-semibold text-zinc-950 dark:text-zinc-50 tabular-nums', $sample['figure'] ?? '95', 'tabular'],
+        ['heading-1', 'font-serif text-heading-1 font-semibold text-zinc-950 dark:text-zinc-50', $sample['heading-1'] ?? $name, null],
+        ['heading-2', 'font-serif text-heading-2 font-semibold text-zinc-950 dark:text-zinc-50', $sample['heading-2'] ?? $name, null],
+        ['heading-3', 'font-serif text-heading-3 font-semibold text-zinc-950 dark:text-zinc-50', $sample['heading-3'] ?? $name, null],
+        ['lede', 'text-lede text-zinc-800 dark:text-zinc-200', $sample['lede'] ?? $name, null],
+        ['copy', 'text-copy text-zinc-800 dark:text-zinc-200', $sample['copy'] ?? $name, null],
+        ['small', 'text-small text-zinc-600 dark:text-zinc-400', $sample['small'] ?? $name, null],
+        ['label', 'text-label text-primary-700 dark:text-primary-300', $sample['label'] ?? $name, 'sentence case'],
+        ['meta', 'text-meta text-zinc-600 dark:text-zinc-400 tabular-nums', $sample['meta'] ?? $name, 'tabular'],
+        ['code', 'font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums', $sample['code'] ?? 'php artisan foundry:assets', 'what a reader could paste into a terminal'],
     ];
 
     $spacing = [
@@ -61,9 +63,9 @@
     ];
 
     $radii = [
-        ['radius-sm', '2px', 'rounded-sm', 'Badges, copy buttons'],
-        ['radius-md', '3px', 'rounded-md', 'Buttons, cards, fields'],
-        ['radius-lg', '5px', 'rounded-lg', 'Panels, the app-icon tile. The ceiling'],
+        ['radius-sm', 'rounded-sm', 'Badges, copy buttons'],
+        ['radius-md', 'rounded-md', 'Buttons, cards, fields'],
+        ['radius-lg', 'rounded-lg', 'Panels, the app-icon tile. The ceiling'],
     ];
 @endphp
 
@@ -193,14 +195,25 @@
 
     <x-site.numbered-section number="04" name="Type" note="Spectral, Chivo and Chivo Mono{{ isset($design['fonts']) ? ', and the imprint\'s own' : '' }}">
         <div class="flex flex-col gap-12">
-            <x-site.text variant="lede" class="max-w-[60ch]">The scale is fluid: each size is set for a 390px phone and grows with the window. The size beside each step is what it measures at this width.</x-site.text>
+            <x-site.text variant="lede" class="max-w-[60ch]">The scale is fluid: each size is set for a 390px phone and grows with the window. What stands beside each step is what the browser measures at this width.</x-site.text>
 
             <div class="flex flex-col border-t border-zinc-200 dark:border-zinc-700">
-                @foreach ($type as [$step, $spec, $classes, $text])
-                    <div x-data="{ size: '' }" x-init="size = Math.round(parseFloat(getComputedStyle($refs.sample).fontSize)) + 'px'" class="grid gap-3 border-b border-zinc-200 dark:border-zinc-700 py-6 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10">
+                @foreach ($type as [$step, $classes, $text, $note])
+                    <div x-data="{ spec: '' }" x-init="
+                        const style = getComputedStyle($refs.sample);
+                        const size = parseFloat(style.fontSize);
+                        const spacing = parseFloat(style.letterSpacing) || 0;
+                        spec = [
+                            Math.round(size) + 'px',
+                            style.fontFamily.split(',')[0].replaceAll('\'', '').replaceAll('&quot;', '') + ' ' + style.fontWeight,
+                            +(parseFloat(style.lineHeight) / size).toFixed(2),
+                            spacing ? +(spacing / size).toFixed(3) + 'em' : null,
+                            @js($note),
+                        ].filter(Boolean).join(' | ');
+                    " class="grid gap-3 border-b border-zinc-200 dark:border-zinc-700 py-6 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10">
                         <div class="flex flex-col gap-1">
                             <span class="text-small font-semibold text-zinc-950 dark:text-zinc-50">{{ $step }}</span>
-                            <span class="text-meta text-zinc-600 dark:text-zinc-400 tabular-nums"><span x-text="size"></span> | {{ $spec }}</span>
+                            <span class="text-meta text-zinc-600 dark:text-zinc-400 tabular-nums" x-text="spec"></span>
                         </div>
                         <p x-ref="sample" class="{{ $classes }}">{{ $text }}</p>
                     </div>
@@ -248,10 +261,10 @@
 
             <div class="flex flex-col gap-10">
                 <div class="flex flex-wrap gap-8">
-                    @foreach ($radii as [$radius, $px, $class, $use])
-                        <div class="flex flex-col items-start gap-2">
-                            <span class="size-16 border border-zinc-50/13 bg-zinc-800 {{ $class }}"></span>
-                            <span class="text-meta text-zinc-50 tabular-nums">{{ $radius }} | {{ $px }}</span>
+                    @foreach ($radii as [$radius, $class, $use])
+                        <div x-data="{ px: '' }" x-init="px = getComputedStyle($refs.swatch).borderTopLeftRadius" class="flex flex-col items-start gap-2">
+                            <span x-ref="swatch" class="size-16 border border-zinc-50/13 bg-zinc-800 {{ $class }}"></span>
+                            <span class="text-meta text-zinc-50 tabular-nums">{{ $radius }} | <span x-text="px"></span></span>
                             <span class="max-w-[16ch] text-meta text-zinc-400">{{ $use }}</span>
                         </div>
                     @endforeach
@@ -359,14 +372,8 @@
 
     <x-site.numbered-section number="11" name="Feedback" note="What the site tells a reader">
         <div class="flex flex-col gap-8">
-            <div class="flex flex-wrap items-center gap-2.5">
-                <x-site.badge>Neutral</x-site.badge>
-                <x-site.badge tone="info">Info</x-site.badge>
-                <x-site.badge tone="success">Success</x-site.badge>
-                <x-site.badge tone="warning">Warning</x-site.badge>
-                <x-site.badge tone="danger">Danger</x-site.badge>
-                <x-site.badge tone="action" dot>Action</x-site.badge>
-            </div>
+            {{-- The badge's own example, so the two pages cannot show it apart. --}}
+            {!! Blade::render(Catalog::shared()['badge']['examples'][0]['blade']) !!}
 
             <flux:callout icon="information-circle" class="max-w-[66ch]">
                 <flux:callout.heading>A callout</flux:callout.heading>
