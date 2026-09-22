@@ -15,7 +15,7 @@ afterEach(function () {
 });
 
 test('a closing centres its title and actions, and leaves out a lede it was not given', function () {
-    $html = Blade::render('<x-site.closing title="Last word."><a href="#">Act</a></x-site.closing>', deleteCachedView: true);
+    $html = Blade::render('<x-site.sections.closing title="Last word."><x-slot:actions><a href="#">Act</a></x-slot:actions></x-site.sections.closing>', deleteCachedView: true);
 
     expect($html)->toContain('items-center text-center')
         ->toContain('Last word.</h2>')
@@ -25,7 +25,7 @@ test('a closing centres its title and actions, and leaves out a lede it was not 
 });
 
 test('at the start the title, lede and actions stack at the start', function () {
-    $html = Blade::render('<x-site.closing align="start" title="Last word." lead="The lede."><a href="#">Act</a></x-site.closing>', deleteCachedView: true);
+    $html = Blade::render('<x-site.sections.closing align="start" title="Last word." lead="The lede."><x-slot:actions><a href="#">Act</a></x-slot:actions></x-site.sections.closing>', deleteCachedView: true);
 
     expect($html)->toContain('items-start')
         ->not->toContain('text-center')

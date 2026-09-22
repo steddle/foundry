@@ -6,11 +6,11 @@
 @endphp
 
 <x-layouts::site :title="$title.' | '.config('imprint.name')" :description="Content::copy('legal', 'description')">
-    <x-site.hero scene="legal-hero" :title="$title.'.'" :lead="Content::copy('legal', 'lead')">
+    <x-site.sections.hero scene="legal-hero" :title="$title.'.'" :lead="Content::copy('legal', 'lead')">
         @if (config('imprint.legal.draft'))
             <x-site.badge tone="warning">{{ Content::copy('legal', 'draft') }}</x-site.badge>
         @endif
-    </x-site.hero>
+    </x-site.sections.hero>
 
     <x-site.numbered-section number="01" :name="__('foundry::legal.what_we_hold_to')" :note="trans_choice('foundry::legal.promises', count($legal['promises']))">
         <x-slot:actions>

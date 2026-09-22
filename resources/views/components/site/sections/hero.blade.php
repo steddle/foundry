@@ -7,21 +7,24 @@
     chooses the scrim that keeps it legible there. `tall` gives the band the
     screen's height, up to 56rem, and a display title; without it the content
     sets the height. The eyebrow, the title with its `marked` phrase and the
-    lede come first, one gap apart; the slot follows at the same gap. An
-    eyebrow that is more than a label, a breadcrumb or a status, is a slot.
+    lede come first, one gap apart; the `actions` and the slot follow at the
+    same gap. An eyebrow that is more than a label, a breadcrumb or a status,
+    is a slot.
 
     @group Sections
 
     @example A page
     @ground bare
-    <x-site.hero title="A page title." lead="The lead that says what the page is for, in a sentence or two." />
+    <x-site.sections.hero title="A page title." lead="The lead that says what the page is for, in a sentence or two." />
 
     @example Centred and tall
     @ground bare
     @zoom 0.5
-    <x-site.hero align="center" tall eyebrow="The eyebrow" title="The first thing a reader sees." marked="a reader sees." lead="A lede under it, centred.">
-        <x-site.button href="#">An action</x-site.button>
-    </x-site.hero>
+    <x-site.sections.hero align="center" tall eyebrow="The eyebrow" title="The first thing a reader sees." marked="a reader sees." lead="A lede under it, centred.">
+        <x-slot:actions>
+            <x-site.button href="#">An action</x-site.button>
+        </x-slot:actions>
+    </x-site.sections.hero>
 --}}
 <section {{ $attributes->class(['relative isolate overflow-hidden bg-zinc-900 ink', 'grain' => ! $scene]) }}>
     @if ($scene)
@@ -47,6 +50,9 @@
         @if ($lead)
             <x-site.text variant="lede" class="max-w-[48ch]">{{ $lead }}</x-site.text>
         @endif
+        @isset($actions)
+            <x-site.actions>{{ $actions }}</x-site.actions>
+        @endisset
         {{ $slot }}
     </x-site.container>
 </section>

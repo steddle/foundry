@@ -1,4 +1,4 @@
-@props(['eyebrow', 'title', 'steps', 'sunken' => false])
+@props(['eyebrow' => null, 'title', 'lead' => null, 'steps', 'sunken' => false])
 
 {{--
     How something runs, in steps: a ledger where the numeral carries the row
@@ -17,7 +17,7 @@
     ]" />
 --}}
 <x-site.section :$sunken {{ $attributes }}>
-    <x-site.section-head :$eyebrow :$title>{{ $slot }}</x-site.section-head>
+    <x-site.section-head :$eyebrow :$title :$lead />
 
     <ol role="list" class="flex flex-col border-t border-zinc-200 dark:border-zinc-700">
         @foreach ($steps as [$step, $body])

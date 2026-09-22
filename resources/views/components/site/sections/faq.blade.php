@@ -1,10 +1,9 @@
-@props(['eyebrow', 'title', 'questions', 'sunken' => false])
+@props(['eyebrow' => null, 'title', 'lead' => null, 'questions', 'sunken' => false])
 
 {{--
     The questions a reader asks first, each closed until opened, so the page
     stays short while every answer stays in the HTML for search and for the
-    page's markdown. `questions` is a list of [question, answer]; the slot is
-    the lede beside the title. A page that wants them in its structured data
+    page's markdown. `questions` is a list of [question, answer]. A page that wants them in its structured data
     writes the FAQPage itself, beside what else it states.
 
     @group Sections
@@ -18,7 +17,7 @@
     ]" />
 --}}
 <x-site.section :$sunken {{ $attributes }}>
-    <x-site.section-head :$eyebrow :$title>{{ $slot }}</x-site.section-head>
+    <x-site.section-head :$eyebrow :$title :$lead />
 
     <div class="flex flex-col border-t border-zinc-200 dark:border-zinc-700">
         @foreach ($questions as [$question, $answer])

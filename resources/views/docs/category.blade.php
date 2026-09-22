@@ -16,11 +16,11 @@
         <x-site.og-image :heading="$topic['title']" :lede="$topic['description']" :eyebrow="$docs" />
     </x-slot:og>
 
-    <x-site.hero scene="docs-hero" :title="$topic['title'].'.'" :lead="$topic['description']">
+    <x-site.sections.hero scene="docs-hero" :title="$topic['title'].'.'" :lead="$topic['description']">
         <x-slot:eyebrow>
             <x-site.breadcrumb :items="[$docs => localized_route('docs.index')]" />
         </x-slot:eyebrow>
-    </x-site.hero>
+    </x-site.sections.hero>
 
     <x-site.numbered-section :number="sprintf('%02d', array_search($slug, array_keys($topics)) + 1)" :name="$topic['title']" :note="trans_choice('foundry::docs.articles', count($topic['articles']))">
         <x-slot:actions>

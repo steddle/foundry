@@ -1,4 +1,4 @@
-@props(['eyebrow', 'title', 'features', 'sunken' => false])
+@props(['eyebrow' => null, 'title', 'lead' => null, 'features', 'sunken' => false])
 
 {{--
     What something offers, side by side: up to four features in one ruled
@@ -14,12 +14,10 @@
         ['Every text', 'Each version a law has had, from the register itself.'],
         ['Any day', 'The text that applied on the day you name.'],
         ['Its source', 'The document it came from, to the byte.'],
-    ]">
-        One sentence on why these three matter together.
-    </x-site.sections.features>
+    ]" lead="One sentence on why these three matter together." />
 --}}
 <x-site.section :$sunken {{ $attributes }}>
-    <x-site.section-head :$eyebrow :$title>{{ $slot }}</x-site.section-head>
+    <x-site.section-head :$eyebrow :$title :$lead />
 
     <ol role="list" @class([
         'grid grid-cols-1 border-t border-zinc-200 dark:border-zinc-700',

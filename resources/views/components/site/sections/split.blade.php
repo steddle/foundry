@@ -2,9 +2,9 @@
 
 {{--
     A section in two halves: the eyebrow, the title and the lede on the left,
-    what shows it on the right. The `figure` slot holds that right half; the
-    default slot follows the lede, for actions or a note. On a phone the
-    figure goes under the words.
+    what shows it on the right. The `figure` slot holds that right half,
+    `actions` the buttons under the lede, and the default slot a note after
+    them. On a phone the figure goes under the words.
 
     @group Sections
 
@@ -21,9 +21,9 @@
     @ground bare
     @zoom 0.5
     <x-site.sections.split :scene="array_key_first(config('imprint.scenes'))" eyebrow="For agents" title="Send one from Claude." lead="Connect it once, and your assistant does the rest.">
-        <x-site.actions>
+        <x-slot:actions>
             <x-site.button href="#">Connect</x-site.button>
-        </x-site.actions>
+        </x-slot:actions>
         <x-slot:figure>
             <div class="h-64 rounded-lg border border-zinc-50/13 bg-zinc-950/70"></div>
         </x-slot:figure>
@@ -39,6 +39,9 @@
             @if ($lead)
                 <x-site.text variant="lede" class="max-w-[44ch]">{{ $lead }}</x-site.text>
             @endif
+            @isset($actions)
+                <x-site.actions>{{ $actions }}</x-site.actions>
+            @endisset
             {{ $slot }}
         </div>
         {{ $figure ?? '' }}

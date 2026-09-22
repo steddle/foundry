@@ -32,15 +32,18 @@ is its own.
   the page. `x-site.copy-menu` reads its words from `foundry::agents`, in
   English and Dutch.
 - **Sections**: a page is a run of sections. The foundry holds the base
-  ones under `x-site.sections.*`, `split` (words beside a `figure` slot),
-  `steps`, `features`, `faq` and `cta`, beside `x-site.hero`; each takes
-  its words as props, its items as a list of pairs, and passes `id`,
-  `sunken` or `scene` to the band. A section that is a base one filled with
-  copy is written in the page, never kept as a component. A section with
-  markup of its own is the imprint's, under
-  `resources/views/components/site/sections/`, built on a base one where
-  its shape allows; a figure the labs show alone is a component of its own
-  beside it. A base section enters the foundry when a page uses it.
+  ones under `x-site.sections.*`: `hero` and `page-title` to open a page,
+  `split` (words beside a `figure` slot), `steps`, `features`, `faq` and
+  `cta` between, and `closing` in the footer's slot. Every one takes the
+  same words: `eyebrow` where it has one, `title`, and `lead`, the lede,
+  as props; its items as a list of pairs; the buttons in an `actions` slot,
+  which it sets in `x-site.actions`; and `id`, `sunken` or `scene` for the
+  band. `x-site.section-head` opens a band on the same three words. A
+  section that is a base one filled with copy is written in the page, never
+  kept as a component. A section with markup of its own is the imprint's,
+  under `resources/views/components/site/sections/`, built on a base one
+  where its shape allows; a figure the labs show alone is a component of its
+  own beside it. A base section enters the foundry when a page uses it.
 - **Header and footer**: `x-foundry::site.nav` takes the links, the home
   address, an `actions` slot and whether a phone folds them into a menu;
   `x-foundry::site.footer` takes the scene, the links or an `items` slot and
@@ -48,10 +51,10 @@ is its own.
   closing section set in its slot, and closes on the colophon: the disclaimer
   from `config/imprint.php` and the copyright. A site's own `x-site.nav` and
   `x-site.footer` wrap them with its content.
-- **Hero**: `x-site.hero` opens a page on ink under the header: `scene`,
-  `align` (`start` or `center`, which chooses the scrim), `tall`, and the
-  `eyebrow`, `title` with its `marked` phrase and `lead` it sets itself; the
-  slot follows them. `x-site.section` takes `scene` and `align` too, for an
+- **Hero**: `x-site.sections.hero` opens a page on ink under the header:
+  `scene`, `align` (`start` or `center`, which chooses the scrim), `tall`,
+  and a `marked` phrase in its `title`; `actions` and then the slot follow
+  the words. `x-site.section` takes `scene` and `align` too, for an
   ink band further down a page. Both draw the scrim `x-site.scene` holds for
   `start` or `center`, measured over every imprint's scenes; the footer keeps
   its own. `x-site.actions` is the row of buttons a band ends on. A scene is
@@ -69,8 +72,8 @@ is its own.
   sign-in, with `scene` or `card`; it and the footer close on
   `x-site.service-line`: `imprint.disclaimer`, the copyright, and 'A service
   by Steddle' where `imprint.endorsed` holds, true unless the imprint is
-  Steddle itself. `x-site.closing` is the page's last word in the footer's
-  slot: `title`, `lead` and `align`, with the actions as its slot.
+  Steddle itself. `x-site.sections.closing` is the page's last word in the
+  footer's slot, centred or, with `align`, at the start.
 - **Script**: a foundry component that holds state uses Alpine, which
   Livewire loads on the page, and `[x-cloak]` holds it back until Alpine has
   read it. A page with such a component loads Livewire's scripts; what only
@@ -157,7 +160,7 @@ is its own.
   scene's place and any face of its own under `fonts`, as Blade. A
   component of its own belongs on `/components`, never on `/design`. On
   those pages the nav is the lab's bar on bone, and elsewhere the links end
-  on Lab. A page with no hero opens on `x-site.page-title`.
+  on Lab. A page with no hero opens on `x-site.sections.page-title`.
 - **`/components`** shows every component an imprint renders, from the
   catalogue in `Steddle\Foundry\Catalog\Catalog`: each example rendered
   live on its ground and printed as Blade. A component, the foundry's or

@@ -22,8 +22,8 @@ test('steps number their rows in order, and a head without a lede prints none', 
         ->not->toContain('variant="lede"');
 });
 
-test('features take as many columns as they are, and the slot is the lede', function () {
-    $html = Blade::render('<x-site.sections.features eyebrow="Offer" title="Two." :features="[[\'A\', \'a.\'], [\'B\', \'b.\']]">Why.</x-site.sections.features>', deleteCachedView: true);
+test('features take as many columns as they are, with the lede beside the title', function () {
+    $html = Blade::render('<x-site.sections.features eyebrow="Offer" title="Two." lead="Why." :features="[[\'A\', \'a.\'], [\'B\', \'b.\']]" />', deleteCachedView: true);
 
     expect($html)->toContain('lg:grid-cols-2')
         ->toContain('Why.</p>');
@@ -38,10 +38,10 @@ test('every answer is in the HTML, closed', function () {
         ->toContain('Funders.</p>');
 });
 
-test('a split sets its figure beside the words, and leaves out what it was not given', function () {
-    $html = Blade::render('<x-site.sections.split title="Two halves."><a href="#">Act</a><x-slot:figure><figure>F</figure></x-slot:figure></x-site.sections.split>', deleteCachedView: true);
+test('a split sets its actions under the words and its figure beside them, and leaves out what it was not given', function () {
+    $html = Blade::render('<x-site.sections.split title="Two halves."><x-slot:actions><a href="#">Act</a></x-slot:actions><x-slot:figure><figure>F</figure></x-slot:figure></x-site.sections.split>', deleteCachedView: true);
 
-    expect($html)->toMatch('/Two halves\.<\/h2>\s*<a href="#">Act<\/a>\s*<\/div>\s*<figure>F<\/figure>/')
+    expect($html)->toMatch('/Two halves\.<\/h2>\s*<div[^>]*>\s*<a href="#">Act<\/a>\s*<\/div>\s*<\/div>\s*<figure>F<\/figure>/')
         ->not->toContain('variant="label"')
         ->not->toContain('variant="lede"');
 });

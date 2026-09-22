@@ -29,14 +29,14 @@
         <x-site.og-image :heading="$title" :lede="$description" :eyebrow="$topic['title']" />
     </x-slot:og>
 
-    <x-site.hero scene="docs-hero" :title="$title" :lead="$description">
+    <x-site.sections.hero scene="docs-hero" :title="$title" :lead="$description">
         <x-slot:eyebrow>
             <x-site.breadcrumb :items="[$docs => localized_route('docs.index'), $topic['title'] => localized_route('docs.category.'.$topicSlug)]" />
         </x-slot:eyebrow>
         @if ($article['draft'] ?? false)
             <x-site.badge tone="warning">{{ Content::copy('docs', 'draft') ?? __('foundry::docs.draft') }}</x-site.badge>
         @endif
-    </x-site.hero>
+    </x-site.sections.hero>
 
     <x-site.numbered-section :number="sprintf('%02d', array_search($topicSlug, array_keys($topics)) + 1)" :name="$topic['title']" :note="__('foundry::docs.article_of', ['position' => $position + 1, 'total' => count($slugs)])">
         <x-slot:actions>

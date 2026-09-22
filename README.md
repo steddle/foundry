@@ -58,7 +58,7 @@ A page:
 
 ```blade
 <x-layouts::site title="Pricing" description="What it costs.">
-    <x-site.hero scene="hero" title="What the page is for." marked="for." lead="One sentence under it." />
+    <x-site.sections.hero scene="hero" title="What the page is for." marked="for." lead="One sentence under it." />
     <x-site.section>…</x-site.section>
 </x-layouts::site>
 ```

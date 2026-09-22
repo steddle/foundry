@@ -39,16 +39,16 @@ test('an imprint\'s own component files join the foundry\'s, described and shown
         ->assertSee('The imprint\'s own stamp, in red.')
         ->assertSee('<span>the stamp', false)
         ->assertSee('outside steddle/foundry')
-        ->assertSee('href="'.route('foundry.components', 'hero').'"', false)
+        ->assertSee('href="'.route('foundry.components', 'sections-hero').'"', false)
         ->assertSee('href="'.route('foundry.components', ['from' => 'custom']).'"', false);
 });
 
 test('the toggle lists the foundry\'s or the imprint\'s components alone, and the lab links to the custom ones', function () {
     $this->get('/components?from=custom')->assertOk()
         ->assertSee('href="'.route('foundry.components', ['stamp', 'from' => 'custom']).'"', false)
-        ->assertDontSee('href="'.route('foundry.components', ['hero', 'from' => 'custom']).'"', false);
+        ->assertDontSee('href="'.route('foundry.components', ['sections-hero', 'from' => 'custom']).'"', false);
 
-    $this->get('/components/hero?from=custom')->assertNotFound();
+    $this->get('/components/sections-hero?from=custom')->assertNotFound();
     $this->get('/components/stamp?from=foundry')->assertNotFound();
     $this->get('/components/container?from=foundry')->assertOk();
 

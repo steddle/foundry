@@ -25,14 +25,14 @@
         <x-site.og-image :heading="$title" :lede="$description" :eyebrow="$legalTitle" />
     </x-slot:og>
 
-    <x-site.hero scene="legal-hero" :title="$title" :lead="$description">
+    <x-site.sections.hero scene="legal-hero" :title="$title" :lead="$description">
         <x-slot:eyebrow>
             <x-site.breadcrumb :items="[$legalTitle => localized_route('legal.index')]" />
         </x-slot:eyebrow>
         @if (config('imprint.legal.draft'))
             <x-site.badge tone="warning">{{ Content::copy('legal', 'draft') }}</x-site.badge>
         @endif
-    </x-site.hero>
+    </x-site.sections.hero>
 
     <x-site.numbered-section :number="sprintf('%02d', array_search($audienceKey, array_keys($legal['audiences'])) + 2)" :name="$audience['for']" :note="__('foundry::legal.document_of', ['position' => $position + 1, 'total' => $all->count()])">
         <x-slot:actions>

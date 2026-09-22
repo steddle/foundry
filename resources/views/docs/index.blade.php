@@ -9,7 +9,7 @@
 @endphp
 
 <x-layouts::site :title="$title.' | '.config('imprint.name')" :description="Content::copy('docs', 'description')">
-    <x-site.hero scene="docs-hero" :title="$title.'.'" :lead="Content::copy('docs', 'lead')" />
+    <x-site.sections.hero scene="docs-hero" :title="$title.'.'" :lead="Content::copy('docs', 'lead')" />
 
     <x-site.numbered-section number="01" :name="__('foundry::docs.start_here')" :note="trans_choice('foundry::docs.articles', count($start))">
         <x-slot:actions>
