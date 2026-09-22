@@ -74,6 +74,7 @@ Outside production, `/components` shows every component the imprint renders, liv
 - Languages: every page per locale under `Route::localized()`, translated paths, the language switch and the visitor's language followed
 - Docs and legal pages from a table of contents, with `Route::docs()` and `Route::legal()`
 - `sitemap.xml`, `llms.txt` and `llms-full.txt` from the imprint's page list
+- The app shell for signed-in pages: `x-site.app-page` with its bar, account menu, page head, record rows, empty state and settings rows
 - `/labs`, `/design` and `/components` outside production
 - `php artisan foundry:assets` renders the OG image, the social preview, the README banners and the icons, and `--check` fails when they drift from the copy
 - Markdown for agents: every page answers as markdown at `.md`, chrome left out

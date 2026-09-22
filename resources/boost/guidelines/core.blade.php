@@ -79,6 +79,21 @@ is its own.
   by Steddle' where `imprint.endorsed` holds, true unless the imprint is
   Steddle itself. `x-site.sections.closing` is the page's last word in the
   footer's slot, centred or, with `align`, at the start.
+- **App shell**: `x-site.app-page` is a signed-in page's document, on bone
+  and kept out of search: `x-site.app-nav`, the content in a container, the
+  service line under a rule and `x-site.toasts`, the toast group persisted
+  across `wire:navigate`, which `x-site.ink-page` sets too. `x-site.app-nav`
+  is its bar, in flow and ruled off: the lockup, the `links` with the one
+  whose address the current one equals or lies under marked, the `actions`
+  slot and `x-site.account-menu`, the reader's initials opening their name
+  and address, the `menu` slot's items and logging out where `logout` is a
+  route. `x-site.page-head` opens the content: a way `back`, the title
+  with a `status` beside it, the lede and the page's `actions`.
+  `x-site.rows` rules a list of `x-site.record-row`s, each a link over its
+  title, status and `meta` with its `actions` outside it; `x-site.empty`
+  stands where a list holds nothing yet; `x-site.field-row` sets one
+  setting's label and description beside its control, the parent ruling
+  the rows.
 - **Script**: a foundry component that holds state uses Alpine, which
   Livewire loads on the page, and `[x-cloak]` holds it back until Alpine has
   read it. A page with such a component loads Livewire's scripts; what only

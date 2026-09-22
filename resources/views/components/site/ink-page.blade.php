@@ -68,11 +68,7 @@
             </x-site.container>
         </footer>
 
-        @persist('toast')
-            <flux:toast.group>
-                <flux:toast />
-            </flux:toast.group>
-        @endpersist
+        <x-site.toasts />
 
         @fluxScripts
     </body>
