@@ -26,6 +26,7 @@ The service provider registers itself.
 - PHP 8.3+, Laravel 13
 - Flux and Flux Pro 2.20+, Tailwind 4
 - `playwright` as a devDependency, for `foundry:assets`
+- `puppeteer` where Browsershot finds it, for printing PDFs
 
 ## Quick start
 
@@ -76,6 +77,7 @@ Outside production, `/components` shows every component the imprint renders, liv
 - `/labs`, `/design` and `/components` outside production
 - `php artisan foundry:assets` renders the OG image, the social preview, the README banners and the icons, and `--check` fails when they drift from the copy
 - Markdown for agents: every page answers as markdown at `.md`, chrome left out
+- Printed documents: `Printer` makes a PDF from a page of the imprint's own, set with `x-site.print.*` on A4 or Letter, fonts and all held in the stored HTML
 
 ## What it takes over
 

@@ -21,7 +21,7 @@ use Symfony\Component\Finder\Finder;
 final class Catalog
 {
     /** The index's groups, in order. Every component names one, the imprint's as the foundry's. */
-    private const GROUPS = ['Shell', 'Sections', 'Layout', 'Navigation', 'Type', 'Elements', 'Forms', 'Brand'];
+    private const GROUPS = ['Shell', 'Sections', 'Layout', 'Navigation', 'Type', 'Elements', 'Forms', 'Brand', 'Print'];
 
     /**
      * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}>
