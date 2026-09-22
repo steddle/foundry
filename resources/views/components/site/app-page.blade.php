@@ -1,4 +1,4 @@
-@props(['title', 'description' => null, 'links' => [], 'user', 'home' => null, 'flush' => false])
+@props(['title', 'description' => null, 'links' => [], 'user', 'home' => null, 'flush' => false, 'analytics' => null])
 
 {{--
     A signed-in page's document, on bone and kept out of search: x-site.app-nav,
@@ -13,6 +13,7 @@
     @prop user An object with `name` and `email`, for the account menu.
     @prop home Where the lockup leads, as x-site.app-nav takes it.
     @prop flush Sets the slot edge to edge, for a page that opens on an x-site.app-band and sets its own container under it, and lays the bar over the band.
+    @prop analytics Loads the imprint's analytics on this page, which x-site.head otherwise leaves off every signed-in page; for one whose address carries no token.
     @slot actions What stands in the bar before the account menu.
     @slot menu The imprint's items in the account menu, each a `flux:menu.item`.
     @slot nav A bar of the imprint's own in place of x-site.app-nav, for an imprint whose site and app share one; links, user, home, actions and menu then go unused.
@@ -33,7 +34,7 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
     <head>
-        <x-site.head :title="$title.' | '.config('imprint.name')" :$description />
+        <x-site.head :title="$title.' | '.config('imprint.name')" :$description :$analytics />
 
         <meta name="robots" content="noindex" />
     </head>

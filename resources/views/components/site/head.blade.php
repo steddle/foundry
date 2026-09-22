@@ -2,7 +2,7 @@
 @use('Steddle\Foundry\Locales')
 @use('Steddle\Foundry\Markdown\MarkdownUrl')
 
-@props(['title', 'description'])
+@props(['title', 'description', 'analytics' => null])
 
 {{--
     The page's head: its meta, its canonical address and, where the imprint
@@ -14,6 +14,7 @@
     @group Shell
     @prop title The page's `<title>`, and its Open Graph title and image alt, as given.
     @prop description The meta and Open Graph description.
+    @prop analytics Loads the imprint's analytics; without it, only on a page that is indexed, as a noindex page may carry a token in its address.
     @slot slot What is the page's own, after the stylesheet and script.
 
     @example In a page's head
@@ -77,7 +78,7 @@
 {{ $slot }}
 
 @production
-    @if ($indexed)
+    @if ($analytics ?? $indexed)
         @if (config('imprint.plausible'))
             <script defer data-domain="{{ config('imprint.plausible') }}" src="https://plausible.io/js/plausible.js"></script>
         @endif

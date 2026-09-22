@@ -39,3 +39,12 @@ test('a route without the noindex middleware renders both', function () {
 
     expect($html)->toContain('plausible.io')->toContain('cdn.visitors.now');
 });
+
+test('a noindex page can ask for analytics, and an indexed one can turn them off', function () {
+    Route::get('/app', fn () => Blade::render('<x-site.head title="T" description="D" :analytics="true" />', deleteCachedView: true))
+        ->middleware(Noindex::class);
+    Route::get('/quiet', fn () => Blade::render('<x-site.head title="T" description="D" :analytics="false" />', deleteCachedView: true));
+
+    expect($this->get('/app')->getContent())->toContain('cdn.visitors.now')
+        ->and($this->get('/quiet')->getContent())->not->toContain('cdn.visitors.now');
+});
