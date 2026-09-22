@@ -4,3 +4,4 @@
 /vite.config.js export-ignore
 /bin/imprints export-ignore
 /CLAUDE.md export-ignore
+/.claude export-ignore
