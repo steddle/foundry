@@ -57,3 +57,21 @@ test('a scene draws its photo in every width and format, with its scrim over it'
         ->toContain('object-right')
         ->toContain('-z-10 bg-black/50');
 });
+
+test('steps check what is done, mark the current one, number the rest and open a step that has an action', function () {
+    $html = Blade::render('<x-site.steps :steps="$steps" />', ['steps' => [
+        ['label' => 'You', 'meta' => 'Ada Visser', 'status' => 'complete', 'click' => 'goTo(1)'],
+        ['label' => 'Terms', 'status' => 'current'],
+        ['label' => 'Sent', 'meta' => 'Both sign online', 'status' => 'incomplete', 'icon' => 'paper-airplane'],
+        ['label' => 'Done', 'status' => 'incomplete'],
+    ]]);
+
+    expect($html)
+        ->toContain('<flux:timeline horizontal')
+        ->toContain('wire:click="goTo(1)"')
+        ->and(substr_count($html, '<flux:icon.check variant="micro" />'))->toBe(1)
+        ->and(substr_count($html, '<flux:icon :icon='))->toBe(1)
+        ->and(substr_count($html, 'aria-current="step"'))->toBe(1)
+        ->and($html)->toMatch('/\s4\s*<\/flux:timeline.indicator>/')
+        ->not->toMatch('/\s3\s*<\/flux:timeline.indicator>/');
+});
