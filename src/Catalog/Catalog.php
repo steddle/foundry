@@ -104,7 +104,7 @@ final class Catalog
             }
 
             $entries[str_replace(['/', '.'], '-', $path)] = [
-                'name' => Str::ucfirst(str_replace(['-', '/'], [' ', ': '], $path)),
+                'name' => Str::ucfirst(str_replace('-', ' ', Str::afterLast($path, '/'))),
                 'group' => $group ?? (str_contains($path, '/') ? Str::ucfirst(str_replace('-', ' ', Str::before($path, '/'))) : 'Custom'),
                 'from' => $from,
                 'tag' => 'x-site.'.str_replace('/', '.', $path),

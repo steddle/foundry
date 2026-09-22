@@ -18,7 +18,8 @@ test('every entry names itself, its group, where it comes from and one example',
 
 test('the index keeps its groups in order and each group alphabetical', function () {
     expect(array_keys(Catalog::groups()))->toBe(['Layout', 'Type', 'Actions', 'Forms', 'Brand', 'Bands', 'Sections', 'Images'])
-        ->and(Catalog::groups()['Actions'])->toBe(['actions', 'badge', 'button', 'copy-menu']);
+        ->and(Catalog::groups()['Actions'])->toBe(['actions', 'badge', 'button', 'copy-menu'])
+        ->and(Catalog::shared()['sections-split']['name'])->toBe('Split');
 });
 
 test('a component the catalog does not hold is not found', function () {
