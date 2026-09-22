@@ -39,9 +39,8 @@ Import the stylesheet after Tailwind and Flux:
 Then give the imprint what is its own:
 
 - `config/imprint.php`: name, ink and paper, scenes (`docs-hero` and `legal-hero` where it has docs and legal pages), og and banner copy, and `locales` where it speaks more than one language
-- `resources/views/layouts/site.blade.php`, wrapping `<x-site.page>`
-- `x-site.nav` and `x-site.footer`, wrapping `x-foundry::site.nav` and `x-foundry::site.footer` (which needs a `scene`) with its links
-- `x-site.lockup` and `x-site.mark`, and its `zinc` and `primary` ramps
+- `resources/views/layouts/site.blade.php`, wrapping `<foundry:layouts.site>` and handing `<foundry:header>` and `<foundry:footer>` its links and the footer's `scene`
+- `foundry:lockup` and `foundry:mark`, and its `zinc` and `primary` ramps
 - `config/markdown-response.php` naming `Steddle\Foundry\Markdown\DetectsMarkdownRequest` and `RemoveMarkdownSkipPreprocessor`, with `ProvideMarkdownResponse` on its public routes
 
 The layout:
@@ -49,18 +48,18 @@ The layout:
 ```blade
 @props(['title', 'description'])
 
-<x-site.page :$title :$description :og="$og ?? []">
+<foundry:layouts.site :$title :$description :og="$og ?? []">
     {{ $slot }}
     <x-slot:closing>{{ $closing ?? '' }}</x-slot:closing>
-</x-site.page>
+</foundry:layouts.site>
 ```
 
 A page:
 
 ```blade
 <x-layouts::site title="Pricing" description="What it costs.">
-    <x-site.sections.hero scene="hero" title="What the page is for." marked="for." lead="One sentence under it." />
-    <x-site.section>…</x-site.section>
+    <foundry:sections.hero scene="hero" title="What the page is for." marked="for." lead="One sentence under it." />
+    <foundry:section>…</foundry:section>
 </x-layouts::site>
 ```
 
@@ -70,19 +69,19 @@ Outside production, `/components` shows every component the imprint renders, liv
 
 - Spectral, Chivo and Chivo Mono, the type scale and the radii in `foundry.css`
 - Seven ramps, written out as pairs: no role tokens
-- Layout, nav and footer components under `x-site.*`, and the base sections a page is built from under `x-site.sections.*`, overridable per site
+- Layout, nav and footer components under `foundry:*`, and the base sections a page is built from under `foundry:sections.*`, overridable per site
 - Languages: every page per locale under `Route::localized()`, translated paths, the language switch and the visitor's language followed
 - Docs and legal pages from a table of contents, with `Route::docs()` and `Route::legal()`
 - `sitemap.xml`, `llms.txt` and `llms-full.txt` from the imprint's page list
-- The app shell for signed-in pages: `x-site.app-page` with its bar, account menu, page head, record rows, empty state and settings rows
+- The app shell for signed-in pages: `foundry:layouts.app` with its bar, account menu, page head, record rows, empty state and settings rows
 - `/labs`, `/design` and `/components` outside production
 - `php artisan foundry:assets` renders the OG image, the social preview, the README banners and the icons, and `--check` fails when they drift from the copy
 - Markdown for agents: every page answers as markdown at `.md`, chrome left out
-- Printed documents: `Printer` makes a PDF from a page of the imprint's own, set with `x-site.print.*` on A4 or Letter, fonts and all held in the stored HTML
+- Printed documents: `Printer` makes a PDF from a page of the imprint's own, set with `foundry:print.*` on A4 or Letter, fonts and all held in the stored HTML
 
 ## What it takes over
 
-The foundry owns `x-site.*` in every imprint. A site overrides a component by keeping a file of the same name under `resources/views/components/site`, and can wrap the foundry's version as `x-foundry::site.<name>`.
+The foundry owns `foundry:*` in every imprint. A file of that name under `resources/views/foundry` stands in for the foundry's component, as a published Flux component stands in for its own. A component of the imprint's own lives under `resources/views/components` and is written `<x-name>`.
 
 An imprint in more than one language (`imprint.locales`) gets `FollowPreferredLocale` pushed onto its `web` middleware group and the locale cookie left unencrypted, so a page that states no language speaks the visitor's.
 

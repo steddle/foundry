@@ -21,12 +21,12 @@ final class BrandAssets
         $banner = self::copy('banner');
 
         $assets = [
-            new BrandAsset('og-image', 'og-image.png', 1200, 630, 'og:image where no OG Kit key is set', 'site.og-image', $og),
-            new BrandAsset('social-preview', 'brand/social/github-social-preview.png', 1280, 640, 'GitHub repository settings, social preview', 'site.social-preview', $og),
-            new BrandAsset('readme-banner-light', 'brand/social/readme-banner-light.png', 1600, 520, 'README <picture>, light source', 'site.readme-banner', $banner),
-            new BrandAsset('readme-banner-dark', 'brand/social/readme-banner-dark.png', 1600, 520, 'README <picture>, dark source', 'site.readme-banner', [...$banner, 'dark' => true]),
-            self::icon('favicon-96', 'favicon-96x96.png', 96, 'x-site.favicons', 'tile'),
-            self::icon('apple-touch-icon', 'apple-touch-icon.png', 180, 'x-site.favicons: iOS rounds it itself', 'full'),
+            new BrandAsset('og-image', 'og-image.png', 1200, 630, 'og:image where no OG Kit key is set', 'foundry::og-image', $og),
+            new BrandAsset('social-preview', 'brand/social/github-social-preview.png', 1280, 640, 'GitHub repository settings, social preview', 'foundry::social-preview', $og),
+            new BrandAsset('readme-banner-light', 'brand/social/readme-banner-light.png', 1600, 520, 'README <picture>, light source', 'foundry::readme-banner', $banner),
+            new BrandAsset('readme-banner-dark', 'brand/social/readme-banner-dark.png', 1600, 520, 'README <picture>, dark source', 'foundry::readme-banner', [...$banner, 'dark' => true]),
+            self::icon('favicon-96', 'favicon-96x96.png', 96, 'foundry:favicons', 'tile'),
+            self::icon('apple-touch-icon', 'apple-touch-icon.png', 180, 'foundry:favicons: iOS rounds it itself', 'full'),
             self::icon('manifest-192', 'web-app-manifest-192x192.png', 192, 'site.webmanifest', 'tile'),
             self::icon('icon-512', 'icon-512.png', 512, 'site.webmanifest, and favicon.ico at 16, 32 and 48', 'tile'),
             self::icon('icon-maskable-512', 'icon-maskable-512.png', 512, 'site.webmanifest, maskable', 'full'),

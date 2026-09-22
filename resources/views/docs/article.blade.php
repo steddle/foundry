@@ -26,25 +26,25 @@
 
 <x-layouts::site :title="$title.' | '.$docs.' | '.config('imprint.name')" :description="$description">
     <x-slot:og>
-        <x-site.og-image :heading="$title" :lede="$description" :eyebrow="$topic['title']" />
+        <foundry:og-image :heading="$title" :lede="$description" :eyebrow="$topic['title']" />
     </x-slot:og>
 
-    <x-site.sections.hero scene="docs-hero" :title="$title" :lead="$description">
+    <foundry:sections.hero scene="docs-hero" :title="$title" :lead="$description">
         <x-slot:eyebrow>
-            <x-site.breadcrumb :items="[$docs => localized_route('docs.index'), $topic['title'] => localized_route('docs.category.'.$topicSlug)]" />
+            <foundry:breadcrumb :items="[$docs => localized_route('docs.index'), $topic['title'] => localized_route('docs.category.'.$topicSlug)]" />
         </x-slot:eyebrow>
         @if ($article['draft'] ?? false)
-            <x-site.badge tone="warning">{{ Content::copy('docs', 'draft') ?? __('foundry::docs.draft') }}</x-site.badge>
+            <foundry:badge tone="warning">{{ Content::copy('docs', 'draft') ?? __('foundry::docs.draft') }}</foundry:badge>
         @endif
-    </x-site.sections.hero>
+    </foundry:sections.hero>
 
-    <x-site.numbered-section :number="sprintf('%02d', array_search($topicSlug, array_keys($topics)) + 1)" :name="$topic['title']" :note="__('foundry::docs.article_of', ['position' => $position + 1, 'total' => count($slugs)])">
+    <foundry:numbered-section :number="sprintf('%02d', array_search($topicSlug, array_keys($topics)) + 1)" :name="$topic['title']" :note="__('foundry::docs.article_of', ['position' => $position + 1, 'total' => count($slugs)])">
         <x-slot:actions>
-            <x-site.copy-menu />
+            <foundry:copy-menu />
         </x-slot:actions>
-        <x-site.document>
+        <foundry:document>
             <x-slot:aside>
-                <x-site.side-nav :groups="$nav" :label="__('foundry::docs.on_this_page')" />
+                <foundry:side-nav :groups="$nav" :label="__('foundry::docs.on_this_page')" />
             </x-slot:aside>
 
             <div class="flex flex-col gap-12">
@@ -52,10 +52,10 @@
                     {!! $body !!}
                 </article>
 
-                <x-site.pager :previous="$pager['previous'] ?? null" :next="$pager['next'] ?? null">{{ $article['checked'] ?? '' }}</x-site.pager>
+                <foundry:pager :previous="$pager['previous'] ?? null" :next="$pager['next'] ?? null">{{ $article['checked'] ?? '' }}</foundry:pager>
             </div>
-        </x-site.document>
-    </x-site.numbered-section>
+        </foundry:document>
+    </foundry:numbered-section>
 
     <x-slot:closing>
         @include('foundry::docs.closing')

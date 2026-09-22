@@ -6,7 +6,7 @@
 
 ## The images
 
-`x-site.og-image`, `x-site.social-preview` and `x-site.readme-banner` are rendered from the imprint's `config/imprint.php` (`name`, `stylesheet`, and `og` and `banner` copy: `heading`, `marked`, `lede` and, on `og` alone, `eyebrow`, each a sentence or a translation key, and an optional `locale` per block) into `public/og-image.png` and `public/brand/social/`.
+`foundry:og-image`, `foundry:social-preview` and `foundry:readme-banner` are rendered from the imprint's `config/imprint.php` (`name`, `stylesheet`, and `og` and `banner` copy: `heading`, `marked`, `lede` and, on `og` alone, `eyebrow`, each a sentence or a translation key, and an optional `locale` per block) into `public/og-image.png` and `public/brand/social/`.
 
 Change the copy in `config/imprint.php`, never the PNG. The copy is English whatever languages the site speaks: a Dutch reader reads English, a reader in the US does not read Dutch, and a README is English.
 
@@ -24,7 +24,7 @@ Its `banner`:
 
 ## Icons
 
-The same command draws the favicons, the touch and manifest icons, `site.webmanifest` and `favicon.ico` from `x-site.mark` in the imprint's `ink` and `paper`, and the MCP server's two icons where `mcp_icons` names them. `x-site.favicons` links them in a head, with the browser chrome in those two colours. `x-site.brand-assets` shows either set on `/design`, `group="social"` or `group="icon"`.
+The same command draws the favicons, the touch and manifest icons, `site.webmanifest` and `favicon.ico` from `foundry:mark` in the imprint's `ink` and `paper`, and the MCP server's two icons where `mcp_icons` names them. `foundry:favicons` links them in a head, with the browser chrome in those two colours. `foundry:brand-assets` shows either set on `/design`, `group="social"` or `group="icon"`.
 
 ## The README
 

@@ -22,16 +22,17 @@ function renderSkill(string $file): string
 beforeEach(function () {
     Once::flush();
     config(['imprint.name' => 'Stagent']);
-    File::ensureDirectoryExists(resource_path('views/components/site'));
-    File::put(resource_path('views/components/site/heading.blade.php'), '<h2 {{ $attributes }}>{{ $slot }}</h2>');
-    File::put(resource_path('views/components/site/stamp.blade.php'), <<<'BLADE'
+    File::ensureDirectoryExists(resource_path('views/foundry'));
+    File::ensureDirectoryExists(resource_path('views/components'));
+    File::put(resource_path('views/foundry/heading.blade.php'), '<h2 {{ $attributes }}>{{ $slot }}</h2>');
+    File::put(resource_path('views/components/stamp.blade.php'), <<<'BLADE'
 @props(['ink' => 'red'])
 {{--
     The imprint's own stamp. Pressed in red.
     @group Brand
     @prop ink The colour it is pressed in.
     @example Alone
-    <x-site.stamp />
+    <x-stamp />
 --}}
 <span>the stamp</span>
 BLADE);
@@ -39,6 +40,7 @@ BLADE);
 
 afterEach(function () {
     File::deleteDirectory(resource_path('views/components'));
+    File::deleteDirectory(resource_path('views/foundry'));
     File::deleteDirectory(base_path('.agents'));
     Once::flush();
 });
@@ -49,9 +51,9 @@ test('the skill indexes every component the imprint renders, marking its own and
     expect($skill)
         ->toStartWith("---\nname: foundry\n")
         ->toContain('# Foundry in Stagent')
-        ->toContain("- `x-site.stamp` (own): The imprint's own stamp.\n")
-        ->toContain('- `x-site.heading` (✗ copied, wrap it)')
-        ->toContain('- `x-site.sections.hero`: ')
+        ->toContain("- `x-stamp` (own): The imprint's own stamp.\n")
+        ->toContain('- `foundry:heading` (✗ stood in for)')
+        ->toContain('- `foundry:sections.hero`: ')
         ->toContain('`@props`', '`@slot name …`')
         ->toContain('<!-- foundry-skill '.Skill::fingerprint().' -->');
 });
@@ -60,14 +62,14 @@ test('a group\'s reference holds each component\'s props, slots and example', fu
     $brand = renderSkill('references/components/brand.blade.php');
 
     expect($brand)
-        ->toContain('## `x-site.stamp`')
-        ->toContain('in `resources/views/components/site/stamp.blade.php`')
+        ->toContain('## `x-stamp`')
+        ->toContain('in `resources/views/components/stamp.blade.php`')
         ->toContain('| `ink` | `\'red\'` | The colour it is pressed in. |')
-        ->toContain("```blade\n<x-site.stamp />\n```")
-        ->not->toContain('## `x-site.heading`');
+        ->toContain("```blade\n<x-stamp />\n```")
+        ->not->toContain('## `foundry:heading`');
 
     expect(renderSkill('references/components/type.blade.php'))
-        ->toContain('keeps a copy of this one in place of the foundry\'s. Wrap `x-foundry::site.heading`');
+        ->toContain('keeps a file of its own in place of the foundry\'s, in `resources/views/foundry/`');
 });
 
 test('every reference renders', function (string $file) {
@@ -81,7 +83,7 @@ test('the fingerprint moves with the imprint\'s components, and an installed cop
 
     expect(Skill::installed())->toBe(['.agents/skills/foundry/SKILL.md' => $before]);
 
-    File::put(resource_path('views/components/site/seal.blade.php'), "{{-- @group Elements --}}\n<span>the seal</span>");
+    File::put(resource_path('views/components/seal.blade.php'), "{{-- @group Elements --}}\n<span>the seal</span>");
     Once::flush();
 
     expect(Skill::fingerprint())->not->toBe($before);

@@ -50,7 +50,7 @@ final class ShowComponent
             'groups' => $groups,
             'from' => $from,
             'hasCustom' => $hasCustom,
-            'own' => $entry['from'] === 'foundry' ? Catalog::held($entry['tag']) : null,
+            'own' => $entry['from'] === 'foundry' && Catalog::held($entry['tag']),
         ]);
     }
 }

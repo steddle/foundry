@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
     <head>
-        <x-site.head title="Example" description="One example of a component." />
+        <foundry:head title="Example" description="One example of a component." />
     </head>
     <body class="isolate">
         {!! Blade::render($blade) !!}

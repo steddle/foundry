@@ -37,15 +37,15 @@ final class Icon
     }
 
     /**
-     * The shapes of the imprint's own x-site.mark, drawn on a 32 by 32 grid,
+     * The shapes of the imprint's own foundry:mark, drawn on a 32 by 32 grid,
      * without the colour the mark takes from its ground.
      */
     private static function mark(): string
     {
-        $svg = Blade::render('<x-site.mark />');
+        $svg = Blade::render('<foundry:mark />');
 
         if (! preg_match('/<svg[^>]*viewBox="0 0 32 32"[^>]*>(.*)<\/svg>/s', $svg, $match)) {
-            throw new InvalidArgumentException('x-site.mark is no SVG on a 32 by 32 grid.');
+            throw new InvalidArgumentException('foundry:mark is no SVG on a 32 by 32 grid.');
         }
 
         return trim(str_replace(' fill="currentColor"', '', $match[1]));

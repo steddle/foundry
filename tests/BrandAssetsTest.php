@@ -7,7 +7,7 @@ use Steddle\Foundry\Brand\Icon;
 
 beforeEach(function () {
     // The components every imprint supplies itself.
-    $directory = resource_path('views/components/site');
+    $directory = resource_path('views/foundry');
     File::ensureDirectoryExists($directory);
     File::put($directory.'/lockup.blade.php', '<span {{ $attributes }}>Imprint</span>');
     File::put($directory.'/mark.blade.php', '<svg viewBox="0 0 32 32" {{ $attributes }}><path fill="currentColor" d="M1 1h30v30H1Z" /></svg>');
@@ -24,6 +24,7 @@ beforeEach(function () {
 
 afterEach(function () {
     File::deleteDirectory(resource_path('views/components'));
+    File::deleteDirectory(resource_path('views/foundry'));
     File::deleteDirectory(public_path('brand'));
     File::delete([...File::glob(public_path('*.png')), ...File::glob(public_path('*.svg')), public_path('favicon.ico'), public_path('site.webmanifest')]);
 });
@@ -90,12 +91,12 @@ test('a copy value may be a translation key, read in the locale its block names'
 });
 
 test('the design section shows every image with its size and use', function () {
-    $directory = resource_path('views/components/site');
+    $directory = resource_path('views/foundry');
     File::put($directory.'/text.blade.php', '<p {{ $attributes }}>{{ $slot }}</p>');
     File::ensureDirectoryExists(public_path('brand'));
     File::put(public_path(BrandAssets::MANIFEST), json_encode(['og-image' => 'abcdef0123456789']));
 
-    $html = Blade::render('<x-site.brand-assets />', deleteCachedView: true);
+    $html = Blade::render('<foundry:brand-assets />', deleteCachedView: true);
 
     expect($html)
         ->toContain('og-image.png?v=abcdef01')
@@ -124,9 +125,9 @@ test('the icons draw the imprint\'s mark in its two colours', function () {
 });
 
 test('the design section shows the icons apart, with the files written beside them', function () {
-    File::put(resource_path('views/components/site/text.blade.php'), '<p {{ $attributes }}>{{ $slot }}</p>');
+    File::put(resource_path('views/foundry/text.blade.php'), '<p {{ $attributes }}>{{ $slot }}</p>');
 
-    $html = Blade::render('<x-site.brand-assets group="icon" />', deleteCachedView: true);
+    $html = Blade::render('<foundry:brand-assets group="icon" />', deleteCachedView: true);
 
     expect($html)
         ->toContain('icon-maskable-512.png</span> <span class="whitespace-nowrap">| 512×512')
@@ -136,7 +137,7 @@ test('the design section shows the icons apart, with the files written beside th
 });
 
 test('the head names every icon and the browser chrome in the imprint\'s colours', function () {
-    expect(Blade::render('<x-site.favicons />', deleteCachedView: true))
+    expect(Blade::render('<foundry:favicons />', deleteCachedView: true))
         ->toContain('<link rel="icon" href="/favicon-adaptive.svg" type="image/svg+xml">')
         ->toContain('<meta name="theme-color" content="#ebf3f5" media="(prefers-color-scheme: light)">')
         ->toContain('<meta name="theme-color" content="#0a212c" media="(prefers-color-scheme: dark)">');

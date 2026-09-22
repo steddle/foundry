@@ -17,7 +17,7 @@
 --}}
 <figure class="flex flex-col gap-3" data-example>
     <div class="flex flex-wrap items-center justify-between gap-3">
-        <x-site.text variant="label" tone="muted">{{ $example['title'] }}</x-site.text>
+        <foundry:text variant="label" tone="muted">{{ $example['title'] }}</foundry:text>
         @unless ($example['code'] ?? false)
             <div class="flex rounded-md border border-zinc-200 dark:border-zinc-700 p-0.5 text-small font-medium" role="group" aria-label="{{ $ground === 'bare' ? 'Width' : 'Ground' }}">
                 @if ($ground === 'bare')

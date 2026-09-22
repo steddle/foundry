@@ -3,7 +3,7 @@
 @endphp
 # The lab
 
-Outside production the foundry registers `/labs`, `/design` and `/components` (`foundry.lab`, `foundry.design`, `foundry.components`), behind `pages.middleware` and, outside local, `pages.guard` from `config/imprint.php`. On those pages the nav is the lab's bar on bone, and elsewhere the links end on Lab. The lab and the design page open on `x-site.sections.page-title`.
+Outside production the foundry registers `/labs`, `/design` and `/components` (`foundry.lab`, `foundry.design`, `foundry.components`), behind `pages.middleware` and, outside local, `pages.guard` from `config/imprint.php`. On those pages the nav is the lab's bar on bone, and elsewhere the links end on Lab. The lab and the design page open on `foundry:sections.page-title`.
 
 ## Experiments
 

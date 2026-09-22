@@ -22,25 +22,25 @@
 
 <x-layouts::site :title="$title.' | '.$legalTitle.' | '.config('imprint.name')" :description="$description">
     <x-slot:og>
-        <x-site.og-image :heading="$title" :lede="$description" :eyebrow="$legalTitle" />
+        <foundry:og-image :heading="$title" :lede="$description" :eyebrow="$legalTitle" />
     </x-slot:og>
 
-    <x-site.sections.hero scene="legal-hero" :title="$title" :lead="$description">
+    <foundry:sections.hero scene="legal-hero" :title="$title" :lead="$description">
         <x-slot:eyebrow>
-            <x-site.breadcrumb :items="[$legalTitle => localized_route('legal.index')]" />
+            <foundry:breadcrumb :items="[$legalTitle => localized_route('legal.index')]" />
         </x-slot:eyebrow>
         @if (config('imprint.legal.draft'))
-            <x-site.badge tone="warning">{{ Content::copy('legal', 'draft') }}</x-site.badge>
+            <foundry:badge tone="warning">{{ Content::copy('legal', 'draft') }}</foundry:badge>
         @endif
-    </x-site.sections.hero>
+    </foundry:sections.hero>
 
-    <x-site.numbered-section :number="sprintf('%02d', array_search($audienceKey, array_keys($legal['audiences'])) + 2)" :name="$audience['for']" :note="__('foundry::legal.document_of', ['position' => $position + 1, 'total' => $all->count()])">
+    <foundry:numbered-section :number="sprintf('%02d', array_search($audienceKey, array_keys($legal['audiences'])) + 2)" :name="$audience['for']" :note="__('foundry::legal.document_of', ['position' => $position + 1, 'total' => $all->count()])">
         <x-slot:actions>
-            <x-site.copy-menu />
+            <foundry:copy-menu />
         </x-slot:actions>
-        <x-site.document>
+        <foundry:document>
             <x-slot:aside>
-                <x-site.side-nav :groups="$nav" :label="__('foundry::legal.on_this_page')" />
+                <foundry:side-nav :groups="$nav" :label="__('foundry::legal.on_this_page')" />
             </x-slot:aside>
 
             <div class="flex flex-col gap-12">
@@ -48,12 +48,12 @@
                     {!! $body !!}
                 </article>
 
-                <x-site.pager :back="[__('foundry::legal.every_document'), localized_route('legal.index')]">
+                <foundry:pager :back="[__('foundry::legal.every_document'), localized_route('legal.index')]">
                     @if (config('imprint.legal.contact'))
                         {{ __('foundry::legal.questions') }} <a href="mailto:{{ config('imprint.legal.contact') }}" class="text-primary-700 dark:text-primary-300 hover:text-primary-800 dark:hover:text-primary-200">{{ config('imprint.legal.contact') }}</a>
                     @endif
-                </x-site.pager>
+                </foundry:pager>
             </div>
-        </x-site.document>
-    </x-site.numbered-section>
+        </foundry:document>
+    </foundry:numbered-section>
 </x-layouts::site>

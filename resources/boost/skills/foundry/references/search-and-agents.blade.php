@@ -11,7 +11,7 @@ A public page enters the sitemap by entering `pages()`. The site's suite renders
 
 ## Markdown for agents
 
-`Steddle\Foundry\Markdown\*` extends spatie/laravel-markdown-response. The provider binds the table-aware driver and the `/index.md` rewrite; a site's `config/markdown-response.php` names the detector, `DetectsMarkdownRequest`, which never answers a HEAD in markdown, and `RemoveMarkdownSkipPreprocessor`. `MarkdownUrl::of()` is the one statement of a page's markdown address, `/index.md` for a root. `x-site.copy-menu` offers a page's markdown to a reader, with its words from `foundry::agents`, in English and Dutch.
+`Steddle\Foundry\Markdown\*` extends spatie/laravel-markdown-response. The provider binds the table-aware driver and the `/index.md` rewrite; a site's `config/markdown-response.php` names the detector, `DetectsMarkdownRequest`, which never answers a HEAD in markdown, and `RemoveMarkdownSkipPreprocessor`. `MarkdownUrl::of()` is the one statement of a page's markdown address, `/index.md` for a root. `foundry:copy-menu` offers a page's markdown to a reader, with its words from `foundry::agents`, in English and Dutch.
 
 ## The read-docs tool
 
@@ -19,8 +19,8 @@ An imprint with an MCP server registers `Steddle\Foundry\Mcp\ReadDocs` in its `$
 
 ## Out of search
 
-`Steddle\Foundry\Http\Middleware\Noindex` sets `X-Robots-Tag: noindex`, also on the redirect or 403 an `auth` or `can` guard throws. `x-site.app-page` and the lab are kept out of search.
+`Steddle\Foundry\Http\Middleware\Noindex` sets `X-Robots-Tag: noindex`, also on the redirect or 403 an `auth` or `can` guard throws. `foundry:layouts.app` and the lab are kept out of search.
 
 ## The head
 
-`x-site.head` writes the meta, the canonical address and the alternates, the Open Graph image from OG Kit where `services.ogkit.key` is set, `twitter:site` from `imprint.twitter`, the icons, `imprint.stylesheet` and `imprint.script`, and in production Plausible and Visitors where `imprint.plausible` and `imprint.visitors` name them.
+`foundry:head` writes the meta, the canonical address and the alternates, the Open Graph image from OG Kit where `services.ogkit.key` is set, `twitter:site` from `imprint.twitter`, the icons, `imprint.stylesheet` and `imprint.script`, and in production Plausible and Visitors where `imprint.plausible` and `imprint.visitors` name them.

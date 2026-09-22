@@ -7,9 +7,9 @@ use Steddle\Foundry\Http\Middleware\Noindex;
 
 beforeEach(function () {
     $this->artisan('view:clear');
-    File::ensureDirectoryExists(resource_path('views/components/site'));
-    File::put(resource_path('views/components/site/lockup.blade.php'), '<span {{ $attributes }}>Imprint</span>');
-    File::put(resource_path('views/components/site/mark.blade.php'), '<svg {{ $attributes }}></svg>');
+    File::ensureDirectoryExists(resource_path('views/foundry'));
+    File::put(resource_path('views/foundry/lockup.blade.php'), '<span {{ $attributes }}>Imprint</span>');
+    File::put(resource_path('views/foundry/mark.blade.php'), '<svg {{ $attributes }}></svg>');
     config([
         'imprint.name' => 'Imprint',
         'imprint.stylesheet' => null,
@@ -21,10 +21,11 @@ beforeEach(function () {
 
 afterEach(function () {
     File::deleteDirectory(resource_path('views/components'));
+    File::deleteDirectory(resource_path('views/foundry'));
 });
 
 test('a noindex route renders neither Plausible nor Visitors', function () {
-    Route::get('/private', fn () => Blade::render('<x-site.head title="T" description="D" />', deleteCachedView: true))
+    Route::get('/private', fn () => Blade::render('<foundry:head title="T" description="D" />', deleteCachedView: true))
         ->middleware(Noindex::class);
 
     $html = $this->get('/private')->getContent();
@@ -33,7 +34,7 @@ test('a noindex route renders neither Plausible nor Visitors', function () {
 });
 
 test('a route without the noindex middleware renders both', function () {
-    Route::get('/public', fn () => Blade::render('<x-site.head title="T" description="D" />', deleteCachedView: true));
+    Route::get('/public', fn () => Blade::render('<foundry:head title="T" description="D" />', deleteCachedView: true));
 
     $html = $this->get('/public')->getContent();
 
@@ -41,9 +42,9 @@ test('a route without the noindex middleware renders both', function () {
 });
 
 test('a noindex page can ask for analytics, and an indexed one can turn them off', function () {
-    Route::get('/app', fn () => Blade::render('<x-site.head title="T" description="D" :analytics="true" />', deleteCachedView: true))
+    Route::get('/app', fn () => Blade::render('<foundry:head title="T" description="D" :analytics="true" />', deleteCachedView: true))
         ->middleware(Noindex::class);
-    Route::get('/quiet', fn () => Blade::render('<x-site.head title="T" description="D" :analytics="false" />', deleteCachedView: true));
+    Route::get('/quiet', fn () => Blade::render('<foundry:head title="T" description="D" :analytics="false" />', deleteCachedView: true));
 
     expect($this->get('/app')->getContent())->toContain('cdn.visitors.now')
         ->and($this->get('/quiet')->getContent())->not->toContain('cdn.visitors.now');

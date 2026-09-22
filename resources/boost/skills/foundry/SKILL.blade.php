@@ -37,23 +37,23 @@ Open the one the task needs.
 
 ## Components
 
-Every component {{ $name }} renders, by group. Marked are {{ $name }}'s own, and a foundry component it keeps a copy of in place of wrapping, the thing to fix. The group's reference holds the props, slots and an example.
+Every component {{ $name }} renders, by group. Marked are {{ $name }}'s own, and a foundry component it stands in for with a file of its own, the thing to fix. The group's reference holds the props, slots and an example.
 @foreach ($components->groupBy('group') as $group => $entries)
 
 ### {{ $group }}
 
 @foreach ($entries as $component)
-- `{{ $component['tag'] }}`{!! match (true) { $component['from'] === 'custom' => ' (own)', $component['held'] === 'copies' => ' (✗ copied, wrap it)', default => '' } !!}: {{ \Steddle\Foundry\Boost\Skill::summary($component['description']) }}
+- `{{ $component['tag'] }}`{!! match (true) { $component['from'] === 'custom' => ' (own)', $component['held'] => ' (✗ stood in for)', default => '' } !!}: {{ \Steddle\Foundry\Boost\Skill::summary($component['description']) }}
 @endforeach
 @endforeach
 
 ## A component of {{ $name }}'s own
 
-- It lives under `resources/views/components/site`, and joins `/components` and this skill on its own: every file there the foundry neither keeps nor names. A folder with an `index` is one component and its other files are its parts; a file in a folder named after a group, `sections/`, is in that group.
+- It lives under `resources/views/components` and is written `x-name`, Laravel's own tag; the foundry's components are `foundry:name`. It joins `/components` and this skill on its own: every file there. A folder with an `index` is one component and its other files are its parts; a file in a folder named after a group, `sections/`, is in that group.
 - It describes itself in the comment its file opens on, after its `{{ '@' }}props`: the prose is its description, `{{ '@' }}group` its place in the index, one of {{ implode(', ', array_keys(\Steddle\Foundry\Catalog\Catalog::groups())) }}, or the catalogue throws. `{{ '@' }}prop name …` and `{{ '@' }}slot name …` take a line each, and each `{{ '@' }}example Title` is a live example, its Blade the lines after it, optionally led by `{{ '@' }}ground page|ink|bare` or `{{ '@' }}code`. A `bare` example is a band or a page, framed at a desktop's and a phone's width.
-- It writes against `x-site.heading`, `x-site.text`, `x-site.button` and Flux, never raw type or colour.
+- It writes against `foundry:heading`, `foundry:text`, `foundry:button` and Flux, never raw type or colour.
 - A section with markup of its own is the site's, under `sections/`, built on a base section where its shape allows. A base section filled with copy is written in the page, never kept as a component, and so is a section bound to the page's Livewire state.
-- To change a foundry component for this site, keep a file of the same name here that wraps `x-foundry::site.<name>`. A copy of the foundry's file is the one thing not to do.
+- To stand in for a foundry component, keep a file of the same name under `resources/views/foundry`, as a published Flux component stands in for its own. What the foundry's component needs from the site, the site hands it where it uses it.
 - What another imprint could use belongs in the foundry, not here.
 - Every example renders in the site's suite; after adding one, run `php artisan boost:update` so this skill names it.
 

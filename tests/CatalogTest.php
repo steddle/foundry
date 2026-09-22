@@ -11,7 +11,7 @@ test('every entry names itself, its group, where it comes from and one example',
             ->and($entry['examples'])->not->toBeEmpty();
 
         foreach ($entry['examples'] as $example) {
-            expect($example['blade'])->toContain('<x-site.');
+            expect($example['blade'])->toContain('<foundry:');
         }
     }
 });
@@ -37,9 +37,9 @@ test('every foundry component the index lists shows at least one example with Bl
 });
 
 test('every component the foundry keeps is in the index, its parts with it', function () {
-    $components = collect(File::allFiles(__DIR__.'/../resources/views/components/site'))
+    $components = collect(File::allFiles(__DIR__.'/../resources/views/foundry'))
         ->map(fn ($file): string => str_replace(['/index.blade.php', '.blade.php'], '', $file->getRelativePathname()))
-        ->reject(fn (string $path): bool => str_contains($path, '/') && is_file(__DIR__.'/../resources/views/components/site/'.dirname($path).'/index.blade.php'))
+        ->reject(fn (string $path): bool => str_contains($path, '/') && is_file(__DIR__.'/../resources/views/foundry/'.dirname($path).'/index.blade.php'))
         ->map(fn (string $path): string => str_replace('/', '-', $path))
         ->sort()->values()->all();
 

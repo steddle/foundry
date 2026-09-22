@@ -31,7 +31,7 @@ A change to the copy or markup of the published images needs `php artisan foundr
 
 - Read the imprint's own `CLAUDE.md`, and `.ai/rules` where it has them, before editing it: they do not load in a session that starts here.
 - Other sessions work in the same trees. `bin/imprints status` shows what is open; commit with `git commit -- <paths>`, never `git add -A`.
-- What an imprint shares with the others belongs here, not in its copy. A site keeps its content, its `config/imprint.php`, its `x-site.lockup`, `x-site.mark` and ramps, and components with markup of its own.
+- What an imprint shares with the others belongs here, not in its copy. A site keeps its content, its `config/imprint.php`, its `foundry:lockup`, `foundry:mark` and ramps, and components with markup of its own.
 
 ## Tests
 
@@ -43,7 +43,7 @@ From the Laravel Boost guidelines the imprints carry, what holds here too:
 
 - PHP 8.3 and up: constructor property promotion, explicit return and parameter types, curly braces on every control structure, PHPDoc array shapes over inline comments.
 - Pest for tests, Pint for style.
-- Flux for every control. `x-site.button`, `x-site.badge`, `x-site.heading` and `x-site.text` wrap Flux, and a site writes against them.
+- Flux for every control. `foundry:button`, `foundry:badge`, `foundry:heading` and `foundry:text` wrap Flux, and a site writes against them.
 - Tailwind 4: `@theme` tokens and `@utility` in `resources/css/foundry.css`, no config file.
 - Livewire 4 and its Alpine for state; what only appears and disappears is CSS.
 - Boost's MCP tools answer from an application, so for documentation search, database queries or logs, use them from an imprint's session.

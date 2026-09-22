@@ -7,11 +7,12 @@ use Steddle\Foundry\Catalog\Catalog;
 
 beforeEach(function () {
     $this->artisan('view:clear');
-    File::ensureDirectoryExists(resource_path('views/components/site'));
+    File::ensureDirectoryExists(resource_path('views/components'));
+    File::ensureDirectoryExists(resource_path('views/foundry'));
     File::ensureDirectoryExists(resource_path('views/layouts'));
-    File::put(resource_path('views/components/site/heading.blade.php'), '<h2 {{ $attributes }}>{{ $slot }}</h2>');
-    File::put(resource_path('views/components/site/text.blade.php'), '<p {{ $attributes }}>{{ $slot }}</p>');
-    File::put(resource_path('views/components/site/stamp.blade.php'), <<<'BLADE'
+    File::put(resource_path('views/foundry/heading.blade.php'), '<h2 {{ $attributes }}>{{ $slot }}</h2>');
+    File::put(resource_path('views/foundry/text.blade.php'), '<p {{ $attributes }}>{{ $slot }}</p>');
+    File::put(resource_path('views/components/stamp.blade.php'), <<<'BLADE'
 @props(['ink' => 'red', 'label'])
 {{--
     The imprint's own stamp,
@@ -20,18 +21,19 @@ beforeEach(function () {
     @prop ink The colour it is pressed in.
     @slot date The day under the stamp.
     @example Alone
-    <x-site.stamp />
+    <x-stamp />
 --}}
 <span>the stamp {{ $label ?? '' }}</span>
 BLADE);
-    File::ensureDirectoryExists(resource_path('views/components/site/signing'));
-    File::put(resource_path('views/components/site/signing/seal.blade.php'), "{{-- @group Elements --}}\n<span>the seal</span>");
+    File::ensureDirectoryExists(resource_path('views/components/signing'));
+    File::put(resource_path('views/components/signing/seal.blade.php'), "{{-- @group Elements --}}\n<span>the seal</span>");
     File::put(resource_path('views/layouts/site.blade.php'), '<main>{{ $slot }}</main>');
     Blade::anonymousComponentPath(resource_path('views/layouts'), 'layouts');
 });
 
 afterEach(function () {
     File::deleteDirectory(resource_path('views/components'));
+    File::deleteDirectory(resource_path('views/foundry'));
     File::deleteDirectory(resource_path('views/layouts'));
 });
 
@@ -58,48 +60,49 @@ test('the toggle lists the foundry\'s or the imprint\'s components alone, and th
 
 test('a component without an example shows its tag', function () {
     $this->get('/components/signing-seal')->assertOk()
-        ->assertSee('x-site.signing.seal')
+        ->assertSee('x-signing.seal')
         ->assertSee('Add an @example')
         ->assertDontSee('<span>the seal</span>', false);
 });
 
 test('a folder that names a group groups its files, and a component in no group of the index is refused', function () {
-    File::ensureDirectoryExists(resource_path('views/components/site/sections'));
-    File::put(resource_path('views/components/site/sections/pricing.blade.php'), '<section>Pricing</section>');
+    File::ensureDirectoryExists(resource_path('views/components/sections'));
+    File::put(resource_path('views/components/sections/pricing.blade.php'), '<section>Pricing</section>');
 
     expect(Catalog::custom()['sections-pricing']['group'])->toBe('Sections');
 
-    File::put(resource_path('views/components/site/loose.blade.php'), '<p>Loose</p>');
+    File::put(resource_path('views/components/loose.blade.php'), '<p>Loose</p>');
     Once::flush();
 
     expect(fn () => Catalog::custom())->toThrow(LogicException::class, 'loose.blade.php names no group of the index');
 });
 
 test('a folder with an index is one component, its other files its parts', function () {
-    File::ensureDirectoryExists(resource_path('views/components/site/lifecycle'));
-    File::put(resource_path('views/components/site/lifecycle/index.blade.php'), "{{-- @group Elements --}}\n<ol>{{ \$slot }}</ol>");
-    File::put(resource_path('views/components/site/lifecycle/step.blade.php'), '<li>{{ $slot }}</li>');
+    File::ensureDirectoryExists(resource_path('views/components/lifecycle'));
+    File::put(resource_path('views/components/lifecycle/index.blade.php'), "{{-- @group Elements --}}\n<ol>{{ \$slot }}</ol>");
+    File::put(resource_path('views/components/lifecycle/step.blade.php'), '<li>{{ $slot }}</li>');
 
     expect(Catalog::custom())->toHaveKey('lifecycle')->not->toHaveKey('lifecycle-step')
         ->and(Catalog::custom()['lifecycle']['group'])->toBe('Elements');
 });
 
 test('a file the foundry keeps, or an entry its catalogue names, is no custom component', function () {
-    File::put(resource_path('views/components/site/section.blade.php'), '<x-foundry::site.section>{{ $slot }}</x-foundry::site.section>');
-    File::put(resource_path('views/components/site/lockup.blade.php'), '<svg></svg>');
+    File::put(resource_path('views/foundry/section.blade.php'), '<x-foundry::section>{{ $slot }}</x-foundry::section>');
+    File::put(resource_path('views/foundry/lockup.blade.php'), '<svg></svg>');
 
     expect(array_keys(Catalog::custom()))->toContain('stamp', 'signing-seal')
         ->not->toContain('section', 'lockup');
 });
 
 test('an opening comment is read only where it opens the component', function () {
-    File::put(resource_path('views/components/site/late.blade.php'), "@props(['a' => 1])\n\n<p>{{ \$a }}</p>\n{{-- Not the description. @group Elements --}}");
+    File::put(resource_path('views/components/late.blade.php'), "@props(['a' => 1])\n\n<p>{{ \$a }}</p>\n{{-- Not the description. @group Elements --}}");
 
     expect(fn () => Catalog::custom())->toThrow(LogicException::class, 'late.blade.php names no group');
 });
 
 test('without component files of its own an imprint has no custom components', function () {
     File::deleteDirectory(resource_path('views/components'));
+    File::deleteDirectory(resource_path('views/foundry'));
 
     expect(Catalog::custom())->toBe([]);
 });
@@ -118,7 +121,7 @@ test('the index lists every group with each component\'s description', function 
 });
 
 test('an example renders alone on a page of its own, for the frame at a viewport\'s width', function () {
-    File::put(resource_path('views/components/site/head.blade.php'), '<title>{{ $title }}</title>');
+    File::put(resource_path('views/foundry/head.blade.php'), '<title>{{ $title }}</title>');
 
     $this->get('/components/stamp/examples/0')->assertOk()->assertSee('<span>the stamp', false);
     $this->get('/components/stamp/examples/9')->assertNotFound();

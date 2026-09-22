@@ -23,19 +23,20 @@ is its own.
   Tailwind's colour names resolve to the nearest ramp for Flux's `color`
   props, as an interim until no view passes one.
 - **Components**: `/components` is the full catalogue. The contract every
-  imprint writes against: `x-site.heading` (`size` display, figure, 1, 2, 3 and
-  `tone` strong, accent, inherit) and `x-site.text` (`variant` lede, copy,
+  imprint writes against: `foundry:heading` (`size` display, figure, 1, 2, 3 and
+  `tone` strong, accent, inherit) and `foundry:text` (`variant` lede, copy,
   small, label, meta and `tone` body, strong, muted, accent, error,
-  inherit), both over Flux; `x-site.button`, over `flux:button` with
-  `primary`, `secondary` and `ghost`; `x-site.container`; `x-site.section`
-  and `x-site.numbered-section`, each with `sunken` for a band a step below
+  inherit), both over Flux; `foundry:button`, over `flux:button` with
+  `primary`, `secondary` and `ghost`; `foundry:container`; `foundry:section`
+  and `foundry:numbered-section`, each with `sunken` for a band a step below
   the page. Add a component to the catalogue when it enters the foundry, and
   every imprint's suite renders it.
-- **What an imprint supplies**: `x-site.lockup` and `x-site.mark`, and the
-  `zinc` and `primary` ramps. A site overrides any foundry component by
-  keeping a file of the same name under `resources/views/components`, and
-  can wrap the foundry's version inside it as `x-foundry::site.<name>`
-  rather than copy it.
+- **What an imprint supplies**: `foundry:lockup` and `foundry:mark`, under
+  `resources/views/foundry/`, and the `zinc` and `primary` ramps. A file of
+  that name there stands in for the foundry's component, as a published Flux
+  component stands in for its own; what the component needs from the site,
+  the site hands it where it uses it. A component of the imprint's own lives
+  under `resources/views/components/` and is written `x-name`.
 - **Script**: a foundry component that holds state uses Alpine, which
   Livewire loads on the page, and `[x-cloak]` holds it back until Alpine has
   read it. A page with such a component loads Livewire's scripts; what only
@@ -71,7 +72,7 @@ loosen these.
   tabular-nums`, or its zero reads as an O.
 - **No middle dot.** A separator is ` | `.
 - **No em or en dash in copy.** A colon, a comma or a new sentence.
-- **One marker per viewport.** `x-site.marker` lays lichen behind one phrase
+- **One marker per viewport.** `foundry:marker` lays lichen behind one phrase
   of the hero headline. Never on body copy or anything clickable.
 - **No emoji.** The glyphs ✓, ✗ and › are type, and allowed.
 - **Sentence case, and no uppercase.** Eyebrows, labels, table heads, badges

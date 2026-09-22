@@ -14,7 +14,7 @@ test('a page\'s markdown answers at its path with .md, and the root\'s at /index
 test('the copy menu offers the page\'s markdown and every page\'s, in the page\'s language', function () {
     app()->setLocale('nl');
 
-    $html = Blade::render('<x-site.copy-menu page="https://site.test/docs.md" all="https://site.test/llms-full.txt" />', deleteCachedView: true);
+    $html = Blade::render('<foundry:copy-menu page="https://site.test/docs.md" all="https://site.test/llms-full.txt" />', deleteCachedView: true);
 
     expect($html)->toContain('data-markdown-skip')
         ->toContain('href="https://site.test/docs.md"')

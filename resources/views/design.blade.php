@@ -76,9 +76,9 @@
     /components, never here.
 --}}
 <x-layouts::site :title="'Design | '.$name" :description="'The '.$name.' design system: the brand, the colours, the type and the controls, rendered from the code that ships them.'" flux>
-    <x-site.sections.page-title title="Design." lead="The brand, the colours, the type and the controls the site is built from, rendered from the code that ships them." />
+    <foundry:sections.page-title title="Design." lead="The brand, the colours, the type and the controls the site is built from, rendered from the code that ships them." />
 
-    <x-site.numbered-section number="01" name="Brand" :note="$design['mark'] ?? null">
+    <foundry:numbered-section number="01" name="Brand" :note="$design['mark'] ?? null">
         <div class="flex flex-col gap-14">
             <div class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-200 dark:bg-zinc-700 sm:grid-cols-3">
                 @foreach ([
@@ -88,9 +88,9 @@
                 ] as [$file, $label, $ground])
                     <div class="flex flex-col gap-6 p-6 {{ $ground }}">
                         <div class="flex items-end gap-6">
-                            <x-site.mark class="size-20" />
-                            <x-site.mark class="size-8" />
-                            <x-site.mark class="size-4" />
+                            <foundry:mark class="size-20" />
+                            <foundry:mark class="size-8" />
+                            <foundry:mark class="size-4" />
                         </div>
                         <div class="flex items-baseline justify-between gap-4 text-small">
                             <span>{{ $label }}</span>
@@ -105,9 +105,9 @@
             <div class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-200 dark:bg-zinc-700 lg:grid-cols-2">
                 @foreach ([['bone bg-zinc-50 text-zinc-900', 'lockup.svg', 'lockup-endorsed.svg'], ['ink bg-zinc-900 text-zinc-50', 'lockup-reversed.svg', 'lockup-endorsed-reversed.svg']] as [$ground, $plain, $endorsed])
                     <div class="flex flex-col items-start gap-8 p-8 {{ $ground }}">
-                        <x-site.lockup class="h-12" />
+                        <foundry:lockup class="h-12" />
                         @if ($logo($endorsed))
-                            <x-site.lockup endorsed class="h-14" />
+                            <foundry:lockup endorsed class="h-14" />
                         @endif
                         <p class="flex flex-wrap gap-x-2 text-small">
                             @foreach (array_filter([$plain => $logo($plain), $endorsed => $logo($endorsed)]) as $file => $href)
@@ -122,7 +122,7 @@
             <div class="grid grid-cols-1 gap-10 lg:grid-cols-2">
                 @foreach (['Do' => ['✓', $design['do'] ?? []], 'Don\'t' => ['✗', $design['dont'] ?? []]] as $heading => [$glyph, $rules])
                     <div class="flex flex-col gap-4">
-                        <x-site.heading size="3" level="3">{{ $heading }}</x-site.heading>
+                        <foundry:heading size="3" level="3">{{ $heading }}</foundry:heading>
                         <ul role="list" class="flex flex-col gap-2 text-copy text-zinc-800 dark:text-zinc-200">
                             @foreach ($rules as $rule)
                                 <li>{{ $glyph }} {{ $rule }}</li>
@@ -132,9 +132,9 @@
                 @endforeach
             </div>
         </div>
-    </x-site.numbered-section>
+    </foundry:numbered-section>
 
-    <x-site.numbered-section number="02" name="Family" note="One structure, an ink and an accent each" sunken>
+    <foundry:numbered-section number="02" name="Family" note="One structure, an ink and an accent each" sunken>
         <div class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-200 dark:bg-zinc-700 lg:grid-cols-3">
             @foreach (Family::all() as $imprint)
                 <div class="flex flex-col gap-8 p-8" style="background: {{ $imprint['ink'] }}">
@@ -151,13 +151,13 @@
                 </div>
             @endforeach
         </div>
-    </x-site.numbered-section>
+    </foundry:numbered-section>
 
-    <x-site.numbered-section number="03" name="Colour" note="Seven ramps, 25 to 950">
+    <foundry:numbered-section number="03" name="Colour" note="Seven ramps, 25 to 950">
         <div class="flex flex-col gap-12">
             @foreach ($ramps as [$ramp, $rampName, $jobs])
                 <div class="flex flex-col gap-4">
-                    <x-site.text variant="label" tone="muted">{{ $rampName }} | {{ $ramp }}</x-site.text>
+                    <foundry:text variant="label" tone="muted">{{ $rampName }} | {{ $ramp }}</foundry:text>
                     <div class="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-12">
                         @foreach ([25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as $step)
                             <div class="flex flex-col gap-2">
@@ -175,7 +175,7 @@
             <div class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-200 dark:bg-zinc-700 lg:grid-cols-2">
                 @foreach (['Bone' => 'bone bg-zinc-50', 'Ink' => 'ink bg-zinc-900'] as $theme => $ground)
                     <div class="flex flex-col gap-4 p-6 {{ $ground }}">
-                        <x-site.text variant="label" tone="muted">{{ $theme }}</x-site.text>
+                        <foundry:text variant="label" tone="muted">{{ $theme }}</foundry:text>
                         <ul role="list" class="flex flex-col gap-3">
                             @foreach ($pairs as [$job, $classes, $swatch])
                                 <li class="flex items-center gap-3">
@@ -191,11 +191,11 @@
                 @endforeach
             </div>
         </div>
-    </x-site.numbered-section>
+    </foundry:numbered-section>
 
-    <x-site.numbered-section number="04" name="Type" note="Spectral, Chivo and Chivo Mono{{ isset($design['fonts']) ? ', and the imprint\'s own' : '' }}">
+    <foundry:numbered-section number="04" name="Type" note="Spectral, Chivo and Chivo Mono{{ isset($design['fonts']) ? ', and the imprint\'s own' : '' }}">
         <div class="flex flex-col gap-12">
-            <x-site.text variant="lede" class="max-w-[60ch]">The scale is fluid: each size is set for a 390px phone and grows with the window. What stands beside each step is what the browser measures at this width.</x-site.text>
+            <foundry:text variant="lede" class="max-w-[60ch]">The scale is fluid: each size is set for a 390px phone and grows with the window. What stands beside each step is what the browser measures at this width.</foundry:text>
 
             <div class="flex flex-col border-t border-zinc-200 dark:border-zinc-700">
                 @foreach ($type as [$step, $component, $props, $text, $note])
@@ -216,9 +216,9 @@
                             <span class="text-meta text-zinc-600 dark:text-zinc-400 tabular-nums" x-text="spec"></span>
                         </div>
                         @if ($component === 'heading')
-                            <x-site.heading x-ref="sample" :size="$props['size']">{{ $text }}</x-site.heading>
+                            <foundry:heading x-ref="sample" :size="$props['size']">{{ $text }}</foundry:heading>
                         @elseif ($component === 'text')
-                            <x-site.text x-ref="sample" :variant="$props['variant']" :tone="$props['tone'] ?? 'body'">{{ $text }}</x-site.text>
+                            <foundry:text x-ref="sample" :variant="$props['variant']" :tone="$props['tone'] ?? 'body'">{{ $text }}</foundry:text>
                         @else
                             <p x-ref="sample" class="font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums">{{ $text }}</p>
                         @endif
@@ -236,15 +236,15 @@
             </div>
 
             <div class="flex flex-col gap-4">
-                <x-site.text variant="label" tone="muted">Marker: once per viewport, on ink</x-site.text>
+                <foundry:text variant="label" tone="muted">Marker: once per viewport, on ink</foundry:text>
                 <div class="ink rounded-lg bg-zinc-900 p-8">
-                    <p class="font-serif text-heading-1 font-semibold text-zinc-950 dark:text-zinc-50"><x-site.marker :text="$design['marked'][0] ?? $name" :marked="$design['marked'][1] ?? null" /></p>
+                    <p class="font-serif text-heading-1 font-semibold text-zinc-950 dark:text-zinc-50"><foundry:marker :text="$design['marked'][0] ?? $name" :marked="$design['marked'][1] ?? null" /></p>
                 </div>
             </div>
         </div>
-    </x-site.numbered-section>
+    </foundry:numbered-section>
 
-    <x-site.numbered-section number="05" name="Space, radius, shadow" note="Radii stop at 5px" class="ink bg-zinc-900">
+    <foundry:numbered-section number="05" name="Space, radius, shadow" note="Radii stop at 5px" class="ink bg-zinc-900">
         <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
             <flux:table>
                 <flux:table.columns>
@@ -282,9 +282,9 @@
                 </div>
             </div>
         </div>
-    </x-site.numbered-section>
+    </foundry:numbered-section>
 
-    <x-site.numbered-section number="06" name="Scenes" :note="count(config('imprint.scenes', [])).' photos, one per ink band'">
+    <foundry:numbered-section number="06" name="Scenes" :note="count(config('imprint.scenes', [])).' photos, one per ink band'">
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             @foreach (array_keys(config('imprint.scenes', [])) as $scene)
                 <figure class="flex flex-col gap-2">
@@ -296,37 +296,37 @@
                 </figure>
             @endforeach
         </div>
-    </x-site.numbered-section>
+    </foundry:numbered-section>
 
-    <x-site.numbered-section number="07" name="App icons" note="Ink tile, bone mark at 74%" class="ink bg-zinc-900">
-        <x-site.brand-assets group="icon" />
-    </x-site.numbered-section>
+    <foundry:numbered-section number="07" name="App icons" note="Ink tile, bone mark at 74%" class="ink bg-zinc-900">
+        <foundry:brand-assets group="icon" />
+    </foundry:numbered-section>
 
-    <x-site.numbered-section number="08" name="Social images" note="Rendered by foundry:assets">
-        <x-site.brand-assets />
-    </x-site.numbered-section>
+    <foundry:numbered-section number="08" name="Social images" note="Rendered by foundry:assets">
+        <foundry:brand-assets />
+    </foundry:numbered-section>
 
-    <x-site.numbered-section number="09" name="Buttons" note="One primary per viewport">
+    <foundry:numbered-section number="09" name="Buttons" note="One primary per viewport">
         <div class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-200 dark:bg-zinc-700 lg:grid-cols-2">
             <div class="flex flex-col gap-4 bg-zinc-25 dark:bg-zinc-800 p-6">
-                <x-site.text variant="label" tone="muted">On a card: primary and secondary</x-site.text>
-                <x-site.actions>
-                    <x-site.button href="#">Primary</x-site.button>
-                    <x-site.button href="#" variant="secondary">Secondary</x-site.button>
-                    <x-site.button variant="secondary" disabled>Disabled</x-site.button>
-                </x-site.actions>
+                <foundry:text variant="label" tone="muted">On a card: primary and secondary</foundry:text>
+                <foundry:actions>
+                    <foundry:button href="#">Primary</foundry:button>
+                    <foundry:button href="#" variant="secondary">Secondary</foundry:button>
+                    <foundry:button variant="secondary" disabled>Disabled</foundry:button>
+                </foundry:actions>
             </div>
             <div class="ink flex flex-col gap-4 bg-zinc-900 p-6">
-                <x-site.text variant="label" tone="muted">On ink: primary and ghost</x-site.text>
-                <x-site.actions>
-                    <x-site.button href="#">Primary</x-site.button>
-                    <x-site.button href="#" variant="ghost">Ghost</x-site.button>
-                </x-site.actions>
+                <foundry:text variant="label" tone="muted">On ink: primary and ghost</foundry:text>
+                <foundry:actions>
+                    <foundry:button href="#">Primary</foundry:button>
+                    <foundry:button href="#" variant="ghost">Ghost</foundry:button>
+                </foundry:actions>
             </div>
         </div>
-    </x-site.numbered-section>
+    </foundry:numbered-section>
 
-    <x-site.numbered-section number="10" name="Forms" note="livewire/flux: every control is Flux, never a native one">
+    <foundry:numbered-section number="10" name="Forms" note="livewire/flux: every control is Flux, never a native one">
         <div class="grid grid-cols-1 gap-x-8 gap-y-6 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-25 dark:bg-zinc-800 p-6 sm:p-8 md:grid-cols-2">
             <flux:input label="Full name" placeholder="Ada Visser" icon="user" />
 
@@ -374,9 +374,9 @@
                 <flux:label>I have read the terms and agree to them.</flux:label>
             </flux:field>
         </div>
-    </x-site.numbered-section>
+    </foundry:numbered-section>
 
-    <x-site.numbered-section number="11" name="Feedback" note="What the site tells a reader">
+    <foundry:numbered-section number="11" name="Feedback" note="What the site tells a reader">
         <div class="flex flex-col gap-8">
             {{-- The badge's own example, so the two pages cannot show it apart. --}}
             {!! Blade::render(Catalog::shared()['badge']['examples'][0]['blade']) !!}
@@ -388,21 +388,21 @@
 
             <div>
                 <flux:modal.trigger name="design-modal">
-                    <x-site.button variant="secondary">Open a modal</x-site.button>
+                    <foundry:button variant="secondary">Open a modal</foundry:button>
                 </flux:modal.trigger>
                 <flux:modal name="design-modal" class="max-w-md">
                     <div class="flex flex-col gap-6">
-                        <x-site.heading size="2" level="2">A modal</x-site.heading>
-                        <x-site.text>One decision, and the two ways out of it.</x-site.text>
-                        <x-site.actions>
+                        <foundry:heading size="2" level="2">A modal</foundry:heading>
+                        <foundry:text>One decision, and the two ways out of it.</foundry:text>
+                        <foundry:actions>
                             <flux:modal.close>
-                                <x-site.button variant="secondary">Cancel</x-site.button>
+                                <foundry:button variant="secondary">Cancel</foundry:button>
                             </flux:modal.close>
-                            <x-site.button>Confirm</x-site.button>
-                        </x-site.actions>
+                            <foundry:button>Confirm</foundry:button>
+                        </foundry:actions>
                     </div>
                 </flux:modal>
             </div>
         </div>
-    </x-site.numbered-section>
+    </foundry:numbered-section>
 </x-layouts::site>

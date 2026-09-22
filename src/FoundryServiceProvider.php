@@ -28,10 +28,15 @@ class FoundryServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        Blade::anonymousComponentPath(__DIR__.'/../resources/views/components');
+        $this->tag();
 
-        // The same components under x-foundry::, so a site's own version of one
-        // can wrap the foundry's instead of copying it.
+        // An imprint's own file under resources/views/foundry stands in for the
+        // foundry's component of that name, as a published Flux component does.
+        Blade::anonymousComponentPath(resource_path('views/foundry'), 'foundry');
+
+        Blade::anonymousComponentPath(__DIR__.'/../resources/views/foundry', 'foundry');
+
+        // The components the foundry's own pages are built from, which no imprint writes.
         Blade::anonymousComponentPath(__DIR__.'/../resources/views/components', 'foundry');
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'foundry');
@@ -44,6 +49,16 @@ class FoundryServiceProvider extends ServiceProvider
         $this->localize();
 
         $this->loadRoutesFrom(__DIR__.'/../routes/foundry.php');
+    }
+
+    /**
+     * `<foundry:button>` is `<x-foundry::button>`. The rewrite runs before
+     * Blade compiles the component tags, where a `precompiler` would run after
+     * them; Flux copies Laravel's three tag patterns for the same reason.
+     */
+    private function tag(): void
+    {
+        Blade::prepareStringsForCompilationUsing(fn (string $view): string => str_replace(['<foundry:', '</foundry:'], ['<x-foundry::', '</x-foundry::'], $view));
     }
 
     /**

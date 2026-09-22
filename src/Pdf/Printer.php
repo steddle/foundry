@@ -8,7 +8,7 @@ use Spatie\Browsershot\Browsershot;
 /**
  * Prints a page of the imprint's own to PDF through Browsershot's Chrome.
  * The page sets its paper and margins itself, in the `@page` rule
- * `x-site.print.document` writes.
+ * `foundry:print.document` writes.
  */
 class Printer
 {

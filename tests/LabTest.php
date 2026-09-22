@@ -5,18 +5,20 @@ use Illuminate\Support\Facades\File;
 
 beforeEach(function () {
     $this->artisan('view:clear');
-    File::ensureDirectoryExists(resource_path('views/components/site'));
+    File::ensureDirectoryExists(resource_path('views/components'));
+    File::ensureDirectoryExists(resource_path('views/foundry'));
     File::ensureDirectoryExists(resource_path('views/layouts'));
-    File::put(resource_path('views/components/site/heading.blade.php'), '<h2 {{ $attributes }}>{{ $slot }}</h2>');
-    File::put(resource_path('views/components/site/text.blade.php'), '<p {{ $attributes }}>{{ $slot }}</p>');
-    File::put(resource_path('views/components/site/lockup.blade.php'), '<span {{ $attributes }}>Imprint</span>');
-    File::put(resource_path('views/layouts/site.blade.php'), '<x-site.nav /><main>{{ $slot }}</main>');
+    File::put(resource_path('views/foundry/heading.blade.php'), '<h2 {{ $attributes }}>{{ $slot }}</h2>');
+    File::put(resource_path('views/foundry/text.blade.php'), '<p {{ $attributes }}>{{ $slot }}</p>');
+    File::put(resource_path('views/foundry/lockup.blade.php'), '<span {{ $attributes }}>Imprint</span>');
+    File::put(resource_path('views/layouts/site.blade.php'), '<foundry:header /><main>{{ $slot }}</main>');
     Blade::anonymousComponentPath(resource_path('views/layouts'), 'layouts');
     config()->set('imprint.name', 'Imprint');
 });
 
 afterEach(function () {
     File::deleteDirectory(resource_path('views/components'));
+    File::deleteDirectory(resource_path('views/foundry'));
     File::deleteDirectory(resource_path('views/layouts'));
     File::deleteDirectory(resource_path('views/labs'));
 });
@@ -41,7 +43,7 @@ test('an experiment is the imprint\'s own view, and one it does not hold is not 
 });
 
 test('outside the lab the bar ends on a link to it', function () {
-    $html = Blade::render('<x-foundry::site.nav :links="[\'Docs\' => \'/docs\']" />', deleteCachedView: true);
+    $html = Blade::render('<foundry:header :links="[\'Docs\' => \'/docs\']" />', deleteCachedView: true);
 
     expect($html)->toContain('aria-label="Main"')
         ->toContain('>Docs</a>')

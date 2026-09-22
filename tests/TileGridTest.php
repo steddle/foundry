@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\File;
 
 beforeEach(function () {
     $this->artisan('view:clear');
-    $directory = resource_path('views/components/site');
+    $directory = resource_path('views/foundry');
     File::ensureDirectoryExists($directory);
     File::put($directory.'/heading.blade.php', '<h2 {{ $attributes }}>{{ $slot }}</h2>');
     File::put($directory.'/text.blade.php', '<p {{ $attributes }}>{{ $slot }}</p>');
@@ -13,10 +13,11 @@ beforeEach(function () {
 
 afterEach(function () {
     File::deleteDirectory(resource_path('views/components'));
+    File::deleteDirectory(resource_path('views/foundry'));
 });
 
 test('blank tiles close the last row at three columns and at two', function (int $count, int $wide, int $narrow) {
-    $html = Blade::render('<x-site.tile-grid :count="$count"></x-site.tile-grid>', ['count' => $count], deleteCachedView: true);
+    $html = Blade::render('<foundry:tile-grid :count="$count"></foundry:tile-grid>', ['count' => $count], deleteCachedView: true);
 
     expect(substr_count($html, 'max-lg:hidden'))->toBe($wide)
         ->and(substr_count($html, 'max-sm:hidden lg:hidden'))->toBe($narrow);
@@ -28,7 +29,7 @@ test('blank tiles close the last row at three columns and at two', function (int
 
 test('a topic links its title, lists its links and ends on a link to itself', function () {
     $html = Blade::render(<<<'BLADE'
-        <x-site.topic icon="command-line" eyebrow="6 articles" title="The CLI" href="/docs/cli" :links="['bron law' => '/docs/cli/law']" more="All 6 articles">Every command.</x-site.topic>
+        <foundry:topic icon="command-line" eyebrow="6 articles" title="The CLI" href="/docs/cli" :links="['bron law' => '/docs/cli/law']" more="All 6 articles">Every command.</foundry:topic>
         BLADE, deleteCachedView: true);
 
     expect($html)
@@ -41,7 +42,7 @@ test('a topic links its title, lists its links and ends on a link to itself', fu
 });
 
 test('a topic without links draws no list', function () {
-    $html = Blade::render('<x-site.topic icon="book-open" eyebrow="2" title="Concepts" href="#">Ideas.</x-site.topic>', deleteCachedView: true);
+    $html = Blade::render('<foundry:topic icon="book-open" eyebrow="2" title="Concepts" href="#">Ideas.</foundry:topic>', deleteCachedView: true);
 
     expect($html)->not->toContain('<ul');
 });

@@ -13,10 +13,8 @@ Every component in the {!! strtolower($group) !!} group that {!! $name !!} rende
 {!! $name !!}'s own, in `{!! $component['file'] !!}`.
 @elseif ($component['from'] === 'imprint')
 Every imprint draws its own.
-@elseif ($component['held'] === 'copies')
-✗ {!! $name !!} keeps a copy of this one in place of the foundry's. Wrap `x-foundry::site.{!! \Illuminate\Support\Str::after($component['tag'], 'x-site.') !!}` in it instead.
-@elseif ($component['held'] === 'wraps')
-The foundry's, wrapped by {!! $name !!}'s own file.
+@elseif ($component['held'])
+✗ {!! $name !!} keeps a file of its own in place of the foundry's, in `resources/views/foundry/`. Hand the foundry's component what it needs where the site uses it.
 @endif
 
 {!! $component['description'] !!}

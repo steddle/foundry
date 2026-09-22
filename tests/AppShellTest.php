@@ -12,7 +12,7 @@ use Steddle\Foundry\Concerns\HasInitials;
 
 beforeEach(function () {
     $this->artisan('view:clear');
-    $directory = resource_path('views/components/site');
+    $directory = resource_path('views/foundry');
     File::ensureDirectoryExists($directory);
     File::put($directory.'/lockup.blade.php', '<span {{ $attributes }}>Imprint</span>');
     File::put($directory.'/mark.blade.php', '<svg {{ $attributes }}></svg>');
@@ -22,6 +22,7 @@ beforeEach(function () {
 
 afterEach(function () {
     File::deleteDirectory(resource_path('views/components'));
+    File::deleteDirectory(resource_path('views/foundry'));
 });
 
 test('a signed-in page is a noindex document with its links, the current one marked, the account menu and the toasts', function () {
@@ -30,7 +31,7 @@ test('a signed-in page is a noindex document with its links, the current one mar
     url()->setRequest(Request::create('/agreements/12'));
 
     $html = Blade::render(
-        '<x-site.app-page title="Agreements" :links="$links" :user="$user"><x-slot:menu><flux:menu.item href="/settings">Settings</flux:menu.item></x-slot:menu><p>Body</p></x-site.app-page>',
+        '<foundry:layouts.app title="Agreements" :links="$links" :user="$user"><x-slot:menu><flux:menu.item href="/settings">Settings</flux:menu.item></x-slot:menu><p>Body</p></foundry:layouts.app>',
         ['links' => ['Agreements' => url('/agreements'), 'Settings' => url('/settings')], 'user' => $this->user],
         deleteCachedView: true,
     );
@@ -52,19 +53,19 @@ test('a signed-in page is a noindex document with its links, the current one mar
 });
 
 test('the account menu leaves out logging out where the imprint has no logout route', function () {
-    $html = Blade::render('<x-site.account-menu :user="$user" />', ['user' => $this->user], deleteCachedView: true);
+    $html = Blade::render('<foundry:account-menu :user="$user" />', ['user' => $this->user], deleteCachedView: true);
 
     expect($html)->toContain('Ada Visser')->not->toContain('Log out');
 });
 
-test('an ink page sets its toast group through x-site.toasts', function () {
-    $html = Blade::render('<x-site.ink-page title="Sign in" description="Sign in." card>Form</x-site.ink-page>', deleteCachedView: true);
+test('an ink page sets its toast group through foundry:toasts', function () {
+    $html = Blade::render('<foundry:layouts.focus title="Sign in" description="Sign in." card>Form</foundry:layouts.focus>', deleteCachedView: true);
 
     expect($html)->toContain('<flux:toast.group>')->toContain('Form')->toContain('[&_h1]:text-3xl!');
 });
 
 test('a record row keeps its actions outside its link', function () {
-    $html = Blade::render('<x-site.record-row href="/agreements/12" title="Mutual NDA" meta="Sent 21 Sep 2026"><x-slot:status><span>Signed</span></x-slot:status><x-slot:actions><button>Resend</button></x-slot:actions></x-site.record-row>', deleteCachedView: true);
+    $html = Blade::render('<foundry:record-row href="/agreements/12" title="Mutual NDA" meta="Sent 21 Sep 2026"><x-slot:status><span>Signed</span></x-slot:status><x-slot:actions><button>Resend</button></x-slot:actions></foundry:record-row>', deleteCachedView: true);
 
     $link = str($html)->after('<a href="/agreements/12"')->before('</a>');
 
@@ -73,7 +74,7 @@ test('a record row keeps its actions outside its link', function () {
 });
 
 test('a page head sets the trail above it, the status beside the title and the actions', function () {
-    $html = Blade::render('<x-site.page-head :breadcrumbs="[\'Agreements\' => \'/agreements\']" title="Mutual NDA" lead="Sent today."><x-slot:status><span>Signed</span></x-slot:status><x-slot:actions><a href="/pdf">Download</a></x-slot:actions></x-site.page-head>', deleteCachedView: true);
+    $html = Blade::render('<foundry:page-head :breadcrumbs="[\'Agreements\' => \'/agreements\']" title="Mutual NDA" lead="Sent today."><x-slot:status><span>Signed</span></x-slot:status><x-slot:actions><a href="/pdf">Download</a></x-slot:actions></foundry:page-head>', deleteCachedView: true);
 
     expect($html)
         ->toContain('<flux:breadcrumbs data-markdown-skip')
@@ -85,19 +86,19 @@ test('a page head sets the trail above it, the status beside the title and the a
 });
 
 test('an app bar without a user has no account menu', function () {
-    $html = Blade::render('<x-site.app-nav :links="[\'Docs\' => \'/docs\']" />', deleteCachedView: true);
+    $html = Blade::render('<foundry:app.header :links="[\'Docs\' => \'/docs\']" />', deleteCachedView: true);
 
     expect($html)->toContain('>Docs</a>')->not->toContain('<flux:avatar');
 });
 
 test('a signed-in page takes the imprint\'s own bar in place of the app bar', function () {
-    $html = Blade::render('<x-site.app-page title="Agreements" :user="$user"><x-slot:nav><header>Own bar</header></x-slot:nav><p>Body</p></x-site.app-page>', ['user' => $this->user], deleteCachedView: true);
+    $html = Blade::render('<foundry:layouts.app title="Agreements" :user="$user"><x-slot:nav><header>Own bar</header></x-slot:nav><p>Body</p></foundry:layouts.app>', ['user' => $this->user], deleteCachedView: true);
 
     expect($html)->toContain('<header>Own bar</header>')->toContain('<p>Body</p>')->not->toContain('<flux:avatar');
 });
 
 test('a page head leads back to the one page above it', function () {
-    $html = Blade::render('<x-site.page-head :back="[\'All agreements\' => \'/agreements\']" title="Mutual NDA" />', deleteCachedView: true);
+    $html = Blade::render('<foundry:page-head :back="[\'All agreements\' => \'/agreements\']" title="Mutual NDA" />', deleteCachedView: true);
 
     expect($html)
         ->toContain('<a href="/agreements"')
@@ -106,13 +107,13 @@ test('a page head leads back to the one page above it', function () {
 });
 
 test('a field row links its label to its control', function () {
-    $html = Blade::render('<x-site.field-row label="Email" description="Where links go." for="email"><input id="email" /></x-site.field-row>', deleteCachedView: true);
+    $html = Blade::render('<foundry:field-row label="Email" description="Where links go." for="email"><input id="email" /></foundry:field-row>', deleteCachedView: true);
 
     expect($html)->toContain('<label for="email"')->toContain('<input id="email" />')->toContain('Where links go.');
 });
 
 test('a confirm item asks twice in the menu and acts on the third press', function () {
-    $html = Blade::render('<x-site.confirm-item icon="trash" action="$wire.delete(\'abc\')">Delete</x-site.confirm-item>', deleteCachedView: true);
+    $html = Blade::render('<foundry:confirm-item icon="trash" action="$wire.delete(\'abc\')">Delete</foundry:confirm-item>', deleteCachedView: true);
 
     expect($html)
         ->toContain('Delete')
@@ -126,7 +127,7 @@ test('a confirm item asks twice in the menu and acts on the third press', functi
 });
 
 test('a confirm button fills a third per press and acts on the third', function () {
-    $html = Blade::render('<x-site.confirm-button label="Delete account" action="$wire.deleteAccount()" />', deleteCachedView: true);
+    $html = Blade::render('<foundry:confirm-button label="Delete account" action="$wire.deleteAccount()" />', deleteCachedView: true);
 
     expect($html)
         ->toContain('aria-label="Delete account"')
@@ -138,7 +139,7 @@ test('a confirm button fills a third per press and acts on the third', function 
 });
 
 test('a badge draws a hairline ring in its own ramp', function () {
-    expect(Blade::render('<x-site.badge tone="success">Signed</x-site.badge>', deleteCachedView: true))
+    expect(Blade::render('<foundry:badge tone="success">Signed</foundry:badge>', deleteCachedView: true))
         ->toContain('ring-1 ring-inset')
         ->toContain('ring-success-700/10');
 });
@@ -159,15 +160,16 @@ test('a model with HasInitials reads its initials through Nameable', function ()
 
 test('a flush app page lays its bar over the band and sets its slot edge to edge', function () {
     $this->artisan('view:clear');
-    File::ensureDirectoryExists(resource_path('views/components/site'));
-    File::put(resource_path('views/components/site/lockup.blade.php'), '<span {{ $attributes }}>Imprint</span>');
+    File::ensureDirectoryExists(resource_path('views/foundry'));
+    File::put(resource_path('views/foundry/lockup.blade.php'), '<span {{ $attributes }}>Imprint</span>');
 
     try {
         $user = (object) ['name' => 'Ada Visser', 'email' => 'ada@example.com', 'initials' => 'AV'];
-        $flush = Blade::render('<x-site.app-page title="x" :user="$user" flush><x-site.app-band><p>Band</p></x-site.app-band></x-site.app-page>', ['user' => $user], deleteCachedView: true);
-        $contained = Blade::render('<x-site.app-page title="x" :user="$user"><p>Body</p></x-site.app-page>', ['user' => $user], deleteCachedView: true);
+        $flush = Blade::render('<foundry:layouts.app title="x" :user="$user" flush><foundry:app.band><p>Band</p></foundry:app.band></foundry:layouts.app>', ['user' => $user], deleteCachedView: true);
+        $contained = Blade::render('<foundry:layouts.app title="x" :user="$user"><p>Body</p></foundry:layouts.app>', ['user' => $user], deleteCachedView: true);
     } finally {
         File::deleteDirectory(resource_path('views/components'));
+        File::deleteDirectory(resource_path('views/foundry'));
     }
 
     $main = fn (string $html): string => (string) str($html)->between('<main class="flex-1">', '</main>');
@@ -179,7 +181,7 @@ test('a flush app page lays its bar over the band and sets its slot edge to edge
 });
 
 test('a confirm button tells a screen reader each step, and a keyboard press starts no timer', function () {
-    $html = Blade::render('<x-site.confirm-button label="Delete account" action="$wire.deleteAccount()" />', deleteCachedView: true);
+    $html = Blade::render('<foundry:confirm-button label="Delete account" action="$wire.deleteAccount()" />', deleteCachedView: true);
 
     expect($html)
         ->toMatch('#</flux:button>\s*<span role="status" class="sr-only"#')
@@ -189,7 +191,7 @@ test('a confirm button tells a screen reader each step, and a keyboard press sta
 });
 
 test('a confirm item tells a screen reader each step, and starts over when focus leaves it', function () {
-    $html = Blade::render('<x-site.confirm-item icon="trash" action="$wire.delete(\'abc\')">Delete</x-site.confirm-item>', deleteCachedView: true);
+    $html = Blade::render('<foundry:confirm-item icon="trash" action="$wire.delete(\'abc\')">Delete</foundry:confirm-item>', deleteCachedView: true);
 
     expect($html)
         ->toMatch('#</flux:menu.item>\s*<span role="status" class="sr-only"#')
@@ -199,7 +201,7 @@ test('a confirm item tells a screen reader each step, and starts over when focus
 });
 
 test('the app bar\'s panel takes an id of its own and hands focus back on escape', function () {
-    $html = Blade::render('<x-site.app-nav :links="[\'Agreements\' => \'/agreements\']" :user="$user" />', ['user' => $this->user], deleteCachedView: true);
+    $html = Blade::render('<foundry:app.header :links="[\'Agreements\' => \'/agreements\']" :user="$user" />', ['user' => $this->user], deleteCachedView: true);
 
     expect($html)
         ->toContain('x-id="[\'app-menu\']"')
@@ -213,7 +215,7 @@ test('the app bar\'s panel takes an id of its own and hands focus back on escape
 test('the app bar names its navigation in the page\'s language', function () {
     app()->setLocale('nl');
 
-    $html = Blade::render('<x-site.app-nav :user="$user" />', ['user' => $this->user], deleteCachedView: true);
+    $html = Blade::render('<foundry:app.header :user="$user" />', ['user' => $this->user], deleteCachedView: true);
 
     expect($html)->toContain('<nav aria-label="Hoofdmenu"');
 });
@@ -221,7 +223,7 @@ test('the app bar names its navigation in the page\'s language', function () {
 test('a signed-in page loads Livewire, Alpine with it, once, with a component on it or without', function (string $content) {
     $this->app->register(LivewireServiceProvider::class);
     Livewire::component('shell-probe', ShellProbe::class);
-    Route::get('/shell', fn () => Blade::render('<x-site.app-page title="Shell" :user="$user">'.$content.'</x-site.app-page>', ['user' => $this->user], deleteCachedView: true));
+    Route::get('/shell', fn () => Blade::render('<foundry:layouts.app title="Shell" :user="$user">'.$content.'</foundry:layouts.app>', ['user' => $this->user], deleteCachedView: true));
 
     expect(substr_count($this->get('/shell')->assertOk()->getContent(), 'data-csrf='))->toBe(1);
 })->with([

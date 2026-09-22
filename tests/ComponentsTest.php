@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 
-test('a site resolves the foundry components under x-site', function () {
-    $html = Blade::render('<x-site.section id="band">Body</x-site.section>');
+test('a site resolves the foundry components under foundry:', function () {
+    $html = Blade::render('<foundry:section id="band">Body</foundry:section>');
 
     expect($html)
         ->toContain('<section class="scroll-mt-4')
@@ -17,38 +17,36 @@ test('a site overrides a foundry component by keeping a file of the same name', 
     // Both tests write the same file within a second, which Blade's compiled
     // view check reads as unchanged.
     $this->artisan('view:clear');
-    $directory = resource_path('views/components/site');
+    $directory = resource_path('views/foundry');
     File::ensureDirectoryExists($directory);
     File::put($directory.'/section.blade.php', '<section>the site\'s own</section>');
 
     try {
-        expect(Blade::render('<x-site.section>Body</x-site.section>', deleteCachedView: true))->toBe('<section>the site\'s own</section>');
+        expect(Blade::render('<foundry:section>Body</foundry:section>', deleteCachedView: true))->toBe('<section>the site\'s own</section>');
     } finally {
         File::deleteDirectory(resource_path('views/components'));
+        File::deleteDirectory(resource_path('views/foundry'));
     }
 });
 
-test('a site\'s own version of a component can wrap the foundry\'s', function () {
-    // Both tests write the same file within a second, which Blade's compiled
-    // view check reads as unchanged.
+test('an imprint\'s own components are Laravel\'s own x- tags, beside the foundry\'s', function () {
     $this->artisan('view:clear');
-    $directory = resource_path('views/components/site');
+    $directory = resource_path('views/components');
     File::ensureDirectoryExists($directory);
-    File::put($directory.'/section.blade.php', '<x-foundry::site.section {{ $attributes }}>{{ $slot }} and the site\'s own</x-foundry::site.section>');
+    File::put($directory.'/seal.blade.php', '<span>the imprint\'s seal</span>');
 
     try {
-        expect(Blade::render('<x-site.section id="band">Body</x-site.section>', deleteCachedView: true))
-            ->toContain('id="band"')
-            ->toContain('mx-auto w-full max-w-wide')
-            ->toContain('Body')
-            ->toContain('and the site\'s own');
+        expect(Blade::render('<x-seal /><foundry:section>Body</foundry:section>', deleteCachedView: true))
+            ->toContain('the imprint\'s seal')
+            ->toContain('mx-auto w-full max-w-wide');
     } finally {
         File::deleteDirectory(resource_path('views/components'));
+        File::deleteDirectory(resource_path('views/foundry'));
     }
 });
 
 test('a scene draws its photo in every width and format, with its scrim over it', function () {
-    $html = Blade::render('<x-site.scene name="stones" scrim="bg-black/50" eager class="object-right" />', deleteCachedView: true);
+    $html = Blade::render('<foundry:scene name="stones" scrim="bg-black/50" eager class="object-right" />', deleteCachedView: true);
 
     expect($html)
         ->toContain('/stones/home-1672.avif 1672w')
@@ -59,7 +57,7 @@ test('a scene draws its photo in every width and format, with its scrim over it'
 });
 
 test('steps check what is done, mark the current one, number the rest and open a step that has an action', function () {
-    $html = Blade::render('<x-site.steps :steps="$steps" />', ['steps' => [
+    $html = Blade::render('<foundry:steps :steps="$steps" />', ['steps' => [
         ['label' => 'You', 'meta' => 'Ada Visser', 'status' => 'complete', 'click' => 'goTo(1)'],
         ['label' => 'Terms', 'status' => 'current'],
         ['label' => 'Sent', 'meta' => 'Both sign online', 'status' => 'incomplete', 'icon' => 'paper-airplane'],

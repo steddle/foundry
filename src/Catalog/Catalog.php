@@ -2,9 +2,7 @@
 
 namespace Steddle\Foundry\Catalog;
 
-use Closure;
 use Composer\InstalledVersions;
-use Illuminate\Support\Facades\View as ViewFactory;
 use Illuminate\Support\Str;
 use LogicException;
 use Symfony\Component\Finder\Finder;
@@ -39,12 +37,12 @@ final class Catalog
      */
     public static function shared(): array
     {
-        return once(fn (): array => self::sorted([...self::read(__DIR__.'/../../resources/views/components/site', 'foundry'), ...self::supplied()]));
+        return once(fn (): array => self::sorted([...self::read(__DIR__.'/../../resources/views/foundry', 'foundry'), ...self::supplied()]));
     }
 
     /**
      * The imprint's own components: every file under its
-     * resources/views/components/site that the foundry neither keeps nor names.
+     * resources/views/components, each naming its group.
      *
      * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}>
      */
@@ -52,32 +50,29 @@ final class Catalog
     {
         return once(function (): array {
             // A test's dataset asks for the entries before the application boots, when Composer still knows the project's root.
-            $root = (app()->bound('path.resources') ? resource_path() : realpath(InstalledVersions::getRootPackage()['install_path']).'/resources').'/views/components/site';
-            $shared = self::shared();
+            $root = (app()->bound('path.resources') ? resource_path() : realpath(InstalledVersions::getRootPackage()['install_path']).'/resources').'/views/components';
 
-            $entries = self::read($root, 'custom', fn (string $slug, string $file): bool => isset($shared[$slug]) || is_file(__DIR__.'/../../resources/views/components/site/'.$file));
+            $entries = self::read($root, 'custom');
 
             return self::sorted(array_map(fn (array $entry): array => $entry['examples'] === [] ? [...$entry, 'examples' => [['title' => 'Its tag', 'code' => true, 'blade' => "<{$entry['tag']} />"]]] : $entry, $entries));
         });
     }
 
     /**
-     * How the imprint holds a foundry component: `wraps` where its own file
-     * hands content to x-foundry::site.*, `copies` where the file stands in
-     * for the foundry's, the thing /components exists to show, and null where
-     * it keeps no file of its own.
+     * Whether the imprint keeps a file of its own in place of the foundry's
+     * component, which /components exists to show. The lockup and the mark it
+     * supplies are no such stand-in.
      */
-    public static function held(string $tag): ?string
+    public static function held(string $tag): bool
     {
-        $name = Str::after($tag, 'x-site.');
+        $name = str_replace('.', '/', Str::after($tag, 'foundry:'));
 
-        if (! ViewFactory::exists("components.site.{$name}")) {
-            return null;
+        if (in_array($name, ['lockup', 'mark'], true)) {
+            return false;
         }
 
-        $source = file_get_contents(ViewFactory::getFinder()->find("components.site.{$name}"));
-
-        return str_contains($source, "x-foundry::site.{$name}") ? 'wraps' : 'copies';
+        return is_file(resource_path("views/foundry/{$name}.blade.php"))
+            || is_file(resource_path("views/foundry/{$name}/index.blade.php"));
     }
 
     /**
@@ -107,10 +102,9 @@ final class Catalog
      * after a group is in that group, and every other names its own, or the
      * read throws.
      *
-     * @param  (Closure(string, string): bool)|null  $skip  slug, file => whether the file is no component of this read
      * @return array<string, array{name: string, group: string, from: string, tag: string, file: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array<string, mixed>>}>
      */
-    private static function read(string $root, string $from, ?Closure $skip = null): array
+    private static function read(string $root, string $from): array
     {
         if (! is_dir($root)) {
             return [];
@@ -128,10 +122,6 @@ final class Catalog
 
             $slug = str_replace(['/', '.'], '-', $path);
 
-            if ($skip?->__invoke($slug, $relative.'.blade.php')) {
-                continue;
-            }
-
             $source = $file->getContents();
             ['description' => $description, 'group' => $group, 'examples' => $examples, 'props' => $documented, 'slots' => $slots] = self::comment($source);
             $group ??= str_contains($path, '/') ? Str::ucfirst(str_replace('-', ' ', Str::before($path, '/'))) : null;
@@ -144,7 +134,7 @@ final class Catalog
                 'name' => Str::ucfirst(str_replace('-', ' ', Str::afterLast($path, '/'))),
                 'group' => $group,
                 'from' => $from,
-                'tag' => 'x-site.'.str_replace('/', '.', $path),
+                'tag' => ($from === 'foundry' ? 'foundry:' : 'x-').str_replace('/', '.', $path),
                 'file' => $relative.'.blade.php',
                 'description' => $description,
                 'props' => self::props($source, $documented),
@@ -255,10 +245,10 @@ final class Catalog
                 'description' => 'The mark and the wordmark in the current colour. An imprint endorses it with BY STEDDLE where it stands without the house around it.',
                 'examples' => [
                     ['title' => 'On the page', 'blade' => <<<'BLADE'
-<x-site.lockup class="h-8 text-zinc-950 dark:text-zinc-50" />
+<foundry:lockup class="h-8 text-zinc-950 dark:text-zinc-50" />
 BLADE],
                     ['title' => 'On ink', 'ground' => 'ink', 'blade' => <<<'BLADE'
-<x-site.lockup class="h-8 text-zinc-950 dark:text-zinc-50" />
+<foundry:lockup class="h-8 text-zinc-950 dark:text-zinc-50" />
 BLADE],
                 ],
             ],
@@ -272,9 +262,9 @@ BLADE],
                 'examples' => [
                     ['title' => 'At three sizes', 'blade' => <<<'BLADE'
 <div class="flex items-end gap-6 text-zinc-950 dark:text-zinc-50">
-    <x-site.mark class="size-16" />
-    <x-site.mark class="size-8" />
-    <x-site.mark class="size-4" />
+    <foundry:mark class="size-16" />
+    <foundry:mark class="size-8" />
+    <foundry:mark class="size-4" />
 </div>
 BLADE],
                 ],
