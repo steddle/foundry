@@ -88,7 +88,7 @@ final class Catalog
      * read throws.
      *
      * @param  (Closure(string, string): bool)|null  $skip  slug, file => whether the file is no component of this read
-     * @return array<string, array{name: string, group: string, from: string, tag: string, file: string, description: string, examples: list<array<string, mixed>>}>
+     * @return array<string, array{name: string, group: string, from: string, tag: string, file: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array<string, mixed>>}>
      */
     private static function read(string $root, string $from, ?Closure $skip = null): array
     {
@@ -139,7 +139,7 @@ final class Catalog
     /**
      * What a component's opening comment says of it.
      *
-     * @return array{description: string, group: ?string, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}
+     * @return array{description: string, group: ?string, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>, props: array<string, string>, slots: list<array{name: string, description: string}>}
      */
     private static function comment(string $source): array
     {
@@ -179,7 +179,7 @@ final class Catalog
      * Every prop the component's `@props` declares, with its default as PHP
      * writes it or null where it is required, and the `@prop` line that
      * describes it; a `@prop` for a name `@props` does not declare, an
-     * attribute the component reads, follows them.
+     * attribute the component passes on, follows them as `passed on`.
      *
      * @param  array<string, string>  $documented  name => description
      * @return list<array{name: string, default: ?string, description: string}>
@@ -214,7 +214,7 @@ final class Catalog
         }
 
         foreach (array_diff_key($documented, $props) as $name => $description) {
-            $props[$name] = ['name' => $name, 'default' => null, 'description' => $description];
+            $props[$name] = ['name' => $name, 'default' => 'passed on', 'description' => $description];
         }
 
         return array_values($props);

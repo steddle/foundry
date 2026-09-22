@@ -20,7 +20,6 @@
     </div>
 --}}
 @php
-    // Each status ramp's 50 as the ground and 700 as the text, in both themes. Lichen is the one tone that asks the reader to act.
     $tones = [
         'neutral' => 'bg-zinc-100! text-zinc-700! dark:bg-zinc-800! dark:text-zinc-300!',
         'info' => 'bg-info-50! text-info-700!',

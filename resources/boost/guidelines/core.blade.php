@@ -31,22 +31,24 @@ is its own.
   and `x-site.numbered-section`, each with `sunken` for a band a step below
   the page. `x-site.copy-menu` reads its words from `foundry::agents`, in
   English and Dutch.
-- **Sections**: a page is a run of sections. The foundry holds the base
-  ones under `x-site.sections.*`: `hero` and `page-title` to open a page,
-  `split` (words beside a `figure` slot), `steps`, `features`, `faq` and
-  `cta` between, and `closing` in the footer's slot. Every one takes the
-  same words, `eyebrow`, `title` and `lead`, the lede, as props, or `lead`
-  as a slot where it holds markup; its items as a list of pairs or of rows
-  keyed the same; the buttons in an `actions` slot, which it sets in
+- **Sections**: a page is a run of sections. The foundry holds the base ones
+  under `x-site.sections.*`: `hero` and `page-title` to open a page, `split`
+  (words beside a `figure` slot), `steps`, `features`, `faq` and `cta`
+  between, and `closing` in the footer's slot. Every one takes the same
+  words, `eyebrow`, `title` and `lead`, the lede, as props, or `eyebrow` and
+  `lead` as slots where they hold markup; its items as a list of pairs or of
+  rows keyed the same; the buttons in an `actions` slot, which it sets in
   `x-site.actions`; whatever the default slot holds after the rest; and
-  `id`, `sunken` or `scene` for the band. Every one sets its words through
+  `id`, and `sunken` or `scene` where the band takes one: `closing` takes
+  its ground from the footer. Every one sets its words through
   `x-site.section-head`, beside each other or `stacked`, so they read alike
-  on every band. A section that is a base one filled with copy is written
-  in the page, never kept as a component. A section with markup of its own
-  is the imprint's, under `resources/views/components/site/sections/`,
-  built on a base one where its shape allows; a figure a section sets more
-  than once is a component of its own beside it. A base section enters the
-  foundry when a page uses it.
+  on every band. A section that is a base one filled with copy is written in
+  the page, never kept as a component, and so is a section bound to the
+  page's Livewire state, a form. A section with markup of its own is the
+  imprint's, under `resources/views/components/site/sections/`, built on a
+  base one where its shape allows; a figure a section sets more than once is
+  a component of its own beside it. A base section enters the foundry when a
+  page uses it.
 - **Header and footer**: `x-foundry::site.nav` takes the links, the home
   address, an `actions` slot and whether a phone folds them into a menu;
   `x-foundry::site.footer` takes the scene, the links or an `items` slot and
@@ -129,8 +131,8 @@ is its own.
 - **Published images**: `x-site.og-image`, `x-site.social-preview` and
   `x-site.readme-banner` are rendered from the imprint's
   `config/imprint.php` (`name`, `stylesheet`, and `og` and `banner` copy:
-  `heading`, `marked`, `lede`, `eyebrow`, each a sentence or a translation
-  key, and an optional `locale` per block) into `public/og-image.png` and
+  `heading`, `marked`, `lede` and, on `og` alone, `eyebrow`, each a
+  sentence or a translation key, and an optional `locale` per block) into `public/og-image.png` and
   `public/brand/social/`. `php artisan foundry:assets --url=https://<site>.test`
   renders them through Playwright's own Chromium, never the reader's browser,
   so `playwright` is a devDependency of every imprint. `foundry:assets --check`
@@ -167,7 +169,7 @@ is its own.
   the badges are the badge's own example. A component of its own belongs
   on `/components`, never on `/design`. On
   those pages the nav is the lab's bar on bone, and elsewhere the links end
-  on Lab. A page with no hero opens on `x-site.sections.page-title`.
+  on Lab. The lab and the design page open on `x-site.sections.page-title`.
 - **`/components`** opens on an index of every component an imprint
   renders, by group, from the catalogue in
   `Steddle\Foundry\Catalog\Catalog`; a component's page shows each example

@@ -10,6 +10,7 @@
     @prop lead The lede, beside the title on a wide screen.
     @prop features A list of [title, body], or of rows keyed `title` and `body`.
     @prop sunken Sets the section a step below the page.
+    @slot actions The buttons under the rest.
     @slot slot What follows the rest of the section, in the same band.
 
     @example Three features
@@ -34,5 +35,8 @@
         @endforeach
     </ol>
 
+    @isset($actions)
+        <x-site.actions>{{ $actions }}</x-site.actions>
+    @endisset
     {{ $slot }}
 </x-site.section>

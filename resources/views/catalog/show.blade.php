@@ -54,6 +54,8 @@
                                                 <flux:table.cell class="align-top">
                                                     @if ($row['default'] === null)
                                                         <x-site.text variant="small" tone="muted">Required</x-site.text>
+                                                    @elseif ($row['default'] === 'passed on')
+                                                        <x-site.text variant="small" tone="muted">Passed on</x-site.text>
                                                     @else
                                                         <code class="font-mono text-code text-zinc-600 dark:text-zinc-400 slashed-zero">{{ $row['default'] }}</code>
                                                     @endif

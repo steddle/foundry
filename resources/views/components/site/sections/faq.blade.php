@@ -12,6 +12,7 @@
     @prop lead The lede, beside the title on a wide screen.
     @prop questions A list of [question, answer], or of rows keyed `question` and `answer`.
     @prop sunken Sets the section a step below the page.
+    @slot actions The buttons under the rest.
     @slot slot What follows the rest of the section, in the same band.
 
     @example Two questions
@@ -37,5 +38,8 @@
         @endforeach
     </div>
 
+    @isset($actions)
+        <x-site.actions>{{ $actions }}</x-site.actions>
+    @endisset
     {{ $slot }}
 </x-site.section>

@@ -86,7 +86,6 @@ class FoundryServiceProvider extends ServiceProvider
                 Route::view($path("docs/{$topic}"), 'foundry::docs.category', ['slug' => $topic])->name("docs.category.{$topic}");
 
                 foreach (array_keys($entry['articles']) as $article) {
-                    // An article is named by its slug alone, so two topics cannot both hold one.
                     if (isset($articles[$article])) {
                         throw new LogicException("The docs topics {$articles[$article]} and {$topic} both hold the article {$article}; an article's slug names it on its own.");
                     }

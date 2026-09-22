@@ -8,6 +8,7 @@
     @prop eyebrow A label in the accent above the title.
     @prop title The page's h1, at size 1.
     @prop lead The lede under the title.
+    @slot actions The buttons under the lede.
     @slot slot What follows the rest of the section, in the same band.
 
     @example A title and a lede
@@ -16,5 +17,8 @@
 --}}
 <x-site.section {{ $attributes }}>
     <x-site.section-head stacked :level="1" :$eyebrow :$title :$lead />
+    @isset($actions)
+        <x-site.actions>{{ $actions }}</x-site.actions>
+    @endisset
     {{ $slot }}
 </x-site.section>

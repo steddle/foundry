@@ -69,7 +69,7 @@ Outside production, `/components` shows every component the imprint renders, liv
 
 - Spectral, Chivo and Chivo Mono, the type scale and the radii in `foundry.css`
 - Seven ramps, written out as pairs: no role tokens
-- Layout, hero, section, nav and footer components under `x-site.*`, overridable per site
+- Layout, nav and footer components under `x-site.*`, and the base sections a page is built from under `x-site.sections.*`, overridable per site
 - Languages: every page per locale under `Route::localized()`, translated paths, the language switch and the visitor's language followed
 - Docs and legal pages from a table of contents, with `Route::docs()` and `Route::legal()`
 - `sitemap.xml`, `llms.txt` and `llms-full.txt` from the imprint's page list
