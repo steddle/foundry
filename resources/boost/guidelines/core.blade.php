@@ -128,6 +128,20 @@ is its own.
 - **`Steddle\Foundry\Http\Middleware\Noindex`** sets `X-Robots-Tag: noindex`,
   also on the redirect or 403 an `auth` or `can` guard throws.
 - **Grain**: the `grain` utility in `foundry.css`, on ink bands only.
+- **Printed documents**: `Steddle\Foundry\Pdf\Printer` makes a PDF from a
+  page of the imprint's own, through Browsershot, so an imprint that prints
+  has `puppeteer` where Browsershot finds it. `capture()` loads the page,
+  refuses an error response, and pulls its stylesheets and their fonts into
+  the HTML, fetching from the imprint's own host alone; `print()` prints that
+  HTML, so a stored copy and its PDF are one render. The page is
+  `x-site.print.document` (`title`, `paper` A4 or Letter, `footer`): bone,
+  20 mm at the sides, the footer and the page count at the foot of every
+  page, no heading left at the foot of a page and no paragraph broken with
+  fewer than three lines on either side. It opens on
+  `x-site.print.masthead`, ink bled to the paper's edge, and runs as
+  `x-site.print.section`s holding `x-site.print.facts`; a section with
+  `new-page`, a signature page, starts on a page of its own. The type scale
+  is the site's, at a 12.5px rem.
 - **Published images**: `x-site.og-image`, `x-site.social-preview` and
   `x-site.readme-banner` are rendered from the imprint's
   `config/imprint.php` (`name`, `stylesheet`, and `og` and `banner` copy:
@@ -183,7 +197,7 @@ is its own.
   its Blade the lines after it, optionally led by `@ground page|ink|bare` or
   `@code`. A `bare` example is a band or a page: it renders on a page of its
   own, framed at a desktop's or a phone's width. The groups are Shell,
-  Sections, Layout, Navigation, Type, Elements, Forms and Brand. An
+  Sections, Layout, Navigation, Type, Elements, Forms, Brand and Print. An
   imprint's own components join the index on their own: every file under
   its `resources/views/components/site` the foundry neither keeps nor
   names. Under that directory a folder with an `index` is one component and
@@ -196,6 +210,14 @@ is its own.
   imprint keeps a copy of, in place of wrapping it, which is the thing to
   fix. Add a component to the catalogue when it enters the foundry, and
   every imprint's suite renders it.
+
+- **Tests**: `Steddle\Foundry\Testing\Imprint::tests()`, called from the
+  imprint's `tests/Feature/FoundryTest.php` with a `viewer` where its lab is
+  guarded, is what every imprint runs for what the foundry gives it: the
+  catalogue, every framed example, the lab behind its guard and absent in
+  production, every public page with its markdown, the sitemap and the llms
+  files, and the published images. A test of foundry behaviour belongs
+  there, never in one imprint's own suite.
 
 ## Design language
 

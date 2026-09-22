@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+#
+# The imprints that install steddle/foundry, and the round a foundry change
+# makes through them before it is pushed and after.
+#
+#   bin/imprints sync   [name...]  copy this checkout into each vendor/, clear views, build
+#   bin/imprints test   [name...]  run each imprint's suite
+#   bin/imprints update [name...]  composer update steddle/foundry, then boost:install
+#   bin/imprints status [name...]  open files and commits not pushed
+#
+# Without names it runs on every imprint. It commits and pushes nothing.
+
+set -uo pipefail
+
+FOUNDRY="$(cd "$(dirname "$0")/.." && pwd)"
+
+# name|path|test command. bron's suite runs on a database pair and a TEST_TOKEN of its own, so it never meets another session's run.
+IMPRINTS=(
+    "steddle|$HOME/Sites/steddle|php artisan test --compact"
+    "bron|$HOME/Sites/bron|DB_DATABASE=bron_test_foundry CORPUS_DATABASE=bron_corpus_test_foundry TEST_TOKEN=foundry LARAVEL_PARALLEL_TESTING=0 php artisan test --compact"
+    "sendnda|$HOME/Sites/sendnda|php artisan test --compact"
+    "righted|$HOME/Sites/righted|php artisan test --compact"
+)
+
+command="${1:-}"
+shift || true
+failed=0
+
+case "$command" in
+    sync|test|update|status) ;;
+    *) sed -n '3,12p' "$FOUNDRY/bin/imprints" | sed 's/^# \{0,1\}//'; exit 1 ;;
+esac
+
+for imprint in "${IMPRINTS[@]}"; do
+    IFS='|' read -r name path tests <<< "$imprint"
+
+    if [ "$#" -gt 0 ] && [[ ! " $* " =~ " $name " ]]; then
+        continue
+    fi
+
+    echo "== $name"
+    cd "$path" || { failed=1; continue; }
+
+    case "$command" in
+        sync)
+            rsync -a --delete --exclude vendor --exclude .git --exclude composer.lock --exclude node_modules --exclude '/workbench' "$FOUNDRY/" vendor/steddle/foundry/ \
+                && php artisan view:clear -q \
+                && npm run build > /dev/null 2>&1 \
+                || failed=1
+            ;;
+        test)
+            bash -c "$tests" || failed=1
+            ;;
+        update)
+            composer update steddle/foundry -q \
+                && php artisan boost:install --guidelines --skills --no-interaction > /dev/null \
+                && php artisan view:clear -q \
+                || failed=1
+            ;;
+        status)
+            git status --short
+            echo "not pushed: $(git rev-list --count '@{u}..HEAD' 2>/dev/null || echo 'no remote')"
+            ;;
+    esac
+done
+
+exit "$failed"

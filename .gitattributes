@@ -2,3 +2,5 @@
 /testbench.yaml export-ignore
 /package.json export-ignore
 /vite.config.js export-ignore
+/bin/imprints export-ignore
+/CLAUDE.md export-ignore
