@@ -3,12 +3,12 @@
 {{--
     x-site.confirm-button as a row in a menu: three presses, the words going
     from the label to 'Click again' to 'One more time' while a danger wash grows
-    behind the icon and the words a third at a time, and the third press runs
-    the action. The menu stays open exactly as long as the question does. The
+    behind the icon and the words a third at a time. The third press fills the
+    row, and once the fill has landed the menu closes and the action runs. The
     action is an Alpine expression rather than a wire:click on the item, which
     would fire on the first press. A Flux item closes its menu by dispatching
     `lofi-close-popovers` on mouseup, before the click, so the wrapper stops
-    that event until the third press.
+    every such event from the item and closes the menu itself, on the menu.
 
     @group Navigation
     @prop action The Alpine expression the third press runs, e.g. `$wire.delete('…')`.
@@ -25,8 +25,8 @@
     </flux:dropdown>
 --}}
 <div class="contents" x-data="{ step: 0, timer: null }"
-    x-on:click.capture="clearTimeout(timer); if (step === 2) { step = 0; {{ $action }} } else { $event.preventDefault(); $event.stopPropagation(); step++; timer = setTimeout(() => step = 0, 1500) }"
-    x-on:lofi-close-popovers="step === 2 || $event.stopPropagation()">
+    x-on:click.capture="$event.preventDefault(); $event.stopPropagation(); clearTimeout(timer); if (step >= 2) { step = 3; timer = setTimeout(() => { $el.closest('ui-menu')?.dispatchEvent(new CustomEvent('lofi-close-popovers')); step = 0; {{ $action }} }, 320) } else { step++; timer = setTimeout(() => step = 0, 1500) }"
+    x-on:lofi-close-popovers="$event.stopPropagation()">
     <flux:menu.item variant="danger" :$icon x-bind:data-step="step" {{ $attributes->class('relative isolate overflow-hidden text-danger-700! dark:text-danger-300! **:data-flux-menu-item-icon:text-current!') }}>
         <span aria-hidden="true" class="absolute inset-y-0 left-0 -z-10 bg-danger-700/15 dark:bg-danger-300/20 transition-[width] duration-180 ease-(--ease-settle)"
             style="width: 0%" x-bind:style="`width: ${(step / 3) * 100}%`"></span>

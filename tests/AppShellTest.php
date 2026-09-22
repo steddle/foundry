@@ -94,8 +94,8 @@ test('a confirm item asks twice in the menu and acts on the third press', functi
         ->toContain('Tap again')
         ->toContain('One more time')
         ->toContain('x-on:click.capture')
-        ->toContain('if (step === 2) { step = 0; $wire.delete(&#039;abc&#039;) }')
-        ->toContain('x-on:lofi-close-popovers="step === 2 || $event.stopPropagation()"')
+        ->toContain("dispatchEvent(new CustomEvent('lofi-close-popovers')); step = 0; \$wire.delete(&#039;abc&#039;) }, 320)")
+        ->toContain('x-on:lofi-close-popovers="$event.stopPropagation()"')
         ->not->toContain('wire:click');
 });
 
@@ -104,7 +104,7 @@ test('a confirm button fills a third per press and acts on the third', function 
 
     expect($html)
         ->toContain('aria-label="Delete account"')
-        ->toContain('if (step === 2) { step = 3; $wire.deleteAccount();')
+        ->toContain('step = 3; timer = setTimeout(() => { $wire.deleteAccount();')
         ->toContain('clip-path: inset(0 ${100 - (step / 3) * 100}% 0 0)')
         ->toContain('One more time')
         ->not->toContain('wire:click');

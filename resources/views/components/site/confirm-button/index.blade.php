@@ -4,8 +4,8 @@
     A button for a step that can't be undone, taken in three presses rather
     than a dialog: the words go from the label to 'Click again' ('Tap again'
     on touch) to 'One more time', and the danger ramp fills the button a third at
-    a time, left to right, inverting the words it covers. The third press runs
-    the action. Pressing nothing for a second and a half, or leaving the
+    a time, left to right, inverting the words it covers. The third press
+    fills it, and the action runs once the fill has landed. Pressing nothing for a second and a half, or leaving the
     button, starts over.
 
     @group Elements
@@ -21,7 +21,7 @@
 --}}
 <flux:button type="button" variant="outline" :size="$size" aria-label="{{ $label }}"
     x-data="{ step: 0, timer: null }"
-    x-on:click="clearTimeout(timer); if (step === 2) { step = 3; {{ $action }}; timer = setTimeout(() => step = 0, 1500) } else { step++; timer = setTimeout(() => step = 0, 1500) }"
+    x-on:click="clearTimeout(timer); if (step >= 2) { step = 3; timer = setTimeout(() => { {{ $action }}; timer = setTimeout(() => step = 0, 1500) }, 220) } else { step++; timer = setTimeout(() => step = 0, 1500) }"
     x-on:blur="clearTimeout(timer); step = 0"
     {{ $attributes->class('relative overflow-hidden font-semibold! text-danger-700! dark:text-danger-300! border-danger-700/30! dark:border-danger-300/30!') }}>
     <x-site.confirm-button.labels :$label />
