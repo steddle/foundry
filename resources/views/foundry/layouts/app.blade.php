@@ -1,4 +1,4 @@
-@props(['title', 'description' => null, 'analytics' => null])
+@props(['title', 'description' => null, 'analytics' => null, 'footer' => true])
 
 {{--
     A signed-in page's document, kept out of search: foundry:bar over the ink
@@ -12,6 +12,7 @@
     @prop title The page's title, followed in `<title>` by the imprint's name.
     @prop description The page's meta description.
     @prop analytics Loads the imprint's analytics on this page, which foundry:head otherwise leaves off every signed-in page; for one whose address carries no token.
+    @prop footer Leaves the service line off, for a page that sets it in a column of its own; that page renders foundry:service-line itself.
     @slot nav A bar in place of foundry:bar, for a page that shows its reader less than the rest: one they still have to act on before anything else.
 
     @example A settings page
@@ -45,11 +46,13 @@
             {{ $slot }}
         </main>
 
-        <footer>
-            <foundry:container class="pb-6">
-                <foundry:service-line class="border-t border-zinc-200 dark:border-zinc-700 pt-6" />
-            </foundry:container>
-        </footer>
+        @if ($footer)
+            <footer>
+                <foundry:container class="pb-6">
+                    <foundry:service-line class="border-t border-zinc-200 dark:border-zinc-700 pt-6" />
+                </foundry:container>
+            </footer>
+        @endif
 
         <foundry:toasts />
 
