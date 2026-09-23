@@ -31,7 +31,8 @@ is its own.
   and `foundry:numbered-section`, each with `sunken` for a band a step below
   the page. Add a component to the catalogue when it enters the foundry, and
   every imprint's suite renders it.
-- **What an imprint supplies**: `foundry:lockup` and `foundry:mark`, under
+- **What an imprint supplies**: `foundry:lockup`, `foundry:mark` and
+  `foundry:bar`, the bar over every page, the signed-in ones included, under
   `resources/views/foundry/`, and the `zinc` and `primary` ramps. A file of
   that name there stands in for the foundry's component, as a published Flux
   component stands in for its own; what the component needs from the site,
@@ -53,9 +54,9 @@ is its own.
   imprint's `tests/Feature/FoundryTest.php` with a `viewer` where its lab is
   guarded, is what every imprint runs for what the foundry gives it: the
   catalogue, every framed example, the lab behind its guard and absent in
-  production, every public page with its markdown, the sitemap and the llms
-  files, the published images and the foundry skill. A test of foundry behaviour belongs
-  there, never in one imprint's own suite.
+  production, every public page with its markdown, the error pages, the
+  sitemap and the llms files, the published images and the foundry skill. A
+  test of foundry behaviour belongs there, never in one imprint's own suite.
 
 ## Design language
 

@@ -31,11 +31,11 @@ A change to the copy or markup of the published images needs `php artisan foundr
 
 - Read the imprint's own `CLAUDE.md`, and `.ai/rules` where it has them, before editing it: they do not load in a session that starts here.
 - Other sessions work in the same trees. `bin/imprints status` shows what is open; commit with `git commit -- <paths>`, never `git add -A`.
-- What an imprint shares with the others belongs here, not in its copy. A site keeps its content, its `config/imprint.php`, its `foundry:lockup`, `foundry:mark` and ramps, and components with markup of its own.
+- What an imprint shares with the others belongs here, not in its copy. A site keeps its content, its `config/imprint.php`, its `foundry:lockup`, `foundry:mark`, `foundry:bar` and ramps, its words for the error pages, and components with markup of its own.
 
 ## Tests
 
-`Steddle\Foundry\Testing\Imprint::tests()` is the suite every imprint runs for what the foundry gives it: the catalogue, every framed example, the lab behind its guard and absent in production, every public page with its markdown, the sitemap and the llms files, the published images, and the `foundry` skill's fingerprint. Each imprint registers it in `tests/Feature/FoundryTest.php`, with a `viewer` where its lab is guarded. A test of foundry behaviour goes there, never into one imprint's suite. The foundry's own suite (`tests/`) runs on Testbench with `workbench/` as its imprint.
+`Steddle\Foundry\Testing\Imprint::tests()` is the suite every imprint runs for what the foundry gives it: the catalogue, every framed example, the lab behind its guard and absent in production, every public page with its markdown, the error pages, the sitemap and the llms files, the published images, and the `foundry` skill's fingerprint. Each imprint registers it in `tests/Feature/FoundryTest.php`, with a `viewer` where its lab is guarded. A test of foundry behaviour goes there, never into one imprint's suite. The foundry's own suite (`tests/`) runs on Testbench with `workbench/` as its imprint.
 
 ## Laravel conventions
 

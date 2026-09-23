@@ -432,6 +432,8 @@
     --radius-2xl: var(--radius-lg);
 
     --shadow-press: inset 0 2px 0 0 --alpha(var(--color-zinc-950) / 14%);
+    /* A sheet lifted off the page: foundry:panel, and an imprint's own paper. */
+    --shadow-paper: 0 24px 48px -28px --alpha(var(--color-zinc-950) / 35%), 0 0 0 1px --alpha(var(--color-zinc-950) / 8%);
 
     --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
 

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 
@@ -24,7 +25,10 @@ test('the bar folds its links and actions into a phone menu', function () {
     expect($html)
         ->toContain('aria-label="Imprint, home"')
         ->toContain('aria-label="Menü"')
-        ->toContain('id="mobile-menu"')
+        ->toContain('x-id="[\'site-menu\']"')
+        ->toContain(':aria-controls="$id(\'site-menu\')"')
+        ->toContain(':id="$id(\'site-menu\')"')
+        ->toContain('$el.contains(document.activeElement) && $refs.toggle.focus()')
         ->and(substr_count($html, 'href="/docs"'))->toBe(2)
         ->and(substr_count($html, 'href="/login"'))->toBe(2);
 });
@@ -68,20 +72,43 @@ test('the site bar closes on a signed-in reader\'s account menu, with the imprin
     expect(Blade::render('<foundry:header :links="[\'Docs\' => \'/docs\']" />', deleteCachedView: true))->not->toContain('<flux:avatar');
 });
 
-test('a page takes the site\'s bar and footer through its slots, and keeps the foundry\'s without them', function () {
+test('a page takes the imprint\'s bar and the site\'s footer', function () {
     File::put(resource_path('views/foundry/head.blade.php'), '<title>{{ $title }}</title>');
+    File::put(resource_path('views/foundry/bar.blade.php'), '<nav id="the-site-bar"></nav>');
 
     $own = Blade::render(<<<'BLADE'
         <foundry:layouts.site title="Home" description="d">
-            <x-slot:nav><nav id="the-site-bar"></nav></x-slot:nav>
             <p>Body</p>
             <x-slot:footer><footer id="the-site-footer"></footer></x-slot:footer>
         </foundry:layouts.site>
     BLADE, deleteCachedView: true);
 
     expect($own)->toContain('id="the-site-bar"')->toContain('id="the-site-footer"')->not->toContain('<header');
+});
+
+test('without a bar and a footer of the imprint\'s own a page keeps the foundry\'s', function () {
+    File::put(resource_path('views/foundry/head.blade.php'), '<title>{{ $title }}</title>');
 
     expect(Blade::render('<foundry:layouts.site title="Home" description="d"><p>Body</p></foundry:layouts.site>', deleteCachedView: true))
         ->toContain('<header')
         ->toContain('<footer');
+});
+
+test('the bar marks the link whose address the current one equals or lies under, and a root link only on the root', function () {
+    url()->setRequest(Request::create('/agreements/12'));
+
+    $html = Blade::render('<foundry:header :links="$links" />', ['links' => ['Home' => url('/'), 'Agreements' => url('/agreements'), 'Settings' => url('/settings')]], deleteCachedView: true);
+
+    expect($html)
+        ->toMatch('#<a href="'.preg_quote(url('/agreements')).'"\s+aria-current="page"#')
+        ->not->toMatch('#<a href="'.preg_quote(url('/settings')).'"\s+aria-current="page"#')
+        ->not->toMatch('#<a href="'.preg_quote(url('/')).'"\s+aria-current="page"#');
+});
+
+test('the bar names its navigation and its menu in the page\'s language', function () {
+    app()->setLocale('nl');
+
+    expect(Blade::render('<foundry:header :links="[\'Docs\' => \'/docs\']" />', deleteCachedView: true))
+        ->toContain('<nav aria-label="Hoofdmenu"')
+        ->toContain('aria-label="Menu"');
 });

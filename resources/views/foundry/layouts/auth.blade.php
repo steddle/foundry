@@ -1,9 +1,10 @@
 @props(['title', 'description', 'scene' => null, 'card' => false, 'home' => null])
 
 {{--
-    A page for one task, without the site's navigation: signing in, an error,
-    a consent. The lockup and the language switch, the slot, and the service
-    line, kept out of search. Its ground is ink.
+    A page for signing in, a second step or a consent, without the site's
+    navigation: the lockup and the language switch, the slot, and the service
+    line, kept out of search. Its ground is ink; foundry:layouts.error sets
+    an error page on it too.
 
     @group Shell
     @prop title The page's title, followed in `<title>` by the imprint's name.
@@ -12,12 +13,12 @@
     @prop card Sets the slot on a card in the middle, its title at heading-1's phone size, with `ink` on the bands around it rather than the body, so Flux's dark variant keeps out of the card. A card page shows no language switch.
     @prop home Where the lockup leads; without one, the `home` route in the current language where the imprint speaks more than one, and the root otherwise.
 
-    @example An error page
+    @example A sign-in
     @code
-    <foundry:layouts.focus title="Page not found" description="Nothing answers at this address." scene="error">
-        <foundry:text variant="label" tone="accent">Error 404</foundry:text>
-        <foundry:heading size="1" level="1">Page not found</foundry:heading>
-    </foundry:layouts.focus>
+    <foundry:layouts.auth title="Log in" description="Log in with a link by email." card>
+        <foundry:heading size="1" level="1">Log in</foundry:heading>
+        <foundry:text tone="muted">We'll email you a link. No password needed.</foundry:text>
+    </foundry:layouts.auth>
 --}}
 @php
     $home ??= \Steddle\Foundry\Locales::multilingual() ? localized_route('home') : url('/');
@@ -34,7 +35,10 @@
         @if ($scene)
             <foundry:scene :name="$scene" eager scrim="bg-zinc-900/82" />
         @else
-            <foundry:mark class="pointer-events-none absolute -right-16 -bottom-20 -z-10 size-[28rem] text-zinc-50 opacity-[0.05] max-sm:hidden" />
+            {{-- Clipped here: body's overflow passes to the viewport, and would leave the mark sticking out past the page. --}}
+            <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden max-sm:hidden" aria-hidden="true">
+                <foundry:mark class="absolute -right-16 -bottom-20 size-[28rem] text-zinc-50 opacity-[0.05]" />
+            </div>
         @endif
 
         <header class="ink">

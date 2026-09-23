@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\Route;
 use Steddle\Foundry\Boost\Skill;
 use Steddle\Foundry\Catalog\Catalog;
 use Steddle\Foundry\Markdown\MarkdownUrl;
@@ -83,6 +84,12 @@ final class Imprint
                 }
             }
         });
+
+        test('every error page renders in the imprint\'s words', function (int $code) {
+            Route::get('foundry-error-probe', fn () => abort($code));
+
+            $this->get('foundry-error-probe')->assertStatus($code)->assertSee(__('foundry::errors.label', ['code' => $code]));
+        })->with([403, 404, 419, 429, 500, 503]);
 
         test('the sitemap names every public page, and llms.txt and llms-full.txt answer', function () {
             $sitemap = $this->get('/sitemap.xml')->assertOk();

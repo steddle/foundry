@@ -39,8 +39,9 @@ Import the stylesheet after Tailwind and Flux:
 Then give the imprint what is its own:
 
 - `config/imprint.php`: name, ink and paper, scenes (`docs-hero` and `legal-hero` where it has docs and legal pages), og and banner copy, and `locales` where it speaks more than one language
-- `resources/views/layouts/site.blade.php`, wrapping `<foundry:layouts.site>` and handing `<foundry:header>` and `<foundry:footer>` its links and the footer's `scene`
-- `foundry:lockup` and `foundry:mark`, and its `zinc` and `primary` ramps
+- `resources/views/layouts/site.blade.php`, wrapping `<foundry:layouts.site>` and handing `<foundry:footer>` its links and its `scene`
+- `foundry:lockup`, `foundry:mark` and `foundry:bar`, the bar over every page, which sets `<foundry:header>` with the site's links, its actions and, for a signed-in reader, the account menu; and its `zinc` and `primary` ramps
+- Its words for the error pages, in `lang/vendor/foundry/{locale}/errors.php`, and their scene under `errors.scene` in `config/imprint.php`
 - `config/markdown-response.php` naming `Steddle\Foundry\Markdown\DetectsMarkdownRequest` and `RemoveMarkdownSkipPreprocessor`, with `ProvideMarkdownResponse` on its public routes
 
 The layout:
@@ -73,7 +74,8 @@ Outside production, `/components` shows every component the imprint renders, liv
 - Languages: every page per locale under `Route::localized()`, translated paths, the language switch and the visitor's language followed
 - Docs and legal pages from a table of contents, with `Route::docs()` and `Route::legal()`
 - `sitemap.xml`, `llms.txt` and `llms-full.txt` from the imprint's page list
-- The app shell for signed-in pages: `foundry:layouts.app` with its bar, account menu, page head, record rows, empty state and settings rows
+- The app shell for signed-in pages: `foundry:layouts.app` under the site's own bar, the band each page opens on, the account menu, page head, record rows, empty state and settings rows
+- Error pages for 403, 404, 419, 429, 500 and 503, in the imprint's words and on its scene
 - `/labs`, `/design` and `/components` outside production
 - `php artisan foundry:assets` renders the OG image, the social preview, the README banners and the icons, and `--check` fails when they drift from the copy
 - Markdown for agents: every page answers as markdown at `.md`, chrome left out

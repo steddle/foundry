@@ -1,11 +1,11 @@
 @props(['scene' => null])
 
 {{--
-    The ink band a record's page opens on, with the app bar lying over it: a
-    scene, or ink and grain, with an foundry:page-head in it, which reads on
-    ink as it does on bone. Sized for a working page, not a cover, with room
-    at the top for the bar. Set it in an foundry:layouts.app with `flush`, the
-    rest of the page in a container under it.
+    The ink band every signed-in page opens on, with foundry:bar lying over
+    it: a scene, or ink and grain, with an foundry:page-head in it, which reads
+    on ink as it does on bone. Sized for a working page, not a cover, with room
+    at the top for the bar. The first thing in an foundry:layouts.app, the rest
+    of the page in a container under it.
 
     @group Shell
     @prop scene The photo behind the band, by its name in config/imprint.php; without one the band is ink and grain.

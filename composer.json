@@ -19,7 +19,8 @@
         "pestphp/pest": "^5.0"
     },
     "suggest": {
-        "laravel/mcp": "For Steddle\\Foundry\\Mcp\\ReadDocs, the read-docs tool an imprint's MCP server registers (^1.0)."
+        "laravel/mcp": "For Steddle\\Foundry\\Mcp\\ReadDocs, the read-docs tool an imprint's MCP server registers (^1.0).",
+        "laravel/passkeys": "For Steddle\\Foundry\\Concerns\\ManagesPasskeys and foundry:passkeys, with @laravel/passkeys in the imprint's package.json (^0.2)."
     },
     "autoload": {
         "psr-4": {

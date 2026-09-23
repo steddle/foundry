@@ -3,6 +3,7 @@
 namespace Steddle\Foundry;
 
 use Closure;
+use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,7 @@ use Spatie\MarkdownResponse\Middleware\RewriteMarkdownUrls as BaseRewriteMarkdow
 use Steddle\Foundry\Console\RenderBrandAssets;
 use Steddle\Foundry\Http\Middleware\FollowPreferredLocale;
 use Steddle\Foundry\Http\Middleware\FollowVisitorLanguage;
+use Steddle\Foundry\Http\Middleware\Noindex;
 use Steddle\Foundry\Http\Middleware\SetLocale;
 use Steddle\Foundry\Markdown\LeagueDriverWithTables;
 use Steddle\Foundry\Markdown\RewriteMarkdownUrls;
@@ -24,6 +26,11 @@ class FoundryServiceProvider extends ServiceProvider
         $this->app->extend('markdown-response.driver.league', fn (): LeagueDriverWithTables => new LeagueDriverWithTables(config('markdown-response.driver_options.league.options', [])));
 
         $this->app->bind(BaseRewriteMarkdownUrls::class, RewriteMarkdownUrls::class);
+
+        // Laravel reads an error page from `errors/` under each of `view.paths`, in order, so
+        // the foundry's sit under a path of their own at the end: an imprint's own
+        // resources/views/errors/{code}.blade.php stands in for one.
+        $this->app['config']->push('view.paths', dirname(__DIR__).'/resources/fallback');
     }
 
     public function boot(): void
@@ -48,6 +55,8 @@ class FoundryServiceProvider extends ServiceProvider
 
         $this->localize();
 
+        $this->noindexBeforeAuth();
+
         $this->loadRoutesFrom(__DIR__.'/../routes/foundry.php');
     }
 
@@ -59,6 +68,27 @@ class FoundryServiceProvider extends ServiceProvider
     private function tag(): void
     {
         Blade::prepareStringsForCompilationUsing(fn (string $view): string => str_replace(['<foundry:', '</foundry:'], ['<x-foundry::', '</x-foundry::'], $view));
+    }
+
+    /**
+     * The framework's priority list names the interface `Authenticate`
+     * implements, not the class, and an unlisted middleware is pushed to the
+     * end of it wherever a route puts it. Naming the interface keeps Noindex
+     * ahead of `auth`, so the redirect to login carries it. Set on the router,
+     * not the kernel: the kernel's own methods copy its middleware groups over
+     * the router's, and drop what a package pushed onto them.
+     */
+    private function noindexBeforeAuth(): void
+    {
+        $router = $this->app['router'];
+
+        if (in_array(Noindex::class, $router->middlewarePriority, true)) {
+            return;
+        }
+
+        $at = array_search(AuthenticatesRequests::class, $router->middlewarePriority, true);
+
+        array_splice($router->middlewarePriority, $at === false ? count($router->middlewarePriority) : $at, 0, [Noindex::class]);
     }
 
     /**

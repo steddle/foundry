@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -23,33 +22,44 @@ beforeEach(function () {
 afterEach(function () {
     File::deleteDirectory(resource_path('views/components'));
     File::deleteDirectory(resource_path('views/foundry'));
+    // A test here registers Livewire, and a view compiled under it calls Livewire when a later test renders it.
+    $this->artisan('view:clear');
 });
 
-test('a signed-in page is a noindex document with its links, the current one marked, the account menu and the toasts', function () {
-    Route::post('logout', fn () => null)->name('logout');
-    Route::getRoutes()->refreshNameLookups();
-    url()->setRequest(Request::create('/agreements/12'));
+test('a signed-in page is a noindex document under the imprint\'s bar, its content edge to edge, with the toasts', function () {
+    File::put(resource_path('views/foundry/bar.blade.php'), '<nav id="the-imprint-bar"></nav>');
 
-    $html = Blade::render(
-        '<foundry:layouts.app title="Agreements" :links="$links" :user="$user"><x-slot:menu><flux:menu.item href="/settings">Settings</flux:menu.item></x-slot:menu><p>Body</p></foundry:layouts.app>',
-        ['links' => ['Agreements' => url('/agreements'), 'Settings' => url('/settings')], 'user' => $this->user],
-        deleteCachedView: true,
-    );
+    $html = Blade::render('<foundry:layouts.app title="Agreements"><p>Body</p></foundry:layouts.app>', deleteCachedView: true);
 
     expect($html)
         ->toContain('>Agreements | Imprint</title>')
         ->toContain('<meta name="robots" content="noindex" />')
-        ->toMatch('#<a href="'.preg_quote(url('/agreements')).'"\s+aria-current="page"#')
-        ->not->toMatch('#<a href="'.preg_quote(url('/settings')).'"\s+aria-current="page"#')
+        ->toContain('<nav id="the-imprint-bar"></nav>')
+        ->toContain('<flux:toast.group>')
+        ->and((string) str($html)->between('<main class="flex-1">', '</main>'))->toContain('<p>Body</p>')->not->toContain('py-10');
+});
+
+test('the foundry\'s bar lies over the band a signed-in page opens on', function () {
+    $html = Blade::render('<foundry:layouts.app title="x"><foundry:app.band><p>Band</p></foundry:app.band></foundry:layouts.app>', deleteCachedView: true);
+
+    expect($html)->toContain('<header class="absolute inset-x-0 top-0 z-10 ink">')
+        ->and((string) str($html)->between('<main class="flex-1">', '</main>'))->toContain('bg-zinc-900 ink grain')->toContain('<p>Band</p>');
+});
+
+test('the account menu opens on the reader\'s name and address, the imprint\'s items and logging out', function () {
+    Route::post('logout', fn () => null)->name('logout');
+    Route::getRoutes()->refreshNameLookups();
+
+    $html = Blade::render('<foundry:account-menu :user="$user"><flux:menu.item href="/settings">Settings</flux:menu.item></foundry:account-menu>', ['user' => $this->user], deleteCachedView: true);
+
+    expect($html)
         ->toContain('aria-label="Account menu for Ada Visser"')
         ->toContain('<flux:avatar as="button"')
         ->toContain('ada@example.com')
         ->toContain('href="/settings"')
         ->toContain('action="'.url('/logout').'"')
         ->toContain('name="_token"')
-        ->toContain('Log out')
-        ->toContain('<flux:toast.group>')
-        ->toContain('<p>Body</p>');
+        ->toContain('Log out');
 });
 
 test('the account menu leaves out logging out where the imprint has no logout route', function () {
@@ -59,7 +69,7 @@ test('the account menu leaves out logging out where the imprint has no logout ro
 });
 
 test('an ink page sets its toast group through foundry:toasts', function () {
-    $html = Blade::render('<foundry:layouts.focus title="Sign in" description="Sign in." card>Form</foundry:layouts.focus>', deleteCachedView: true);
+    $html = Blade::render('<foundry:layouts.auth title="Sign in" description="Sign in." card>Form</foundry:layouts.auth>', deleteCachedView: true);
 
     expect($html)->toContain('<flux:toast.group>')->toContain('Form')->toContain('[&_h1]:text-3xl!');
 });
@@ -85,16 +95,10 @@ test('a page head sets the trail above it, the status beside the title and the a
         ->toContain('<a href="/pdf">Download</a>');
 });
 
-test('an app bar without a user has no account menu', function () {
-    $html = Blade::render('<foundry:app.header :links="[\'Docs\' => \'/docs\']" />', deleteCachedView: true);
+test('a signed-in page takes a bar of its own in place of foundry:bar', function () {
+    $html = Blade::render('<foundry:layouts.app title="Agreements"><x-slot:nav><header>Own bar</header></x-slot:nav><p>Body</p></foundry:layouts.app>', deleteCachedView: true);
 
-    expect($html)->toContain('>Docs</a>')->not->toContain('<flux:avatar');
-});
-
-test('a signed-in page takes the imprint\'s own bar in place of the app bar', function () {
-    $html = Blade::render('<foundry:layouts.app title="Agreements" :user="$user"><x-slot:nav><header>Own bar</header></x-slot:nav><p>Body</p></foundry:layouts.app>', ['user' => $this->user], deleteCachedView: true);
-
-    expect($html)->toContain('<header>Own bar</header>')->toContain('<p>Body</p>')->not->toContain('<flux:avatar');
+    expect($html)->toContain('<header>Own bar</header>')->toContain('<p>Body</p>')->not->toContain('aria-label="Imprint, home"');
 });
 
 test('a page head leads back to the one page above it', function () {
@@ -158,28 +162,6 @@ test('a model with HasInitials reads its initials through Nameable', function ()
         ->and($user->fill(['name' => 'Playwright recipient 2'])->initials)->toBe('PR');
 });
 
-test('a flush app page lays its bar over the band and sets its slot edge to edge', function () {
-    $this->artisan('view:clear');
-    File::ensureDirectoryExists(resource_path('views/foundry'));
-    File::put(resource_path('views/foundry/lockup.blade.php'), '<span {{ $attributes }}>Imprint</span>');
-
-    try {
-        $user = (object) ['name' => 'Ada Visser', 'email' => 'ada@example.com', 'initials' => 'AV'];
-        $flush = Blade::render('<foundry:layouts.app title="x" :user="$user" flush><foundry:app.band><p>Band</p></foundry:app.band></foundry:layouts.app>', ['user' => $user], deleteCachedView: true);
-        $contained = Blade::render('<foundry:layouts.app title="x" :user="$user"><p>Body</p></foundry:layouts.app>', ['user' => $user], deleteCachedView: true);
-    } finally {
-        File::deleteDirectory(resource_path('views/components'));
-        File::deleteDirectory(resource_path('views/foundry'));
-    }
-
-    $main = fn (string $html): string => (string) str($html)->between('<main class="flex-1">', '</main>');
-
-    expect($flush)->toContain('<header class="absolute inset-x-0 top-0 z-10 ink">')
-        ->and($contained)->toContain('<header class="border-b')
-        ->and($main($flush))->toContain('bg-zinc-900 ink grain')->toContain('<p>Band</p>')->not->toContain('py-10')
-        ->and($main($contained))->toContain('py-10')->toContain('<p>Body</p>');
-});
-
 test('a confirm button tells a screen reader each step, and a keyboard press starts no timer', function () {
     $html = Blade::render('<foundry:confirm-button label="Delete account" action="$wire.deleteAccount()" />', deleteCachedView: true);
 
@@ -200,30 +182,10 @@ test('a confirm item tells a screen reader each step, and starts over when focus
         ->toContain('x-on:focusout="if (step < 3) { clearTimeout(timer); step = 0 }"');
 });
 
-test('the app bar\'s panel takes an id of its own and hands focus back on escape', function () {
-    $html = Blade::render('<foundry:app.header :links="[\'Agreements\' => \'/agreements\']" :user="$user" />', ['user' => $this->user], deleteCachedView: true);
-
-    expect($html)
-        ->toContain('x-id="[\'app-menu\']"')
-        ->toContain(':aria-controls="$id(\'app-menu\')"')
-        ->toContain(':id="$id(\'app-menu\')"')
-        ->toContain('x-ref="toggle"')
-        ->toContain('$el.contains(document.activeElement) && $refs.toggle.focus()')
-        ->not->toContain('id="app-menu"');
-});
-
-test('the app bar names its navigation in the page\'s language', function () {
-    app()->setLocale('nl');
-
-    $html = Blade::render('<foundry:app.header :user="$user" />', ['user' => $this->user], deleteCachedView: true);
-
-    expect($html)->toContain('<nav aria-label="Hoofdmenu"');
-});
-
 test('a signed-in page loads Livewire, Alpine with it, once, with a component on it or without', function (string $content) {
     $this->app->register(LivewireServiceProvider::class);
     Livewire::component('shell-probe', ShellProbe::class);
-    Route::get('/shell', fn () => Blade::render('<foundry:layouts.app title="Shell" :user="$user">'.$content.'</foundry:layouts.app>', ['user' => $this->user], deleteCachedView: true));
+    Route::get('/shell', fn () => Blade::render('<foundry:layouts.app title="Shell">'.$content.'</foundry:layouts.app>', deleteCachedView: true));
 
     expect(substr_count($this->get('/shell')->assertOk()->getContent(), 'data-csrf='))->toBe(1);
 })->with([
@@ -238,3 +200,22 @@ class ShellProbe extends Component
         return '<div>Probe</div>';
     }
 }
+
+test('the passkeys panel lists each one with its authenticator, when it was added and used, and a way to remove it', function () {
+    $this->app->register(LivewireServiceProvider::class);
+    $this->withoutVite();
+
+    $html = Blade::render('<foundry:passkeys :$passkeys />', ['passkeys' => [
+        ['id' => 7, 'name' => 'Chrome on Mac', 'authenticator' => 'iCloud Keychain', 'created_at' => '2 days ago', 'last_used_at' => '1 hour ago'],
+    ]], deleteCachedView: true);
+
+    expect($html)
+        ->toContain('Passkeys')
+        ->toContain('Chrome on Mac')
+        ->toContain('iCloud Keychain')
+        ->toContain('Added 2 days ago | last used 1 hour ago')
+        ->toContain('$wire.deletePasskey(7)')
+        ->toContain('Add a passkey');
+
+    expect(Blade::render('<foundry:passkeys :passkeys="[]" />', deleteCachedView: true))->toContain('No passkeys yet.');
+});
