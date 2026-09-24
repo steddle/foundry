@@ -1,5 +1,6 @@
 <?php
 
+use Flux\FluxServiceProvider;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
@@ -218,4 +219,97 @@ test('the passkeys panel lists each one with its authenticator, when it was adde
         ->toContain('Add a passkey');
 
     expect(Blade::render('<foundry:passkeys :passkeys="[]" />', deleteCachedView: true))->toContain('No passkeys yet.');
+});
+
+test('a rail page is a noindex document with the rail beside the page\'s own landmark, the service line and the toasts, and no bar', function () {
+    File::put(resource_path('views/foundry/bar.blade.php'), '<nav id="the-imprint-bar"></nav>');
+
+    $html = Blade::render('<foundry:layouts.app.sidebar title="Overview"><x-slot:sidebar><aside id="the-rail"></aside></x-slot:sidebar><p>Body</p></foundry:layouts.app.sidebar>', deleteCachedView: true);
+
+    expect($html)
+        ->toContain('>Overview | Imprint</title>')
+        ->toContain('<meta name="robots" content="noindex" />')
+        ->toContain('<aside id="the-rail"></aside>')
+        ->toContain('<flux:toast.group>')
+        ->not->toContain('the-imprint-bar')
+        ->and((string) str($html)->between('<main class="[grid-area:main] min-w-0" data-flux-main>', '</main>'))->toContain('<p>Body</p>')
+        ->and((string) str($html)->after('</main>'))->toContain('<footer class="[grid-area:footer]">');
+});
+
+test('a rail page leaves the service line to a page that sets it itself', function () {
+    $html = Blade::render('<foundry:layouts.app.sidebar title="NDA" :footer="false"><x-slot:sidebar><aside></aside></x-slot:sidebar><p>Body</p></foundry:layouts.app.sidebar>', deleteCachedView: true);
+
+    expect($html)->toContain('<p>Body</p>')->not->toContain('<footer');
+});
+
+test('the rail sets the lockup, the search, the links under a labelled nav and the reader\'s menu at its foot and in the bar below lg', function () {
+    $html = Blade::render(<<<'BLADE'
+        <foundry:app.sidebar :user="$user" home="/dashboard">
+            <x-slot:search><button id="the-search"></button></x-slot:search>
+            <a id="a-link"></a>
+            <x-slot:account><flux:menu.item href="/settings">Settings</flux:menu.item></x-slot:account>
+        </foundry:app.sidebar>
+        BLADE, ['user' => $this->user], deleteCachedView: true);
+
+    $rail = (string) str($html)->between('<flux:sidebar ', '</flux:sidebar>');
+    $bar = (string) str($html)->after('</flux:sidebar>');
+
+    expect($rail)
+        ->toContain('collapsible="mobile" class="border-e border-zinc-50/13 bg-zinc-900 ink"')
+        ->toContain('<a href="/dashboard" aria-label="Imprint, home"')
+        ->toContain('<button id="the-search"></button>')
+        ->toMatch('#<flux:sidebar.nav [^>]+>\s*<a id="a-link"></a>#')
+        ->toContain('<flux:sidebar.profile')
+        ->toContain('href="/settings"')
+        ->not->toContain('<flux:avatar as="button"')
+        ->and($bar)
+        ->toContain('<flux:header class="bg-zinc-900 ink lg:hidden">')
+        ->toContain('<a href="/dashboard" aria-label="Imprint, home"')
+        ->toContain('<flux:avatar as="button"')
+        ->toContain('href="/settings"');
+});
+
+test('the rail leaves out the account menu without a reader', function () {
+    $html = Blade::render('<foundry:app.sidebar><a id="a-link"></a></foundry:app.sidebar>', deleteCachedView: true);
+
+    expect($html)->toContain('<a id="a-link"></a>')->not->toContain('<flux:dropdown')->not->toContain('<flux:sidebar.profile');
+});
+
+test('a rail item marks the current page, by its address or as told, and shows its count', function () {
+    $this->app->register(LivewireServiceProvider::class);
+    $this->app->register(FluxServiceProvider::class);
+    Route::get('/inbox', fn () => Blade::render(<<<'BLADE'
+        <foundry:app.sidebar.item href="/inbox" icon="inbox" count="12">Inbox</foundry:app.sidebar.item>
+        <foundry:app.sidebar.item href="/companies" count="0">Companies</foundry:app.sidebar.item>
+        <foundry:app.sidebar.item href="/board/q3" :current="true">Q3 update</foundry:app.sidebar.item>
+        BLADE, deleteCachedView: true));
+
+    $links = str($this->get('/inbox')->assertOk()->getContent())->matchAll('#<a href="[^"]+"[^>]*>#');
+
+    expect($links)->toHaveCount(3)
+        ->and($links[0])->toContain('href="/inbox"')->toContain('aria-current="page"')->toContain('data-current="data-current"')
+        ->and($links[1])->toContain('href="/companies"')->not->toContain('aria-current')->not->toContain('data-current="data-current"')
+        ->and($links[2])->toContain('href="/board/q3"')->toContain('aria-current="page"')
+        ->and($this->get('/inbox')->getContent())->toMatch('#data-flux-navlist-badge>12</span>#')->not->toMatch('#data-flux-navlist-badge>0</span>#');
+});
+
+test('a rail group folds under its heading, and the search reads the foundry\'s word where the imprint names none', function () {
+    $this->app->register(LivewireServiceProvider::class);
+    $this->app->register(FluxServiceProvider::class);
+
+    $group = Blade::render('<foundry:app.sidebar.group heading="Legal" :expanded="false"><a id="a-link"></a></foundry:app.sidebar.group>', deleteCachedView: true);
+    $search = Blade::render('<foundry:app.sidebar.search kbd="⌘K" x-on:click="open()" />', deleteCachedView: true);
+
+    expect($group)->toContain('<ui-disclosure')->not->toMatch('#<ui-disclosure[^>]* open #')->toContain('Legal')->toContain('<a id="a-link"></a>')
+        ->and($search)->toContain('Search')->toContain('⌘K')->toContain('x-on:click="open()"');
+});
+
+test('the rail\'s account menu opens upward from its foot and the bar\'s downward, and the drawer\'s buttons read open and close', function () {
+    $this->app->register(LivewireServiceProvider::class);
+    $this->app->register(FluxServiceProvider::class);
+
+    $html = Blade::render('<foundry:app.sidebar :user="$user"><a id="a-link"></a></foundry:app.sidebar>', ['user' => $this->user], deleteCachedView: true);
+
+    expect(str($html)->matchAll('#<ui-dropdown position="([^"]+)"#')->all())->toBe(['top start', 'bottom end'])
+        ->and(str($html)->matchAll('#<button[^>]*aria-label="([^"]+)"[^>]*data-flux-sidebar-toggle#')->all())->toBe(['Close menu', 'Menu']);
 });

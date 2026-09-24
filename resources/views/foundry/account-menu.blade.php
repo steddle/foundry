@@ -1,4 +1,4 @@
-@props(['user'])
+@props(['user', 'position' => 'bottom', 'align' => 'end'])
 
 {{--
     The signed-in reader's menu: their Flux avatar opens a dropdown with
@@ -6,7 +6,10 @@
 
     @group Navigation
     @prop user An object with `name` and `email`, and `initials` where the model uses `Steddle\Foundry\Concerns\HasInitials`; without them Flux's avatar draws its own from the name.
+    @prop position Which side of the trigger the menu opens on.
+    @prop align Which edge of the trigger the menu lines up with.
     @slot slot The imprint's items, each a `flux:menu.item`, between the name and logging out.
+    @slot trigger What opens the menu in place of the avatar, as foundry:app.sidebar sets `flux:sidebar.profile` at its foot.
 
     @example With a settings item
     <div class="flex justify-end">
@@ -15,8 +18,12 @@
         </foundry:account-menu>
     </div>
 --}}
-<flux:dropdown position="bottom" align="end" {{ $attributes }}>
-    <flux:avatar as="button" :name="$user->name" :initials="$user->initials ?? null" size="sm" class="cursor-pointer" aria-label="{{ __('foundry::nav.account', ['name' => $user->name]) }}" />
+<flux:dropdown :$position :$align {{ $attributes }}>
+    @isset($trigger)
+        {{ $trigger }}
+    @else
+        <flux:avatar as="button" :name="$user->name" :initials="$user->initials ?? null" size="sm" class="cursor-pointer" aria-label="{{ __('foundry::nav.account', ['name' => $user->name]) }}" />
+    @endisset
 
     <flux:menu class="min-w-60">
         <div class="grid px-2 py-1.5">
