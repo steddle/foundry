@@ -32,6 +32,13 @@ if (Locales::multilingual()) {
     });
 }
 
+// Where an account names itself, for an imprint that sets `imprint.onboarding`.
+if (config('imprint.onboarding')) {
+    Route::middleware(['web', 'auth'])->group(function (): void {
+        Route::view('welcome', 'foundry::onboarding.welcome')->name('foundry.welcome');
+    });
+}
+
 // Off a public deployment's route list: the page Playwright renders a brand asset
 // from, kept out of search and nothing more.
 if (! app()->isProduction()) {

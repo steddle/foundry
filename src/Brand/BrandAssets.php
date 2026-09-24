@@ -30,11 +30,31 @@ final class BrandAssets
             self::icon('manifest-192', 'web-app-manifest-192x192.png', 192, 'site.webmanifest', 'tile'),
             self::icon('icon-512', 'icon-512.png', 512, 'site.webmanifest, and favicon.ico at 16, 32 and 48', 'tile'),
             self::icon('icon-maskable-512', 'icon-maskable-512.png', 512, 'site.webmanifest, maskable', 'full'),
+            ...array_values(self::mail()),
         ];
 
         if ($mcp = config('imprint.mcp_icons')) {
             $assets[] = self::icon('mcp', "{$mcp}-128.png", 128, 'MCP server icon, light theme', 'tile');
             $assets[] = self::icon('mcp-light', "{$mcp}-light-128.png", 128, 'MCP server icon, dark theme', 'light');
+        }
+
+        return collect($assets)->keyBy('name')->all();
+    }
+
+    /**
+     * The images the foundry's mail theme draws: mail clients draw no SVG and
+     * load no web fonts. No @ in a name: Laravel Cloud's edge answers 404 to
+     * one a mail client asks for unencoded. Read apart from the rest, since a
+     * mail is sent where no og copy need be stated.
+     *
+     * @return array<string, BrandAsset>
+     */
+    public static function mail(): array
+    {
+        $assets = [new BrandAsset('mail-logo', 'brand/mail/logo-2x.png', 480, 96, 'The lockup over every mail, shown at 240 by 48', 'foundry::brand.mail-logo', [], 'mail')];
+
+        if (config('imprint.endorsed', true)) {
+            $assets[] = new BrandAsset('mail-steddle-logo', 'brand/mail/steddle-logo-2x.png', 100, 36, 'Steddle in "A service by Steddle" under every mail, shown at 50 by 18', 'foundry::brand.mail-steddle-logo', [], 'mail');
         }
 
         return collect($assets)->keyBy('name')->all();

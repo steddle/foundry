@@ -24,7 +24,8 @@ Open the one the task needs.
 | `references/search-and-agents.md` | `sitemap.xml`, `llms.txt`, the markdown answer, `noindex`, the head's meta |
 | `references/published-images.md` | The OG image, social preview, README banner, favicons and MCP icons, `foundry:assets` |
 | `references/print.md` | A PDF from a page of the site's own |
-| `references/mail.md` | The mail theme: `imprint.mail`, per-mailable options, `/foundry/mail` |
+| `references/mail.md` | The mail theme: `imprint.mail`, its images, the greeting, per-mailable options, `/foundry/mail` |
+| `references/onboarding.md` | `imprint.onboarding`: an account names itself on /welcome before any signed-in page |
 | `references/lab.md` | `/labs`, `/design`, `/components` and `/foundry/mail`, and an experiment's life |
 
 ## {{ $name }} at a glance

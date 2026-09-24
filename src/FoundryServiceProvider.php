@@ -6,17 +6,24 @@ use Closure;
 use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Notifications\Channels\MailChannel as LaravelMailChannel;
+use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 use LogicException;
 use Spatie\MarkdownResponse\Middleware\RewriteMarkdownUrls as BaseRewriteMarkdownUrls;
 use Steddle\Foundry\Console\RenderBrandAssets;
+use Steddle\Foundry\Http\Middleware\EnsureUserIsOnboarded;
 use Steddle\Foundry\Http\Middleware\FollowPreferredLocale;
 use Steddle\Foundry\Http\Middleware\FollowVisitorLanguage;
 use Steddle\Foundry\Http\Middleware\Noindex;
 use Steddle\Foundry\Http\Middleware\SetLocale;
+use Steddle\Foundry\Livewire\Welcome;
+use Steddle\Foundry\Mail\MailChannel;
 use Steddle\Foundry\Markdown\LeagueDriverWithTables;
 use Steddle\Foundry\Markdown\RewriteMarkdownUrls;
 
@@ -39,6 +46,14 @@ class FoundryServiceProvider extends ServiceProvider
         // config holds the path already.
         if (! $this->app->configurationIsCached()) {
             $this->app['config']->push('mail.markdown.paths', dirname(__DIR__).'/resources/views/mail');
+        }
+
+        // Hands the notification view the greeting for its recipient.
+        $this->app->bind(LaravelMailChannel::class, MailChannel::class);
+
+        // Passport's routes take this list as their group's middleware, the consent screen among them.
+        if ($this->app['config']->get('imprint.onboarding') && ! in_array(EnsureUserIsOnboarded::class, $this->app['config']->get('passport.middleware', []), true)) {
+            $this->app['config']->push('passport.middleware', EnsureUserIsOnboarded::class);
         }
     }
 
@@ -78,6 +93,8 @@ class FoundryServiceProvider extends ServiceProvider
 
         $this->noindexBeforeAuth();
 
+        $this->onboarding();
+
         $this->loadRoutesFrom(__DIR__.'/../routes/foundry.php');
     }
 
@@ -110,6 +127,49 @@ class FoundryServiceProvider extends ServiceProvider
         $at = array_search(AuthenticatesRequests::class, $router->middlewarePriority, true);
 
         array_splice($router->middlewarePriority, $at === false ? count($router->middlewarePriority) : $at, 0, [Noindex::class]);
+    }
+
+    /**
+     * For an imprint that sets `imprint.onboarding`: an account that has not
+     * named itself goes to /welcome first, from every route behind `auth` and
+     * from Passport's consent screen. The migration it needs is published,
+     * never run from here, so an imprint that does not onboard changes nothing.
+     */
+    private function onboarding(): void
+    {
+        $this->publishesMigrations([__DIR__.'/../database/migrations' => database_path('migrations')], 'foundry-onboarding');
+
+        if (! config('imprint.onboarding')) {
+            return;
+        }
+
+        $router = $this->app['router'];
+
+        // After authentication, which sends a guest to log in first.
+        if (! in_array(EnsureUserIsOnboarded::class, $router->middlewarePriority, true)) {
+            $at = array_search(AuthenticatesRequests::class, $router->middlewarePriority, true);
+
+            array_splice($router->middlewarePriority, $at === false ? count($router->middlewarePriority) : $at + 1, 0, [EnsureUserIsOnboarded::class]);
+        }
+
+        // Every route that authenticates, as it or its controller declares it or through a group, before its middleware
+        // is gathered: gathering caches the list, and a middleware added to the route after would not reach it.
+        Event::listen(RouteMatched::class, function (RouteMatched $event) use ($router): void {
+            $declared = [...$event->route->middleware(), ...$event->route->controllerMiddleware()];
+
+            if (in_array(EnsureUserIsOnboarded::class, $declared, true)) {
+                return;
+            }
+
+            $authenticates = collect($router->resolveMiddleware($declared))
+                ->contains(fn (mixed $middleware): bool => is_string($middleware) && is_a(Str::before($middleware, ':'), AuthenticatesRequests::class, true));
+
+            if ($authenticates) {
+                $event->route->middleware(EnsureUserIsOnboarded::class);
+            }
+        });
+
+        Livewire::component('foundry.welcome', Welcome::class);
     }
 
     /**

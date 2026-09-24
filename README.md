@@ -80,7 +80,8 @@ Outside production, `/components` shows every component the imprint renders, liv
 - `php artisan foundry:assets` renders the OG image, the social preview, the README banners and the icons, and `--check` fails when they drift from the copy
 - Markdown for agents: every page answers as markdown at `.md`, chrome left out
 - Printed documents: `Printer` makes a PDF from a page of the imprint's own, set with `foundry:print.*` on A4 or Letter, fonts and all held in the stored HTML
-- Mail: every markdown mail and notification renders through the foundry's theme in the imprint's ink, paper and accent, with its lockup and footer from `imprint.mail`; the transport stays the imprint's
+- Mail: every markdown mail and notification renders through the foundry's theme in the imprint's ink, paper and accent, with its lockup and footer from `imprint.mail` and the images `foundry:assets` renders, and greets its recipient by first name; the transport stays the imprint's
+- Onboarding, opt-in with `imprint.onboarding`: an account that has not named itself goes to /welcome first, from every signed-in page and Passport's consent screen, and back where it was headed
 
 ## What it takes over
 

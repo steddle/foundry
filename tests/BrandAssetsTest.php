@@ -32,7 +32,7 @@ afterEach(function () {
 test('every asset is filled from the imprint', function () {
     $assets = BrandAssets::all();
 
-    expect(array_keys($assets))->toBe(['og-image', 'social-preview', 'readme-banner-light', 'readme-banner-dark', 'favicon-96', 'apple-touch-icon', 'manifest-192', 'icon-512', 'icon-maskable-512'])
+    expect(array_keys($assets))->toBe(['og-image', 'social-preview', 'readme-banner-light', 'readme-banner-dark', 'favicon-96', 'apple-touch-icon', 'manifest-192', 'icon-512', 'icon-maskable-512', 'mail-logo', 'mail-steddle-logo'])
         ->and($assets['og-image']->markup())
         ->toMatch('/Dutch law, <mark [^>]*>at the source\.<\/mark>/')
         ->toContain('Legal sources')
@@ -154,4 +154,23 @@ test('the social preview sets an apostrophe in its words once escaped, bound or 
             ->not->toContain('&amp;#039;')
             ->and(html_entity_decode($html, ENT_QUOTES))->toContain('The founders\' agents.')->toContain('the founders\' agents.')->toContain('Holly\'s and Mischa\'s');
     }
+});
+
+test('the mail\'s images are the endorsed lockup and Steddle\'s wordmark, on the mail\'s paper, at a path without an @', function () {
+    File::put(resource_path('views/foundry/lockup.blade.php'), '@props([\'endorsed\' => false])<span {{ $attributes }}>Imprint{{ $endorsed ? \' BY STEDDLE\' : \'\' }}</span>');
+    // Written within the second beforeEach wrote its own, which Blade reads as unchanged.
+    $this->artisan('view:clear');
+    $assets = BrandAssets::mail();
+
+    expect($assets['mail-logo']->path)->toBe('brand/mail/logo-2x.png')
+        ->and([$assets['mail-logo']->width, $assets['mail-logo']->height])->toBe([480, 96])
+        ->and($assets['mail-logo']->markup())->toContain('Imprint BY STEDDLE')->toContain('background: #ebf3f5;')->toContain('color: #0a212c;')
+        ->and($assets['mail-steddle-logo']->path)->toBe('brand/mail/steddle-logo-2x.png')
+        ->and($assets['mail-steddle-logo']->markup())->toContain('>Steddle</div>')->toContain('font-family: var(--font-serif)')
+        ->and(collect(BrandAssets::all())->pluck('path')->merge(array_keys(BrandAssets::files()))->filter(fn (string $path): bool => str_contains($path, '@'))->all())->toBe([]);
+
+    config(['imprint.endorsed' => false]);
+
+    expect(array_keys(BrandAssets::mail()))->toBe(['mail-logo'])
+        ->and(BrandAssets::mail()['mail-logo']->markup())->toContain('>Imprint</span>');
 });

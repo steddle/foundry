@@ -1,0 +1,2 @@
+{{-- Steddle as the service line sets it, Spectral 700 tracked -0.03em, for "A service by Steddle" under an endorsed imprint's mail, at twice the 50 by 18 it is shown at, from its left edge: it follows "A service by" on the line. --}}
+<div style="display: flex; align-items: center; justify-content: flex-start; width: 100px; height: 36px; background: {{ config('imprint.paper') }}; color: {{ config('imprint.ink') }}; font-family: var(--font-serif); font-size: 26px; font-weight: 700; letter-spacing: -0.03em; line-height: 1;">Steddle</div>

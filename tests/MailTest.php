@@ -2,6 +2,8 @@
 
 use Illuminate\Mail\Markdown;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\File;
 use Steddle\Foundry\Mail\MailOptions;
 
@@ -22,6 +24,12 @@ afterEach(function () {
     $this->artisan('view:clear');
 });
 
+/** The mail as a reader reads it: its text, tags gone, whitespace collapsed. */
+function readable(string $html): string
+{
+    return (string) str(html_entity_decode(strip_tags($html), ENT_QUOTES))->squish();
+}
+
 function notification(array $mail = []): string
 {
     $message = (new MailMessage)->subject('Signed')->greeting('Dear Ada,')->line('Both sides have signed.')->action('View the agreement', 'https://imprint.test/nda');
@@ -38,8 +46,9 @@ test('a mail with no mail settings sets the imprint\'s name over the message, an
         ->toMatch('#<body[^>]*background-color: \#f1f2ea#')
         ->toMatch('#class="button button-primary"[^>]*background-color: \#0b231c;[^"]*color: \#f1f2ea;#')
         ->toContain('Imprint is not a law firm.')
-        ->toContain('© '.date('Y').' Imprint | A service by Steddle')
-        ->not->toContain('class="preheader"');
+        ->toMatch('#<span class="service"[^>]*>Steddle</span>#')
+        ->not->toContain('class="preheader"')
+        ->and(readable($html))->toContain('© '.date('Y').' Imprint | A service by Steddle');
 });
 
 test('the imprint\'s mail settings set the lockup, the accent, the footer, its links and the legal line', function () {
@@ -139,13 +148,15 @@ test('without a footer or legal line from anyone, the defaults hold, and false l
         'header' => 'lockup',
         'footer' => 'Imprint is not a law firm.',
         'links' => [],
-        'legal' => '© '.date('Y').' Imprint | A service by Steddle',
+        'legal' => '© '.date('Y').' Imprint',
+        'service' => true,
     ])
-        ->and(MailOptions::resolve(footer: false, legal: false))->toMatchArray(['footer' => null, 'legal' => null]);
+        ->and(MailOptions::resolve(footer: false, legal: false))->toMatchArray(['footer' => null, 'legal' => null, 'service' => false])
+        ->and(MailOptions::resolve(legal: 'Imprint B.V. | Amsterdam'))->toMatchArray(['legal' => 'Imprint B.V. | Amsterdam', 'service' => false]);
 
     config(['imprint.endorsed' => false]);
 
-    expect(MailOptions::resolve()['legal'])->toBe('© '.date('Y').' Imprint');
+    expect(MailOptions::resolve())->toMatchArray(['legal' => '© '.date('Y').' Imprint', 'service' => false]);
 });
 
 test('the sample mail renders at /foundry/mail, kept out of search, and as plain text', function () {
@@ -177,4 +188,107 @@ test('the salutation signs with the imprint\'s name', function () {
     config(['app.name' => 'Laravel']);
 
     expect(notification())->toMatch('#Regards,<br>\s*Imprint#');
+});
+
+test('once foundry:assets has rendered them, the header draws the imprint\'s lockup and the footer Steddle\'s wordmark, each marked with its version', function () {
+    File::ensureDirectoryExists(public_path('brand/mail'));
+    File::put(public_path('brand/mail/logo-2x.png'), 'PNG');
+    File::put(public_path('brand/mail/steddle-logo-2x.png'), 'PNG');
+    File::put(public_path('brand/assets.json'), json_encode(['mail-logo' => 'abcdef1234567890', 'mail-steddle-logo' => '0123456789abcdef']));
+
+    try {
+        $html = notification();
+    } finally {
+        File::deleteDirectory(public_path('brand'));
+    }
+
+    expect($html)
+        ->toMatch('#<img src="[^"]*/brand/mail/logo-2x\.png\?v=abcdef12" class="logo"[^>]* width="240" height="48" alt="Imprint"#')
+        ->toMatch('#A service by <img src="[^"]*/brand/mail/steddle-logo-2x\.png\?v=01234567" class="wordmark-image"[^>]* width="50" height="18" alt="Steddle"#')
+        ->not->toContain('class="wordmark"')
+        ->not->toContain('class="service"');
+});
+
+test('the imprint\'s own lockup setting comes before the rendered one', function () {
+    config(['imprint.mail.lockup' => ['src' => 'brand/logos/own-2x.png', 'width' => 200, 'height' => 40]]);
+    File::ensureDirectoryExists(public_path('brand/mail'));
+    File::put(public_path('brand/mail/logo-2x.png'), 'PNG');
+
+    try {
+        expect(notification())->toContain('/brand/logos/own-2x.png"')->not->toContain('brand/mail/logo-2x.png');
+    } finally {
+        File::deleteDirectory(public_path('brand'));
+    }
+});
+
+test('the address under the button is set as small and quiet as the footer', function () {
+    expect(notification())->toMatch('#<table class="subcopy".*?<p style="[^"]*color: \#738079; font-size: 12px; line-height: 1\.5;#s');
+});
+
+class MailRecipient
+{
+    use Notifiable;
+
+    public function __construct(public ?string $name, public string $email = 'ada@imprint.test') {}
+}
+
+function greetingSent(object $notifiable, ?string $greeting = null, string $locale = 'en'): string
+{
+    config(['mail.default' => 'array']);
+
+    $notifiable->notify((new class($greeting) extends Notification
+    {
+        public function __construct(private ?string $greeting) {}
+
+        public function via(object $notifiable): array
+        {
+            return ['mail'];
+        }
+
+        public function toMail(object $notifiable): MailMessage
+        {
+            return tap((new MailMessage)->subject('Signed')->line('Both sides have signed.'), fn (MailMessage $message) => $this->greeting && $message->greeting($this->greeting));
+        }
+    })->locale($locale));
+
+    $html = app('mailer')->getSymfonyTransport()->messages()->last()->getOriginalMessage()->getHtmlBody();
+
+    return (string) str($html)->match('#<h1[^>]*>(.*?)</h1>#s');
+}
+
+test('a notification without a greeting of its own greets its recipient by first name, or without a name where they gave none', function (?string $name, string $locale, string $greeting) {
+    expect(greetingSent(new MailRecipient($name), locale: $locale))->toBe($greeting);
+})->with([
+    'a name' => ['Ada Visser', 'en', 'Hi Ada,'],
+    'a name, in Dutch' => ['Ada Visser', 'nl', 'Hoi Ada,'],
+    'the local part of the address' => ['ada', 'en', 'Hi there,'],
+    'no name' => [null, 'en', 'Hi there,'],
+    'no name, in Dutch' => [null, 'nl', 'Hallo daar,'],
+]);
+
+test('a notification that states its greeting keeps it', function () {
+    expect(greetingSent(new MailRecipient('Ada Visser'), 'Dear Ada,'))->toBe('Dear Ada,');
+});
+
+test('/design shows the mail as it renders, in a frame of its own, and its plain-text part, under the number the page gives it', function () {
+    $html = view('foundry::design.mail', ['number' => '13'])->render();
+
+    expect($html)
+        ->toContain('13')
+        ->toContain('>Mail<')
+        ->toMatch('#<iframe srcdoc="[^"]*Your agreement is signed[^"]*"#')
+        ->toContain('&lt;span class=&quot;wordmark&quot;')
+        ->and(readable((string) str($html)->after('</iframe>')))->toContain('# Your agreement is signed')->toContain('View the agreement: ');
+});
+
+test('a name the recipient confirmed greets them, though it is the local part of their address', function () {
+    $recipient = new class('Ada') extends MailRecipient
+    {
+        public function hasOnboarded(): bool
+        {
+            return true;
+        }
+    };
+
+    expect(greetingSent($recipient))->toBe('Hi Ada,');
 });

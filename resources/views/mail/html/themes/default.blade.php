@@ -204,9 +204,11 @@ code {
     padding-top: 25px;
 }
 
+/* The address under the button, for the reader it fails: as quiet as the footer. */
 .subcopy p {
     color: {{ $muted }};
-    font-size: 14px;
+    font-size: 12px;
+    line-height: 1.5;
 }
 
 .footer {
@@ -229,6 +231,19 @@ code {
 .footer a {
     color: {{ $muted }};
     text-decoration: underline;
+}
+
+.footer .service {
+    color: {{ $ink }};
+    font-family: {!! $serif !!};
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.footer .wordmark-image {
+    border: 0;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .table table {

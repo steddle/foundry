@@ -1,7 +1,7 @@
 @props(['header' => null, 'footer' => null, 'links' => null, 'legal' => null, 'preheader' => null])
 
 @php
-    ['header' => $header, 'footer' => $footer, 'links' => $links, 'legal' => $legal] = \Steddle\Foundry\Mail\MailOptions::resolve($header, $footer, $links, $legal);
+    ['header' => $header, 'footer' => $footer, 'links' => $links, 'legal' => $legal, 'service' => $service] = \Steddle\Foundry\Mail\MailOptions::resolve($header, $footer, $links, $legal);
 @endphp
 <x-mail::layout>
 @if ($header !== 'none')
@@ -32,9 +32,9 @@
 @foreach ($links as $label => $href)
 {{ $label }}: {{ $href }}
 @endforeach
-@if ($legal)
+@if ($legal || $service)
 
-{{ $legal }}
+{{ implode(' | ', array_filter([$legal, $service ? __('foundry::footer.service_by').' Steddle' : null])) }}
 @endif
 </x-slot:footer>
 </x-mail::layout>

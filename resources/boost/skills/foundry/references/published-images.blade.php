@@ -26,6 +26,10 @@ Its `banner`:
 
 The same command draws the favicons, the touch and manifest icons, `site.webmanifest` and `favicon.ico` from `foundry:mark` in the imprint's `ink` and `paper`, and the MCP server's two icons where `mcp_icons` names them. `foundry:favicons` links them in a head, with the browser chrome in those two colours. `foundry:brand-assets` shows either set on `/design`, `group="social"` or `group="icon"`.
 
+## Mail
+
+It renders the images a mail draws, since mail clients draw no SVG and load no web fonts: `public/brand/mail/logo-2x.png`, the imprint's lockup on the mail's paper, and for an endorsed imprint `public/brand/mail/steddle-logo-2x.png`, Steddle's wordmark. What the mail does with them is in `mail.md`. No published file has an `@` in its name: Laravel Cloud's edge answers 404 to one a mail client asks for unencoded.
+
 ## The README
 
 An imprint's README opens on its banner, light and dark, as the foundry's does, then its name, one line and a paragraph, and the sections What this codebase does, Local development and Documentation.

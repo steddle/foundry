@@ -1,5 +1,6 @@
 {{--
-    Laravel's notification mail, which hands the foundry's theme what a
+    Laravel's notification mail, opening on the foundry's greeting where the
+    notification states none, and handing the foundry's theme what a
     notification gives it in `->markdown('notifications::email', ['mail' => [...]])`:
     `preheader`, `header`, `footer`, `links`, `legal`, and `above` and `below`
     as markdown.
@@ -12,15 +13,11 @@
 </x-slot:above>
 @endisset
 
-{{-- Greeting --}}
+{{-- Greeting: the recipient by their first name, which the foundry's mail channel hands over. --}}
 @if (! empty($greeting))
 # {{ $greeting }}
 @else
-@if ($level === 'error')
-# @lang('Whoops!')
-@else
-# @lang('Hello!')
-@endif
+# {{ $foundryGreeting ?? \Steddle\Foundry\Mail\Greeting::for(null) }}
 @endif
 
 {{-- Intro Lines --}}

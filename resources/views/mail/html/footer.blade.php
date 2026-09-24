@@ -1,4 +1,8 @@
-@props(['line' => null, 'links' => [], 'legal' => null])
+@props(['line' => null, 'links' => [], 'legal' => null, 'service' => false])
+
+@php
+    $steddle = $service ? \Steddle\Foundry\Mail\MailOptions::image('mail-steddle-logo') : null;
+@endphp
 <tr>
 <td>
 <table class="footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
@@ -18,8 +22,9 @@
 @endforeach
 </p>
 @endif
-@if ($legal)
-<p>{{ $legal }}</p>
+@if ($legal || $service)
+{{-- Steddle in its own face, which only Apple Mail would load as a font: an image elsewhere. --}}
+<p>{{ $legal }}@if ($legal && $service) | @endif @if ($service){{ __('foundry::footer.service_by') }} @if ($steddle)<img src="{{ $steddle }}" class="wordmark-image" width="50" height="18" alt="Steddle">@else<span class="service">Steddle</span>@endif @endif</p>
 @endif
 </td>
 </tr>

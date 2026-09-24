@@ -2,7 +2,10 @@
 
 @php
     // A PNG at twice its size, as `['src' => …, 'width' => …, 'height' => …]`: Gmail and Outlook draw no SVG, and Outlook sizes an image by its attributes alone.
+    // Without one, the lockup foundry:assets renders, once the imprint has rendered it.
     $lockup = config('imprint.mail.lockup');
+    $rendered = $lockup === null ? \Steddle\Foundry\Mail\MailOptions::image('mail-logo') : null;
+    $lockup ??= $rendered === null ? null : ['src' => $rendered, 'width' => 240, 'height' => 48];
     $src = $lockup === null ? null : (preg_match('#^https?://#', $lockup['src']) ? $lockup['src'] : asset($lockup['src']));
 @endphp
 <tr>

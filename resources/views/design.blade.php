@@ -406,3 +406,4 @@
         </div>
     </foundry:numbered-section>
 </x-layouts::site>
+    @include('foundry::design.mail', ['number' => '13'])

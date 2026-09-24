@@ -8,8 +8,12 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
+use Livewire\Livewire;
 use Steddle\Foundry\Boost\Skill;
 use Steddle\Foundry\Catalog\Catalog;
+use Steddle\Foundry\Livewire\Welcome;
+use Steddle\Foundry\Mail\Greeting;
 use Steddle\Foundry\Mail\MailOptions;
 use Steddle\Foundry\Markdown\MarkdownUrl;
 use Steddle\Foundry\Pages;
@@ -79,6 +83,31 @@ final class Imprint
             }
         });
 
+        test('a notification greets its recipient by first name, or without a name where they gave none', function () {
+            expect(Greeting::for((object) ['name' => 'Ada Visser', 'email' => 'ada@example.com']))->toBe(__('foundry::mail.greeting', ['name' => 'Ada']))
+                ->and(Greeting::for((object) ['name' => 'ada', 'email' => 'ada@example.com']))->toBe(__('foundry::mail.greeting_unnamed'))
+                ->and(Greeting::for(null))->toBe(__('foundry::mail.greeting_unnamed'));
+        });
+
+        test('an account named after its address is sent to /welcome from a signed-in page and the consent screen, and comes back where it was headed', function () {
+            if (! config('imprint.onboarding')) {
+                $this->markTestSkipped('The imprint does not onboard.');
+            }
+
+            // Straight back, past any step of the imprint's own after the name.
+            config(['imprint.onboarding.next' => null]);
+            $user = Imprint::unnamed();
+            Route::middleware(['web', 'auth'])->get('foundry-onboarding-probe', fn () => 'The page asked for.');
+
+            $this->actingAs($user)->get('/foundry-onboarding-probe')->assertRedirect(route('foundry.welcome'));
+            Livewire::actingAs($user)->test(Welcome::class)->set('name', 'Ada Visser')->call('save')->assertRedirect(url('/foundry-onboarding-probe'));
+            $this->actingAs($user->refresh())->get('/foundry-onboarding-probe')->assertOk();
+
+            if (Route::has('passport.authorizations.authorize')) {
+                $this->actingAs(Imprint::unnamed())->get(route('passport.authorizations.authorize'))->assertRedirect(route('foundry.welcome'));
+            }
+        });
+
         test('a mail renders through the foundry\'s theme, under the imprint\'s name and over its footer', function () {
             $options = MailOptions::resolve();
             $html = (string) (new MailMessage)->greeting('Dear Ada,')->line('A line only this test writes.')->action('Open', url('/'))->render();
@@ -138,6 +167,19 @@ final class Imprint
         $user = config('imprint.pages.guard', []) === [] ? null : $viewer();
 
         return $user ? $test->actingAs($user) : $test;
+    }
+
+    /**
+     * An account from the imprint's own user factory that has not named
+     * itself: its name the local part of its address. Public for the reason
+     * open() is.
+     */
+    public static function unnamed(): Authenticatable
+    {
+        $user = config('auth.providers.users.model')::factory()->create();
+        $user->forceFill(['name' => Str::before($user->email, '@'), 'onboarded_at' => null])->save();
+
+        return $user;
     }
 
     /**
