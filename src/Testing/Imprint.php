@@ -4,11 +4,13 @@ namespace Steddle\Foundry\Testing;
 
 use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Route;
 use Steddle\Foundry\Boost\Skill;
 use Steddle\Foundry\Catalog\Catalog;
+use Steddle\Foundry\Mail\MailOptions;
 use Steddle\Foundry\Markdown\MarkdownUrl;
 use Steddle\Foundry\Pages;
 
@@ -55,9 +57,9 @@ final class Imprint
             Imprint::open($this, $asViewer)->get(route('foundry.components.example', [$slug, $index]))->assertOk();
         })->with(self::frames());
 
-        test('the lab, the design page and the components index render', function (string $route) use ($asViewer) {
+        test('the lab, the design page, the components index and the sample mail render', function (string $route) use ($asViewer) {
             Imprint::open($this, $asViewer)->get(route($route))->assertOk()->assertHeader('X-Robots-Tag', 'noindex');
-        })->with(['foundry.lab', 'foundry.design', 'foundry.components']);
+        })->with(['foundry.lab', 'foundry.design', 'foundry.components', 'foundry.mail']);
 
         test('the lab is closed to a visitor where the imprint guards it', function () {
             $response = $this->get(route('foundry.lab'));
@@ -65,14 +67,29 @@ final class Imprint
             config('imprint.pages.guard', []) === [] ? $response->assertOk() : $response->assertRedirect();
         });
 
-        test('the lab, the design page and the components are no routes in production', function () {
+        test('the lab, the design page, the components and the mail are no routes in production', function () {
             $result = Process::path(base_path())->env(['APP_ENV' => 'production'])->run(['php', 'artisan', 'route:list', '--json']);
             $uris = array_column(json_decode($result->output(), true) ?? [], 'uri');
 
             expect($uris)->not->toBeEmpty()
                 ->not->toContain('labs/{page?}')
                 ->not->toContain('design')
-                ->not->toContain('components/{component?}');
+                ->not->toContain('components/{component?}')
+                ->not->toContain('foundry/mail');
+        });
+
+        test('a mail renders through the foundry\'s theme, under the imprint\'s name and over its footer', function () {
+            $options = MailOptions::resolve();
+            $html = (string) (new MailMessage)->greeting('Dear Ada,')->line('A line only this test writes.')->action('Open', url('/'))->render();
+
+            // The inliner writes quotes and apostrophes in text as themselves, so the words are compared unescaped.
+            $text = html_entity_decode($html, ENT_QUOTES);
+
+            expect($text)->toContain('A line only this test writes.')->toContain(config('imprint.name'));
+
+            if ($options['footer'] !== null) {
+                expect($text)->toContain($options['footer']);
+            }
         });
 
         test('every public page renders without noindex, and answers markdown', function () {

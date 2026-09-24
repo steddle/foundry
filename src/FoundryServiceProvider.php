@@ -4,6 +4,7 @@ namespace Steddle\Foundry;
 
 use Closure;
 use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,14 @@ class FoundryServiceProvider extends ServiceProvider
         // the foundry's sit under a path of their own at the end: an imprint's own
         // resources/views/errors/{code}.blade.php stands in for one.
         $this->app['config']->push('view.paths', dirname(__DIR__).'/resources/fallback');
+
+        // Markdown mail reads its components and its theme from these paths in order, so the
+        // foundry's come after the imprint's own: a file under resources/views/vendor/mail
+        // stands in for the foundry's of that name. Laravel's own come last of all. A cached
+        // config holds the path already.
+        if (! $this->app->configurationIsCached()) {
+            $this->app['config']->push('mail.markdown.paths', dirname(__DIR__).'/resources/views/mail');
+        }
     }
 
     public function boot(): void
@@ -47,6 +56,18 @@ class FoundryServiceProvider extends ServiceProvider
         Blade::anonymousComponentPath(__DIR__.'/../resources/views/components', 'foundry');
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'foundry');
+
+        // A notification's mail, which hands its options to the foundry's theme: after an
+        // imprint's own resources/views/vendor/notifications, before Laravel's.
+        $this->callAfterResolving('view', function (Factory $view): void {
+            $view->prependNamespace('notifications', __DIR__.'/../resources/views/notifications');
+
+            foreach (array_reverse(config('view.paths', [])) as $path) {
+                if (is_dir($own = $path.'/vendor/notifications')) {
+                    $view->prependNamespace('notifications', $own);
+                }
+            }
+        });
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'foundry');
 
         if ($this->app->runningInConsole()) {

@@ -7,6 +7,7 @@ use Steddle\Foundry\Http\Controllers\RootLanguagePrefix;
 use Steddle\Foundry\Http\Controllers\ShowComponent;
 use Steddle\Foundry\Http\Controllers\ShowExample;
 use Steddle\Foundry\Http\Controllers\ShowLab;
+use Steddle\Foundry\Http\Controllers\ShowMail;
 use Steddle\Foundry\Http\Controllers\UpdateLocale;
 use Steddle\Foundry\Http\Middleware\Noindex;
 use Steddle\Foundry\Locales;
@@ -33,7 +34,7 @@ if (Locales::multilingual()) {
 
 // Off a public deployment's route list altogether: the page Playwright renders
 // a brand asset from, kept out of search and nothing more, and the imprint's
-// pages about itself, the lab, the design page and the components, behind
+// pages about itself, the lab, the design page, the components and the mail, behind
 // `pages.middleware` and, outside local, `pages.guard` from config/imprint.php.
 if (! app()->isProduction()) {
     Route::get('foundry/brand/{asset}', RenderBrandAsset::class)
@@ -47,6 +48,8 @@ if (! app()->isProduction()) {
                 ->name('foundry.lab');
 
             Route::view('design', 'foundry::design')->name('foundry.design');
+
+            Route::get('foundry/mail', ShowMail::class)->name('foundry.mail');
 
             Route::get('components/{component?}', ShowComponent::class)
                 ->where('component', '[a-z0-9_-]+')

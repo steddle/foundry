@@ -3,7 +3,7 @@
 @endphp
 # The lab
 
-Outside production the foundry registers `/labs`, `/design` and `/components` (`foundry.lab`, `foundry.design`, `foundry.components`), behind `pages.middleware` and, outside local, `pages.guard` from `config/imprint.php`. On those pages the nav is the lab's bar on bone, and elsewhere the links end on Lab. The lab and the design page open on `foundry:sections.page-title`.
+Outside production the foundry registers `/labs`, `/design`, `/components` and `/foundry/mail` (`foundry.lab`, `foundry.design`, `foundry.components`, `foundry.mail`), behind `pages.middleware` and, outside local, `pages.guard` from `config/imprint.php`. On those pages the nav is the lab's bar on bone, and elsewhere the links end on Lab. The lab and the design page open on `foundry:sections.page-title`.
 
 ## Experiments
 
@@ -18,3 +18,7 @@ Outside production the foundry registers `/labs`, `/design` and `/components` (`
 ## /components
 
 `/components` opens on an index of every component the imprint renders, by group, from `Steddle\Foundry\Catalog\Catalog`; a component's page shows each example live with its Blade and a copy button, then its props, with their defaults, and its slots. Where the imprint has components of its own, a toggle shows all, the foundry's or the imprint's, and the lab's Custom components row opens `/components?from=custom`. It marks a foundry component the imprint keeps a copy of, in place of wrapping it, which is the thing to fix. How a component describes itself is in `SKILL.md`.
+
+## /foundry/mail
+
+`/foundry/mail` renders a sample mail through the foundry's theme with the imprint's values, and `/foundry/mail?text` its plain-text part. What sets it is in `mail.md`.
