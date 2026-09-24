@@ -76,7 +76,7 @@
     /components, never here.
 --}}
 <x-layouts::site :title="'Design | '.$name" :description="'The '.$name.' design system: the brand, the colours, the type and the controls, rendered from the code that ships them.'" flux>
-    <foundry:sections.page-title title="Design." lead="The brand, the colours, the type and the controls the site is built from, rendered from the code that ships them." />
+    <foundry:sections.page-title title="Design" lead="The brand, the colours, the type and the controls the site is built from, rendered from the code that ships them." />
 
     <foundry:numbered-section number="01" name="Brand" :note="$design['mark'] ?? null">
         <div class="flex flex-col gap-14">

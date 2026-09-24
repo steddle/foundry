@@ -142,3 +142,16 @@ test('the head names every icon and the browser chrome in the imprint\'s colours
         ->toContain('<meta name="theme-color" content="#ebf3f5" media="(prefers-color-scheme: light)">')
         ->toContain('<meta name="theme-color" content="#0a212c" media="(prefers-color-scheme: dark)">');
 });
+
+test('the social preview sets an apostrophe in its words once escaped, bound or written out', function () {
+    $words = ['heading' => 'The founders\' agents.', 'lede' => 'Decisions, with an MCP for the founders\' agents.', 'eyebrow' => 'Holly\'s and Mischa\'s'];
+
+    $bound = Blade::render('<foundry:social-preview :heading="$heading" :lede="$lede" :eyebrow="$eyebrow" />', $words, deleteCachedView: true);
+    $written = Blade::render('<foundry:social-preview heading="The founders\' agents." lede="Decisions, with an MCP for the founders\' agents." eyebrow="Holly\'s and Mischa\'s" />', deleteCachedView: true);
+
+    foreach ([$bound, $written] as $html) {
+        expect($html)
+            ->not->toContain('&amp;#039;')
+            ->and(html_entity_decode($html, ENT_QUOTES))->toContain('The founders\' agents.')->toContain('the founders\' agents.')->toContain('Holly\'s and Mischa\'s');
+    }
+});
