@@ -20,6 +20,7 @@ IMPRINTS=(
     "bron|$HOME/Sites/bron|DB_DATABASE=bron_test_foundry CORPUS_DATABASE=bron_corpus_test_foundry TEST_TOKEN=foundry LARAVEL_PARALLEL_TESTING=0 php artisan test --compact"
     "sendnda|$HOME/Sites/sendnda|php artisan test --compact"
     "righted|$HOME/Sites/righted|php artisan test --compact"
+    "fly|$HOME/Sites/fly|php artisan test --compact"
 )
 
 command="${1:-}"
