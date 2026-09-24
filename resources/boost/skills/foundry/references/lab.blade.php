@@ -3,7 +3,7 @@
 @endphp
 # The lab
 
-Outside production the foundry registers `/labs`, `/design`, `/components` and `/foundry/mail` (`foundry.lab`, `foundry.design`, `foundry.components`, `foundry.mail`), behind `pages.middleware` and, outside local, `pages.guard` from `config/imprint.php`. On those pages the nav is the lab's bar on bone, and elsewhere the links end on Lab. The lab and the design page open on `foundry:sections.page-title`.
+Outside production the foundry registers `/labs`, `/design`, `/components` and `/foundry/mail` (`foundry.lab`, `foundry.design`, `foundry.components`, `foundry.mail`), behind `pages.middleware` and, outside local, `pages.guard` from `config/imprint.php`. In production it registers only the pages `pages.production` names, `labs`, `design`, `components` or `mail`, and only where `pages.guard` keeps them: an app entirely behind a login can show its team `/design` there, while a guest is sent to log in. Without a guard nothing is registered in production, whatever the list says. On those pages the nav is the lab's bar on bone, and elsewhere the links end on Lab. The lab and the design page open on `foundry:sections.page-title`.
 
 ## Experiments
 

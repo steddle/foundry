@@ -2,7 +2,7 @@
 
 {{--
     The bar of the lab's own pages, on bone: the lockup home, then the lab,
-    the design page and the components.
+    the design page and the components, each where the imprint serves it.
 
     @group Shell
     @prop home Where the lockup leads.
@@ -14,7 +14,8 @@
 --}}
 @php
     $homeLabel ??= __('foundry::nav.home', ['name' => config('imprint.name')]);
-    $pages = ['Lab' => 'foundry.lab', 'Design' => 'foundry.design', 'Components' => 'foundry.components'];
+    // In production an imprint serves only the pages `pages.production` names.
+    $pages = array_filter(['Lab' => 'foundry.lab', 'Design' => 'foundry.design', 'Components' => 'foundry.components'], fn (string $name): bool => Route::has($name));
 @endphp
 
 <header class="border-b border-zinc-200 dark:border-zinc-700">

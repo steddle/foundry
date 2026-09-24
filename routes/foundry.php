@@ -32,31 +32,48 @@ if (Locales::multilingual()) {
     });
 }
 
-// Off a public deployment's route list altogether: the page Playwright renders
-// a brand asset from, kept out of search and nothing more, and the imprint's
-// pages about itself, the lab, the design page, the components and the mail, behind
-// `pages.middleware` and, outside local, `pages.guard` from config/imprint.php.
+// Off a public deployment's route list: the page Playwright renders a brand asset
+// from, kept out of search and nothing more.
 if (! app()->isProduction()) {
     Route::get('foundry/brand/{asset}', RenderBrandAsset::class)
         ->middleware(Noindex::class)
         ->name('foundry.brand');
+}
 
+// The imprint's pages about itself, the lab, the design page, the components and the mail,
+// behind `pages.middleware` and, outside local, `pages.guard` from config/imprint.php. In
+// production only those `pages.production` names, and none where no guard keeps them.
+$served = match (true) {
+    ! app()->isProduction() => ['labs', 'design', 'components', 'mail'],
+    config('imprint.pages.guard', []) === [] => [],
+    default => config('imprint.pages.production', []),
+};
+
+if ($served !== []) {
     Route::middleware(['web', Noindex::class, ...config('imprint.pages.middleware', []), ...(app()->isLocal() ? [] : config('imprint.pages.guard', []))])
-        ->group(function (): void {
-            Route::get('labs/{page?}', ShowLab::class)
-                ->where('page', '[a-z0-9-]+')
-                ->name('foundry.lab');
+        ->group(function () use ($served): void {
+            if (in_array('labs', $served, true)) {
+                Route::get('labs/{page?}', ShowLab::class)
+                    ->where('page', '[a-z0-9-]+')
+                    ->name('foundry.lab');
+            }
 
-            Route::view('design', 'foundry::design')->name('foundry.design');
+            if (in_array('design', $served, true)) {
+                Route::view('design', 'foundry::design')->name('foundry.design');
+            }
 
-            Route::get('foundry/mail', ShowMail::class)->name('foundry.mail');
+            if (in_array('mail', $served, true)) {
+                Route::get('foundry/mail', ShowMail::class)->name('foundry.mail');
+            }
 
-            Route::get('components/{component?}', ShowComponent::class)
-                ->where('component', '[a-z0-9_-]+')
-                ->name('foundry.components');
+            if (in_array('components', $served, true)) {
+                Route::get('components/{component?}', ShowComponent::class)
+                    ->where('component', '[a-z0-9_-]+')
+                    ->name('foundry.components');
 
-            Route::get('components/{component}/examples/{example}', ShowExample::class)
-                ->where(['component' => '[a-z0-9_-]+', 'example' => '[0-9]+'])
-                ->name('foundry.components.example');
+                Route::get('components/{component}/examples/{example}', ShowExample::class)
+                    ->where(['component' => '[a-z0-9_-]+', 'example' => '[0-9]+'])
+                    ->name('foundry.components.example');
+            }
         });
 }

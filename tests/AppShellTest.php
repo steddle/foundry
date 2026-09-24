@@ -401,3 +401,60 @@ test('the rail\'s footer is a nav of its own at the foot, over the account menu,
     expect($named)->toContain('aria-label="Lab"')->not->toContain('aria-label="Tools"')
         ->and(substr_count($bare, '<nav'))->toBe(1);
 });
+
+test('the current item draws its edge as an inset ring rather than Flux\'s border, so nothing in it moves', function () {
+    $this->app->register(LivewireServiceProvider::class);
+    $this->app->register(FluxServiceProvider::class);
+
+    $item = (string) str(Blade::render('<foundry:app.sidebar.item href="/inbox" icon="inbox" count="12" :current="true">Inbox</foundry:app.sidebar.item>', deleteCachedView: true))->match('#<a [^>]*>#');
+
+    expect($item)
+        ->toContain('data-current:border ')
+        ->toContain('data-current:border-0!')
+        ->toContain('data-current:ring-1 data-current:ring-inset data-current:ring-white/10')
+        ->toContain('data-current:before:bg-primary-300');
+});
+
+test('the rail\'s links follow with wire:navigate, and each can be turned to a full page load', function () {
+    $this->app->register(LivewireServiceProvider::class);
+    $this->app->register(FluxServiceProvider::class);
+
+    $links = fn (string $blade): array => str(Blade::render($blade, deleteCachedView: true))->matchAll('#<a href="([^"]+)"[^>]*>#')->all();
+    $tags = fn (string $blade): array => str(Blade::render($blade, deleteCachedView: true))->matchAll('#(<a href="[^"]+"[^>]*>)#')->all();
+
+    $rail = $tags(<<<'BLADE'
+        <foundry:app.sidebar home="/dashboard">
+            <foundry:app.sidebar.item href="/inbox">Inbox</foundry:app.sidebar.item>
+            <foundry:app.sidebar.group heading="Board"><foundry:app.sidebar.item href="/board/q3">Q3 update</foundry:app.sidebar.item></foundry:app.sidebar.group>
+            <foundry:app.sidebar.item href="/export.csv" :navigate="false">Export</foundry:app.sidebar.item>
+        </foundry:app.sidebar>
+        BLADE);
+
+    expect($links('<foundry:app.sidebar home="/dashboard"><foundry:app.sidebar.item href="/inbox">Inbox</foundry:app.sidebar.item></foundry:app.sidebar>'))->toBe(['/dashboard', '/inbox', '/dashboard']);
+
+    foreach ($rail as $tag) {
+        str_contains($tag, '/export.csv')
+            ? expect($tag)->not->toContain('wire:navigate')
+            : expect($tag)->toContain('wire:navigate');
+    }
+
+    expect(collect($tags('<foundry:app.sidebar home="/dashboard" :navigate="false"><a></a></foundry:app.sidebar>'))->filter(fn ($tag) => str_contains($tag, '/dashboard'))->all())
+        ->toHaveCount(2)
+        ->each->not->toContain('wire:navigate');
+});
+
+test('the rail keeps its offset: Livewire\'s across history, its own across links and reloads, before it paints, still followed by the bar Flux lays beside it', function () {
+    $this->app->register(LivewireServiceProvider::class);
+    $this->app->register(FluxServiceProvider::class);
+
+    $html = Blade::render('<foundry:app.sidebar><a></a></foundry:app.sidebar>', deleteCachedView: true);
+
+    expect($html)
+        ->toMatch('#<script>\s*\(\(\) => \{\s*const rail = document\.currentScript\.parentElement;.*?</script>\s*</ui-sidebar>#s')
+        ->toMatch('#<ui-sidebar[^>]*\swire:navigate:scroll(="")?[\s>]#')
+        ->toMatch('#<ui-sidebar[^>]*\sdata-scroll-id="foundry-rail"#')
+        ->toContain("rail.scrollTop = Number(rail.dataset.scrollY ?? sessionStorage.getItem('foundry-sidebar-scroll')) || 0;")
+        ->toContain("sessionStorage.setItem('foundry-sidebar-scroll', rail.scrollTop);")
+        ->toContain('{ passive: true }')
+        ->toMatch('#</ui-sidebar>\s*<header[^>]*data-flux-header#');
+});

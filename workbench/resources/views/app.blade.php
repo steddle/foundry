@@ -7,16 +7,20 @@
             </x-slot:search>
 
             <foundry:app.sidebar.item href="/app" icon="home">Overview</foundry:app.sidebar.item>
-            <foundry:app.sidebar.item href="#" icon="inbox" count="12">Inbox</foundry:app.sidebar.item>
-            <foundry:app.sidebar.item href="#" icon="building-office" count="4">Companies</foundry:app.sidebar.item>
+            <foundry:app.sidebar.item href="/app?inbox" icon="inbox" count="12">Inbox</foundry:app.sidebar.item>
+            <foundry:app.sidebar.item href="/app?companies" icon="building-office" count="4">Companies</foundry:app.sidebar.item>
 
             <foundry:app.sidebar.group heading="Board" remember="board">
-                <foundry:app.sidebar.item href="#">Q3 update</foundry:app.sidebar.item>
-                <foundry:app.sidebar.item href="#">Minutes, 12 Sep</foundry:app.sidebar.item>
+                <foundry:app.sidebar.item href="/app?q3">Q3 update</foundry:app.sidebar.item>
+                <foundry:app.sidebar.item href="/app?minutes-12-sep">Minutes, 12 Sep</foundry:app.sidebar.item>
+                <foundry:app.sidebar.item href="/app?minutes-29-aug">Minutes, 29 Aug</foundry:app.sidebar.item>
+                <foundry:app.sidebar.item href="/app?minutes-15-aug">Minutes, 15 Aug</foundry:app.sidebar.item>
+                <foundry:app.sidebar.item href="/app?budget">Budget 2027</foundry:app.sidebar.item>
+                <foundry:app.sidebar.item href="/app?hiring">Hiring plan</foundry:app.sidebar.item>
             </foundry:app.sidebar.group>
 
             <foundry:app.sidebar.group heading="Legal" remember="legal" :expanded="false">
-                <foundry:app.sidebar.item href="#">Shareholders' agreement</foundry:app.sidebar.item>
+                <foundry:app.sidebar.item href="/app?shareholders">Shareholders' agreement</foundry:app.sidebar.item>
             </foundry:app.sidebar.group>
 
             <x-slot:footer>

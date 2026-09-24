@@ -67,15 +67,16 @@ final class Imprint
             config('imprint.pages.guard', []) === [] ? $response->assertOk() : $response->assertRedirect();
         });
 
-        test('the lab, the design page, the components and the mail are no routes in production', function () {
+        test('the lab, the design page, the components and the mail are no routes in production, but for those pages.production names behind a guard', function () {
             $result = Process::path(base_path())->env(['APP_ENV' => 'production'])->run(['php', 'artisan', 'route:list', '--json']);
             $uris = array_column(json_decode($result->output(), true) ?? [], 'uri');
+            $served = config('imprint.pages.guard', []) === [] ? [] : config('imprint.pages.production', []);
 
-            expect($uris)->not->toBeEmpty()
-                ->not->toContain('labs/{page?}')
-                ->not->toContain('design')
-                ->not->toContain('components/{component?}')
-                ->not->toContain('foundry/mail');
+            expect($uris)->not->toBeEmpty();
+
+            foreach (['labs' => 'labs/{page?}', 'design' => 'design', 'components' => 'components/{component?}', 'mail' => 'foundry/mail'] as $page => $uri) {
+                in_array($page, $served, true) ? expect($uris)->toContain($uri) : expect($uris)->not->toContain($uri);
+            }
         });
 
         test('a mail renders through the foundry\'s theme, under the imprint\'s name and over its footer', function () {

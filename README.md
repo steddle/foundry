@@ -76,7 +76,7 @@ Outside production, `/components` shows every component the imprint renders, liv
 - `sitemap.xml`, `llms.txt` and `llms-full.txt` from the imprint's page list
 - The app shell for signed-in pages: `foundry:layouts.app` under the site's own bar, the band each page opens on, the account menu, page head, record rows, empty state and settings rows
 - Error pages for 403, 404, 419, 429, 500 and 503, in the imprint's words and on its scene
-- `/labs`, `/design`, `/components` and `/foundry/mail` outside production
+- `/labs`, `/design`, `/components` and `/foundry/mail` outside production, and in production those `pages.production` names, behind `pages.guard`
 - `php artisan foundry:assets` renders the OG image, the social preview, the README banners and the icons, and `--check` fails when they drift from the copy
 - Markdown for agents: every page answers as markdown at `.md`, chrome left out
 - Printed documents: `Printer` makes a PDF from a page of the imprint's own, set with `foundry:print.*` on A4 or Letter, fonts and all held in the stored HTML
