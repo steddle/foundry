@@ -3,8 +3,10 @@
 # The imprints that install steddle/foundry, and the round a foundry change
 # makes through them before it is pushed and after.
 #
+#   bin/imprints check  [name...]  sync, test, then reset: the round before a push, leaving each imprint as it was
 #   bin/imprints sync   [name...]  copy this checkout into each vendor/, boost:install, clear views, build
 #   bin/imprints test   [name...]  run each imprint's suite
+#   bin/imprints reset  [name...]  reinstall the locked foundry and render boost against it again
 #   bin/imprints update [name...]  composer update steddle/foundry, then boost:install
 #   bin/imprints status [name...]  open files and commits not pushed
 #
@@ -25,11 +27,20 @@ IMPRINTS=(
 
 command="${1:-}"
 shift || true
+
+# sync renders each imprint's CLAUDE.md, AGENTS.md and foundry skill against this working copy, unpushed work
+# included, and those files are tracked: without the reset a sync leaves them dirty for the imprint's next commit.
+if [ "$command" = check ]; then
+    "$0" sync "$@" && "$0" test "$@"
+    result=$?
+    "$0" reset "$@" || result=1
+    exit "$result"
+fi
 failed=0
 
 case "$command" in
-    sync|test|update|status) ;;
-    *) sed -n '3,12p' "$FOUNDRY/bin/imprints" | sed 's/^# \{0,1\}//'; exit 1 ;;
+    sync|test|reset|update|status) ;;
+    *) sed -n '3,14p' "$FOUNDRY/bin/imprints" | sed 's/^# \{0,1\}//'; exit 1 ;;
 esac
 
 for imprint in "${IMPRINTS[@]}"; do
@@ -52,6 +63,14 @@ for imprint in "${IMPRINTS[@]}"; do
             ;;
         test)
             bash -c "$tests" || failed=1
+            ;;
+        reset)
+            rm -rf vendor/steddle/foundry \
+                && composer install -q --no-interaction \
+                && php artisan boost:install --guidelines --skills --no-interaction > /dev/null \
+                && php artisan view:clear -q \
+                && npm run build > /dev/null 2>&1 \
+                || failed=1
             ;;
         update)
             composer update steddle/foundry -q \
