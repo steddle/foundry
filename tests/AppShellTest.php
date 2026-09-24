@@ -355,3 +355,49 @@ test('a remembered group writes its state to the cookie when it folds, and one w
 test('the sidebar cookie reaches the page unencrypted, so the browser can write it', function () {
     expect((new EncryptCookies(app('encrypter')))->isDisabled('foundry_sidebar'))->toBeTrue();
 });
+
+test('an open group\'s chevrons follow its panel, which the server marks, so the first paint points them open', function () {
+    $this->app->register(LivewireServiceProvider::class);
+    $this->app->register(FluxServiceProvider::class);
+
+    $open = Blade::render('<foundry:app.sidebar.group heading="Board"><a></a></foundry:app.sidebar.group>', deleteCachedView: true);
+    $closed = Blade::render('<foundry:app.sidebar.group heading="Legal" :expanded="false"><a></a></foundry:app.sidebar.group>', deleteCachedView: true);
+
+    // The button Flux keys its chevrons on carries no state until its script runs; the panel after it does.
+    expect($open)
+        ->toMatch('#<ui-disclosure class="[^"]*\bsidebar-fold\b[^"]*"[^>]*\sopen\s#')
+        ->not->toMatch('#<button[^>]*data-open#')
+        ->toMatch('#</button>\s*<div class="[^"]*\bdata-open:block\b[^"]*"\s+data-open\s*>#')
+        ->and($closed)->toMatch('#<ui-disclosure class="[^"]*\bsidebar-fold\b#')->not->toMatch('#"\s+data-open\s*>#');
+
+    $css = (string) str(File::get(__DIR__.'/../resources/css/foundry.css'))->after('@utility sidebar-fold {');
+
+    expect($css)
+        ->toContain("&:has(> [data-open]) > button > div:first-child > svg:first-child {\n        display: block;")
+        ->toContain("&:has(> [data-open]) > button > div:first-child > svg:last-child {\n        display: none;");
+});
+
+test('the rail\'s footer is a nav of its own at the foot, over the account menu, named for its tools unless the slot names it', function () {
+    $this->app->register(LivewireServiceProvider::class);
+    $this->app->register(FluxServiceProvider::class);
+
+    $html = Blade::render(<<<'BLADE'
+        <foundry:app.sidebar :user="$user">
+            <a id="a-link"></a>
+            <x-slot:footer><a id="the-lab"></a></x-slot:footer>
+        </foundry:app.sidebar>
+        BLADE, ['user' => $this->user], deleteCachedView: true);
+
+    $rail = (string) str($html)->before('</ui-sidebar>');
+    $footer = (string) str($rail)->match('#<nav[^>]*aria-label="Tools"[^>]*>.*?</nav>#s');
+
+    expect($footer)->toContain('<a id="the-lab"></a>')->toContain('border-t border-zinc-50/13 pt-4')->not->toContain('a-link')
+        ->and(strpos($rail, 'data-flux-sidebar-spacer'))->toBeLessThan(strpos($rail, 'aria-label="Tools"'))
+        ->and(strpos($rail, 'aria-label="Tools"'))->toBeLessThan(strpos($rail, 'data-flux-sidebar-profile'));
+
+    $named = Blade::render('<foundry:app.sidebar><a></a><x-slot:footer aria-label="Lab"><a></a></x-slot:footer></foundry:app.sidebar>', deleteCachedView: true);
+    $bare = Blade::render('<foundry:app.sidebar><a></a></foundry:app.sidebar>', deleteCachedView: true);
+
+    expect($named)->toContain('aria-label="Lab"')->not->toContain('aria-label="Tools"')
+        ->and(substr_count($bare, '<nav'))->toBe(1);
+});

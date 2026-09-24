@@ -18,6 +18,7 @@
     @prop user An object with `name` and `email`, as foundry:account-menu takes it, whose menu then sits at the rail's foot, and in the bar below lg.
     @slot search An foundry:app.sidebar.search above the links.
     @slot slot The links: foundry:app.sidebar.item, and foundry:app.sidebar.group around the ones that fold.
+    @slot footer Links set apart at the foot of the rail, over the account menu, for tools such as the design lab: foundry:app.sidebar.item, in a nav of their own, named `foundry::nav.tools` unless the slot gives an `aria-label`.
     @slot account The imprint's items in the account menu, each a `flux:menu.item`. The rail's foot and the bar each render them, so an item holds no id and no Livewire component.
 
     @example A founders' dashboard
@@ -40,6 +41,10 @@
             <foundry:app.sidebar.group heading="Legal" remember="legal" :expanded="false">
                 <foundry:app.sidebar.item href="#">Shareholders' agreement</foundry:app.sidebar.item>
             </foundry:app.sidebar.group>
+
+            <x-slot:footer>
+                <foundry:app.sidebar.item href="#" icon="swatch">Design lab</foundry:app.sidebar.item>
+            </x-slot:footer>
 
             <x-slot:account>
                 <flux:menu.item href="#" icon="cog-6-tooth">Settings</flux:menu.item>
@@ -72,6 +77,12 @@
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />
+
+    @isset($footer)
+        <flux:sidebar.nav :attributes="$footer->attributes->merge(['aria-label' => __('foundry::nav.tools')])->class('border-t border-zinc-50/13 pt-4')">
+            {{ $footer }}
+        </flux:sidebar.nav>
+    @endisset
 
     @if ($user)
         <foundry:account-menu :user="$user" position="top" align="start" class="max-lg:hidden">

@@ -19,6 +19,10 @@
                 <foundry:app.sidebar.item href="#">Shareholders' agreement</foundry:app.sidebar.item>
             </foundry:app.sidebar.group>
 
+            <x-slot:footer>
+                <foundry:app.sidebar.item href="/labs" icon="swatch">Design lab</foundry:app.sidebar.item>
+            </x-slot:footer>
+
             <x-slot:account>
                 <flux:menu.item href="#" icon="cog-6-tooth">Settings</flux:menu.item>
             </x-slot:account>

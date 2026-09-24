@@ -892,3 +892,18 @@
         text-align: right;
     }
 }
+
+/*
+ * foundry:app.sidebar.group. Flux marks the fold's button open only when its script runs, while the
+ * server marks the panel after it, so until then an open group points its chevron shut. The
+ * chevrons follow the panel instead, which the server sets and the script keeps.
+ */
+@utility sidebar-fold {
+    &:has(> [data-open]) > button > div:first-child > svg:first-child {
+        display: block;
+    }
+
+    &:has(> [data-open]) > button > div:first-child > svg:last-child {
+        display: none;
+    }
+}

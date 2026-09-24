@@ -6,6 +6,7 @@ return [
     'menu' => 'Menu',
     'close' => 'Menu sluiten',
     'main' => 'Hoofdmenu',
+    'tools' => 'Hulpmiddelen',
     'search' => 'Zoeken',
     'account' => 'Accountmenu van :name',
     'log_out' => 'Uitloggen',

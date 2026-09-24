@@ -6,6 +6,7 @@ return [
     'menu' => 'Menu',
     'close' => 'Close menu',
     'main' => 'Main',
+    'tools' => 'Tools',
     'search' => 'Search',
     'account' => 'Account menu for :name',
     'log_out' => 'Log out',

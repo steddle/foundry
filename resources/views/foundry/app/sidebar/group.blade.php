@@ -31,6 +31,6 @@
     }
 @endphp
 
-<flux:sidebar.group expandable :$heading :$expanded {{ $attributes->class('grid') }}>
+<flux:sidebar.group expandable :$heading :$expanded {{ $attributes->class('grid sidebar-fold') }}>
     {{ $slot }}
 </flux:sidebar.group>
