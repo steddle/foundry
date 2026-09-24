@@ -162,5 +162,8 @@ class FoundryServiceProvider extends ServiceProvider
             $router->pushMiddlewareToGroup('web', FollowPreferredLocale::class);
             EncryptCookies::except([Locales::COOKIE]);
         }
+
+        // foundry:app.sidebar.group's folds, which the browser writes itself.
+        EncryptCookies::except(['foundry_sidebar']);
     }
 }

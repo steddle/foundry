@@ -8,7 +8,8 @@
     sets it in the `sidebar` slot of foundry:layouts.app.sidebar. Its parts:
     foundry:app.sidebar.item, a link with an icon and a count, the current one
     on a lichen rule and marked aria-current="page";
-    foundry:app.sidebar.group, links that fold under a heading; and
+    foundry:app.sidebar.group, links that fold under a heading, and with
+    `remember` open as the reader last left them; and
     foundry:app.sidebar.search, the button that opens the imprint's search.
 
     @group Shell
@@ -31,12 +32,12 @@
             <foundry:app.sidebar.item href="#" icon="inbox" count="12">Inbox</foundry:app.sidebar.item>
             <foundry:app.sidebar.item href="#" icon="building-office" count="4">Companies</foundry:app.sidebar.item>
 
-            <foundry:app.sidebar.group heading="Board">
+            <foundry:app.sidebar.group heading="Board" remember="board" open>
                 <foundry:app.sidebar.item href="#">Q3 update</foundry:app.sidebar.item>
                 <foundry:app.sidebar.item href="#">Minutes, 12 Sep</foundry:app.sidebar.item>
             </foundry:app.sidebar.group>
 
-            <foundry:app.sidebar.group heading="Legal" :expanded="false">
+            <foundry:app.sidebar.group heading="Legal" remember="legal" :expanded="false">
                 <foundry:app.sidebar.item href="#">Shareholders' agreement</foundry:app.sidebar.item>
             </foundry:app.sidebar.group>
 

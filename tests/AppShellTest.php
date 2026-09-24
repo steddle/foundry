@@ -1,6 +1,7 @@
 <?php
 
 use Flux\FluxServiceProvider;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
@@ -312,4 +313,45 @@ test('the rail\'s account menu opens upward from its foot and the bar\'s downwar
 
     expect(str($html)->matchAll('#<ui-dropdown position="([^"]+)"#')->all())->toBe(['top start', 'bottom end'])
         ->and(str($html)->matchAll('#<button[^>]*aria-label="([^"]+)"[^>]*data-flux-sidebar-toggle#')->all())->toBe(['Close menu', 'Menu']);
+});
+
+test('a remembered group opens as the cookie says, falls back to expanded, and gives way to open', function (?string $cookie, string $group, bool $opens) {
+    $this->app->register(LivewireServiceProvider::class);
+    $this->app->register(FluxServiceProvider::class);
+    Route::get('/sidebar', fn () => Blade::render($group, deleteCachedView: true));
+
+    $request = $cookie === null ? $this : $this->withUnencryptedCookie('foundry_sidebar', $cookie);
+    $disclosure = (string) str($request->get('/sidebar')->assertOk()->getContent())->match('#<ui-disclosure[^>]*>#');
+
+    expect($disclosure)->not->toBeEmpty();
+    expect((bool) preg_match('#\sopen(\s|>)#', $disclosure))->toBe($opens);
+})->with([
+    'closed in the cookie' => ['{"company":false}', '<foundry:app.sidebar.group heading="Company" remember="company"><a></a></foundry:app.sidebar.group>', false],
+    'open in the cookie, over expanded' => ['{"company":true}', '<foundry:app.sidebar.group heading="Company" remember="company" :expanded="false"><a></a></foundry:app.sidebar.group>', true],
+    'no cookie, expanded' => [null, '<foundry:app.sidebar.group heading="Company" remember="company"><a></a></foundry:app.sidebar.group>', true],
+    'no cookie, not expanded' => [null, '<foundry:app.sidebar.group heading="Company" remember="company" :expanded="false"><a></a></foundry:app.sidebar.group>', false],
+    'another key only' => ['{"legal":false}', '<foundry:app.sidebar.group heading="Company" remember="company"><a></a></foundry:app.sidebar.group>', true],
+    'a value that is no bool' => ['{"company":"no"}', '<foundry:app.sidebar.group heading="Company" remember="company"><a></a></foundry:app.sidebar.group>', true],
+    'no JSON' => ['company=false', '<foundry:app.sidebar.group heading="Company" remember="company"><a></a></foundry:app.sidebar.group>', true],
+    'a list' => ['[false]', '<foundry:app.sidebar.group heading="Company" remember="company"><a></a></foundry:app.sidebar.group>', true],
+    'open over a closed cookie' => ['{"company":false}', '<foundry:app.sidebar.group heading="Company" remember="company" open><a></a></foundry:app.sidebar.group>', true],
+    'no key ignores the cookie' => ['{"company":false}', '<foundry:app.sidebar.group heading="Company"><a></a></foundry:app.sidebar.group>', true],
+]);
+
+test('a remembered group writes its state to the cookie when it folds, and one without a key writes nothing', function () {
+    $this->app->register(LivewireServiceProvider::class);
+    $this->app->register(FluxServiceProvider::class);
+
+    $remembered = Blade::render('<foundry:app.sidebar.group heading="Company" remember="company"><a></a></foundry:app.sidebar.group>', deleteCachedView: true);
+    $plain = Blade::render('<foundry:app.sidebar.group heading="Company"><a></a></foundry:app.sidebar.group>', deleteCachedView: true);
+
+    expect($remembered)
+        ->toContain('x-on:lofi-disclosable-change.self=')
+        ->toContain('state[&#039;company&#039;] = $el.value;')
+        ->toContain('path=/; max-age=31536000; samesite=lax')
+        ->and($plain)->not->toContain('lofi-disclosable-change');
+});
+
+test('the sidebar cookie reaches the page unencrypted, so the browser can write it', function () {
+    expect((new EncryptCookies(app('encrypter')))->isDisabled('foundry_sidebar'))->toBeTrue();
 });
