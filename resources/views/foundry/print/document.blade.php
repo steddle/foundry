@@ -51,8 +51,9 @@
             }
         }
 
-        /* The rem steps the type scale is written in, at the size a page is read. */
+        /* The rem steps the type scale is written in, at the size a page is read; and the paper's height, which foundry:print.cover fills. */
         html {
+            --print-page-height: {{ $paper === 'Letter' ? '279.4mm' : '297mm' }};
             font-size: 12.5px;
             background: var(--color-white);
         }

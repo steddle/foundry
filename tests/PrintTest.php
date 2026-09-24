@@ -67,10 +67,56 @@ test('a section starts on a page of its own when asked', function () {
 });
 
 test('the catalogue describes every print prop under the name the component declares', function () {
-    foreach (['print-document', 'print-facts', 'print-masthead', 'print-section'] as $slug) {
+    foreach (['print-cover', 'print-document', 'print-facts', 'print-masthead', 'print-prose', 'print-section'] as $slug) {
         foreach (Catalog::shared()[$slug]['props'] as $prop) {
             expect($prop['default'])->not->toBe('passed on', "{$slug}: {$prop['name']} is not declared")
                 ->and($prop['description'])->not->toBeEmpty("{$slug}: {$prop['name']} is undocumented");
         }
     }
+});
+
+test('a printed document tells the cover how tall its paper is', function () {
+    expect(Blade::render('<foundry:print.document title="x">Body</foundry:print.document>', deleteCachedView: true))->toContain('--print-page-height: 297mm;')
+        ->and(Blade::render('<foundry:print.document title="x" paper="Letter">Body</foundry:print.document>', deleteCachedView: true))->toContain('--print-page-height: 279.4mm;');
+});
+
+test('a cover fills the first page without the page\'s footer, and holds the words, the particulars and the foot', function () {
+    $html = Blade::render(<<<'BLADE'
+        <foundry:print.cover eyebrow="Internal briefing" title="Where we stand" lead="The company and the first matter.">
+            <x-slot:aside><span id="seal"></span></x-slot:aside>
+            <dl id="facts"></dl>
+            <x-slot:foot><span>Confidential, internal</span></x-slot:foot>
+        </foundry:print.cover>
+        BLADE, deleteCachedView: true);
+
+    expect($html)
+        ->toMatch('/@page cover \{\s*margin: 0;\s*@bottom-left \{\s*content: none;\s*\}\s*@bottom-right \{\s*content: none;/')
+        ->toContain('[page:cover]')
+        ->toContain('Imprint</span>')
+        ->toContain('<span id="seal"></span>')
+        ->toContain('Internal briefing')
+        ->toContain('Where we stand')
+        ->toContain('The company and the first matter.')
+        ->toContain('<dl id="facts"></dl>')
+        ->toContain('<span>Confidential, internal</span>');
+});
+
+test('a cover without words is the lockup alone', function () {
+    expect(Blade::render('<foundry:print.cover />', deleteCachedView: true))->toContain('Imprint</span>')->not->toContain('<h1');
+});
+
+test('prose sets rendered markdown, and starts each h2 after the first on a page of its own when asked', function () {
+    $html = Blade::render('<foundry:print.prose><h2>Where we stand</h2><p>Body</p></foundry:print.prose>', deleteCachedView: true);
+
+    expect($html)->toContain('<div class="print-prose"')->toContain('<h2>Where we stand</h2><p>Body</p>')->not->toContain('data-new-page')
+        ->and(Blade::render('<foundry:print.prose new-page><h2>x</h2></foundry:print.prose>', deleteCachedView: true))->toContain('data-new-page');
+});
+
+test('the prose stylesheet is written in the ramps, and sets code alone in mono', function () {
+    $css = (string) str(File::get(__DIR__.'/../resources/css/foundry.css'))->after('@utility print-prose {')->before("\n}\n");
+
+    expect($css)->not->toMatch('/#[0-9a-f]{3,8}\b/i')
+        ->and(str($css)->matchAll('/font-family: ([^;]+);/')->unique()->values()->all())->toBe(['var(--font-serif)', 'var(--font-sans)', 'var(--font-mono)'])
+        ->and(substr_count($css, 'var(--font-mono)'))->toBe(1)
+        ->and((string) str($css)->before('& pre {')->afterLast('& code {'))->toContain('font-family: var(--font-mono);');
 });

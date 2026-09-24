@@ -711,3 +711,184 @@
         border-radius: var(--radius-md);
     }
 }
+
+/*
+ * A markdown body in print, foundry:print.prose, inside foundry:print.document,
+ * which keeps headings with what follows them and sets orphans and widows.
+ * Headings are set in em of the body: the scale's heading steps follow the
+ * viewport, and on a page heading-2 lands barely a step over the body.
+ */
+@utility print-prose {
+    font-family: var(--font-serif);
+    /* Spectral's x-height is Chivo's less a step: at 10.2pt it reads at the size of the page's copy, 1rem, in Chivo. */
+    font-size: 10.2pt;
+    line-height: 1.5;
+    color: var(--color-zinc-800);
+
+    & > :first-child {
+        margin-top: 0;
+    }
+
+    /* Not the first h2: a cover has broken the page already, and a masthead would be left on a page alone. A forced break keeps the margin before it. */
+    &[data-new-page] > h2:not(:first-child) {
+        break-before: page;
+        margin-top: 0;
+    }
+
+    & :where(h2, h3, h4) {
+        color: var(--color-zinc-950);
+    }
+
+    & h2 {
+        margin: --spacing(9) 0 --spacing(3);
+        font-size: 1.6em;
+        font-weight: var(--text-heading-2--font-weight);
+        line-height: var(--text-heading-2--line-height);
+        letter-spacing: var(--text-heading-2--letter-spacing);
+        text-wrap: balance;
+    }
+
+    /* The bar foundry:print.section sets over its heading. */
+    & h2::before {
+        content: '';
+        display: block;
+        width: --spacing(12);
+        height: --spacing(1);
+        margin-bottom: --spacing(4);
+        background-color: var(--color-primary-300);
+    }
+
+    & :where(h3, h4) {
+        font-family: var(--font-sans);
+        font-weight: 600;
+        line-height: 1.35;
+    }
+
+    & h3 {
+        margin: --spacing(5) 0 --spacing(1.5);
+        font-size: 1.03em;
+    }
+
+    & h4 {
+        margin: --spacing(4) 0 --spacing(1);
+        font-size: 0.93em;
+    }
+
+    & :where(p, ul, ol, blockquote, pre) {
+        margin: 0 0 --spacing(3.5);
+    }
+
+    & :where(ul, ol) {
+        padding-left: --spacing(6);
+    }
+
+    & ul {
+        list-style: disc;
+    }
+
+    & ol {
+        list-style: decimal;
+    }
+
+    & li + li {
+        margin-top: --spacing(1);
+    }
+
+    & li > :where(p, ul, ol) {
+        margin: 0;
+    }
+
+    & li > :where(ul, ol) {
+        margin-top: --spacing(1);
+    }
+
+    & li::marker {
+        color: var(--color-zinc-600);
+    }
+
+    & strong {
+        font-weight: 600;
+        color: var(--color-zinc-950);
+    }
+
+    & a {
+        @apply link;
+    }
+
+    & hr {
+        margin: --spacing(6) 0;
+        border: 0;
+        border-top: 1px solid var(--color-zinc-200);
+    }
+
+    & blockquote {
+        padding: --spacing(3) --spacing(5);
+        border-left: --spacing(1) solid var(--color-primary-300);
+        background-color: var(--color-zinc-50);
+        break-inside: avoid-page;
+    }
+
+    & blockquote > :last-child {
+        margin-bottom: 0;
+    }
+
+    & code {
+        font-family: var(--font-mono);
+        font-size: 0.85em;
+        font-variant-numeric: slashed-zero tabular-nums;
+        color: var(--color-zinc-950);
+    }
+
+    & pre {
+        padding: --spacing(3) --spacing(4);
+        border: 1px solid var(--color-zinc-200);
+        border-radius: var(--radius-md);
+        background-color: var(--color-zinc-50);
+        line-height: 1.55;
+        white-space: pre-wrap;
+        break-inside: avoid-page;
+    }
+
+    /* A table stays on the page of the line that introduces it. Chrome repeats its head on every page it runs onto. */
+    & table {
+        width: 100%;
+        margin: --spacing(3) 0 --spacing(5);
+        border-collapse: collapse;
+        font-family: var(--font-sans);
+        font-size: 0.88em;
+        line-height: 1.4;
+        font-variant-numeric: tabular-nums;
+        break-before: avoid-page;
+    }
+
+    & p:has(+ table) {
+        break-after: avoid-page;
+    }
+
+    & tr {
+        break-inside: avoid-page;
+    }
+
+    & th {
+        padding: 0 --spacing(3) --spacing(2) 0;
+        border-bottom: 1px solid var(--color-zinc-300);
+        text-align: left;
+        font-weight: 600;
+        color: var(--color-zinc-950);
+    }
+
+    & td {
+        padding: --spacing(2) --spacing(3) --spacing(2) 0;
+        border-bottom: 1px solid var(--color-zinc-200);
+        vertical-align: top;
+    }
+
+    & :where(th, td):last-child {
+        padding-right: 0;
+    }
+
+    /* A column markdown aligns right, `--:`, holds figures; its head goes with it. */
+    & :is(th, td):is([align='right'], [style*='text-align: right']) {
+        text-align: right;
+    }
+}
