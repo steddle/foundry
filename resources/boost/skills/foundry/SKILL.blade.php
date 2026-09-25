@@ -26,7 +26,7 @@ Open the one the task needs.
 | `references/print.md` | A PDF from a page of the site's own |
 | `references/mail.md` | The mail theme: `imprint.mail`, its images, the greeting, per-mailable options, `/foundry/mail` |
 | `references/sign-in.md` | `imprint.auth`: a link by email and a passkey, remembered, on Fortify's login route |
-| `references/account.md` | `imprint.account`: signing in through the Steddle account, its events, `Account::identify`, the `staff` gate and the privacy part |
+| `references/account.md` | `imprint.account`: signing in through the Steddle account, its events, the `staff` gate and the privacy part |
 | `references/onboarding.md` | `imprint.onboarding`: an account names itself on /welcome before any signed-in page |
 | `references/mcp.md` | `imprint.mcp`: the consent screen, OAuth hardening, connecting and disconnecting agents, deleting an account |
 | `references/lab.md` | `/labs`, `/design`, `/components` and `/foundry/mail`, and an experiment's life |

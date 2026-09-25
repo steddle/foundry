@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Testing\TestResponse;
 use Laravel\Socialite\SocialiteServiceProvider;
 use Livewire\LivewireServiceProvider;
-use Steddle\Foundry\Account;
 use Steddle\Foundry\Concerns\HasSteddleAccount;
 use Steddle\Foundry\Tests\TestCase;
 
@@ -315,18 +314,6 @@ test('signing out everywhere drops the account\'s sessions and its remember toke
 
 test('an unknown event is refused', function () {
     postEvent(['event' => 'renamed', 'id' => '01K0ACCOUNT'])->assertStatus(422);
-});
-
-test('identify asks the account for an address with the client\'s credentials and links the row', function () {
-    $user = AccountUser::create(['name' => 'bo', 'email' => 'bo@imprint.test']);
-    Http::fake(['auth.test/api/identities' => Http::response(['id' => '01K0BO', 'email' => 'bo@imprint.test', 'name' => 'Bo Jansen', 'locale' => 'en'])]);
-
-    expect(Account::identify('bo@imprint.test', 'Bo Jansen')->is($user))->toBeTrue()
-        ->and($user->refresh()->steddle_id)->toBe('01K0BO');
-
-    Http::assertSent(fn (ClientRequest $request): bool => $request->url() === 'https://auth.test/api/identities'
-        && $request->hasHeader('Authorization', 'Basic '.base64_encode('imprint:the-secret'))
-        && $request->data() === ['email' => 'bo@imprint.test', 'name' => 'Bo Jansen']);
 });
 
 test('staff is a verified address on steddle.com', function () {

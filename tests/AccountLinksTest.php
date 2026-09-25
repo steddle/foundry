@@ -16,7 +16,7 @@ use Steddle\Foundry\Tests\TestCase;
 
 beforeAll(function () {
     TestCase::$config = [
-        'imprint.account' => ['client' => 'imprint', 'secret' => 'the-secret', 'server' => 'https://auth.test'],
+        'imprint.account' => ['client' => 'imprint', 'secret' => 'the-secret', 'server' => 'https://auth.test', 'home' => '/dashboard'],
         'imprint.auth' => ['redirect' => LinkPurposeRedirect::class],
         'cache.default' => 'array',
     ];
@@ -81,6 +81,14 @@ test('the imprint\'s own link still signs its account in, remembered, and goes w
 
     $this->get($url)->assertOk()->assertSee('foundry-sign-in');
     $this->post($url)->assertRedirect('/nda/signed')->assertCookie(auth()->guard()->getRecallerName());
+
+    $this->assertAuthenticatedAs($user);
+});
+
+test('a link its redirect leaves alone goes to the account\'s home', function () {
+    $user = LinkUser::create(['steddle_id' => '01K0ACCOUNT', 'name' => 'Ada Visser', 'email' => 'ada@imprint.test']);
+
+    $this->post(MagicLink::issue($user)->url)->assertRedirect(url('/dashboard'));
 
     $this->assertAuthenticatedAs($user);
 });

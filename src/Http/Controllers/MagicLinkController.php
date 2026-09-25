@@ -91,6 +91,6 @@ final class MagicLinkController
 
         $intended = $request->session()->pull('url.intended');
 
-        return redirect()->to($link->intended ?? $intended ?? url(config('fortify.home', '/')));
+        return redirect()->to($link->intended ?? $intended ?? url(config('imprint.account.home') ?? config('fortify.home', '/')));
     }
 }
