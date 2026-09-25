@@ -6,10 +6,10 @@
     everywhere and deleting the account all live there.
 
     @group Forms
-    @prop href The account's page; without one, `imprint.account.server` + `/account`, https://auth.steddle.com by default.
+    @prop href The account's page; without one, `imprint.account.server` + `/account`, https://account.steddle.com by default.
 
     @example On a settings page
-    <foundry:steddle-account href="https://auth.steddle.com/account" class="max-w-3xl" />
+    <foundry:steddle-account href="https://account.steddle.com/account" class="max-w-3xl" />
 --}}
 @php
     // Resolved here, not in @props: the catalogue and the skill read a default in @props as the machine's live URL.

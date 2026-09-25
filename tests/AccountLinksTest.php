@@ -16,7 +16,7 @@ use Steddle\Foundry\Tests\TestCase;
 
 beforeAll(function () {
     TestCase::$config = [
-        'imprint.account' => ['client' => 'imprint', 'secret' => 'the-secret', 'server' => 'https://auth.test', 'home' => '/dashboard'],
+        'imprint.account' => ['client' => 'imprint', 'secret' => 'the-secret', 'server' => 'https://account.test', 'home' => '/dashboard'],
         'imprint.auth' => ['redirect' => LinkPurposeRedirect::class],
         'cache.default' => 'array',
     ];
@@ -72,7 +72,7 @@ test('beside the Steddle account the imprint sends no sign-in links and answers 
         ->and(RateLimiter::limiter('magic-link'))->not->toBeNull()
         ->and(RateLimiter::limiter('passkeys'))->toBeNull();
 
-    expect(strtok($this->get(route('login'))->headers->get('Location'), '?'))->toBe('https://auth.test/oauth/authorize');
+    expect(strtok($this->get(route('login'))->headers->get('Location'), '?'))->toBe('https://account.test/oauth/authorize');
 });
 
 test('the imprint\'s own link still signs its account in, remembered, and goes where imprint.auth.redirect sends it', function () {

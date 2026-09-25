@@ -1,13 +1,13 @@
 # The Steddle account
 
-With `imprint.account` set in `config/imprint.php`, the imprint signs in through the Steddle account at `auth.steddle.com`: one account for every Steddle product, which holds the address, the name, the language, the passkeys, onboarding and `/account`. The imprint keeps a `users` row per account, linked by `steddle_id`, and its own roles and data. {{ config('imprint.account') ? config('imprint.name').' signs in through it, as the client `'.config('imprint.account.client').'`.' : config('imprint.name').' does not: nothing here applies until it sets `imprint.account`.' }}
+With `imprint.account` set in `config/imprint.php`, the imprint signs in through the Steddle account at `account.steddle.com`: one account for every Steddle product, which holds the address, the name, the language, the passkeys, onboarding and `/account`. The imprint keeps a `users` row per account, linked by `steddle_id`, and its own roles and data. {{ config('imprint.account') ? config('imprint.name').' signs in through it, as the client `'.config('imprint.account.client').'`.' : config('imprint.name').' does not: nothing here applies until it sets `imprint.account`.' }}
 
 ## Taking it on
 
 1. `composer require laravel/socialite`.
 2. `use Steddle\Foundry\Concerns\HasSteddleAccount;` on the `User` model.
 3. `php artisan vendor:publish --tag=foundry-account`, then `php artisan migrate`: `steddle_id` on `users`, nullable and unique, and `users.password` and the `password_reset_tokens` table dropped where they exist. The account signs in on auth, and a row made at a first sign-in has no password.
-4. In `config/imprint.php`, `'account' => ['client' => '{{ config('imprint.account.client') ?? 'name' }}', 'secret' => env('STEDDLE_ACCOUNT_SECRET'), 'server' => env('STEDDLE_ACCOUNT_URL', 'https://auth.steddle.com'), 'home' => '/dashboard']`. The client and its secret are the ones auth's `config/clients.php` holds for the imprint.
+4. In `config/imprint.php`, `'account' => ['client' => '{{ config('imprint.account.client') ?? 'name' }}', 'secret' => env('STEDDLE_ACCOUNT_SECRET'), 'server' => env('STEDDLE_ACCOUNT_URL', 'https://account.steddle.com'), 'home' => '/dashboard']`. The client and its secret are the ones the account app's `config/clients.php` holds for the imprint.
 5. `SESSION_DRIVER=database`, so signing out everywhere reaches the imprint's sessions.
 6. Delete what the account now does: `imprint.auth`, unless the imprint mails sign-in links of its own, which keep signing in (`references/sign-in.md`), and `imprint.onboarding`, Fortify and its config and provider, `PasskeyUser` and `PasskeyAuthenticatable` on `User`, the `passkeys` table, `onboarded_at`, and in settings `foundry:passkeys` and the delete button, where `foundry:steddle-account` stands instead.
 

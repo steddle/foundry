@@ -4,7 +4,7 @@ namespace Steddle\Foundry;
 
 final class Account
 {
-    public const SERVER = 'https://auth.steddle.com';
+    public const SERVER = 'https://account.steddle.com';
 
     public static function server(string $path = ''): string
     {

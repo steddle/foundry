@@ -20,7 +20,7 @@ use Steddle\Foundry\Tests\TestCase;
 
 beforeAll(function () {
     TestCase::$config = [
-        'imprint.account' => ['client' => 'imprint', 'secret' => 'the-secret', 'server' => 'https://auth.test', 'home' => '/home'],
+        'imprint.account' => ['client' => 'imprint', 'secret' => 'the-secret', 'server' => 'https://account.test', 'home' => '/home'],
         'cache.default' => 'array',
     ];
     TestCase::$providers = [LivewireServiceProvider::class, FluxServiceProvider::class, SocialiteServiceProvider::class];
@@ -81,7 +81,7 @@ class AccountUser extends Authenticatable
 /** @param  array<string, mixed>  $user */
 function tokenAnswers(array $user = []): void
 {
-    Http::fake(['auth.test/oauth/token' => Http::response([
+    Http::fake(['account.test/oauth/token' => Http::response([
         'token_type' => 'Bearer',
         'access_token' => 'unused',
         'user' => [...['id' => '01K0ACCOUNT', 'email' => 'ada@imprint.test', 'name' => 'Ada Visser', 'locale' => 'nl'], ...$user],
@@ -113,7 +113,7 @@ test('sign-in goes to the account\'s authorize endpoint with Passport\'s paramet
     $location = $this->get(route('login', ['email' => 'ada@imprint.test']))->assertRedirect()->headers->get('Location');
     parse_str(parse_url($location, PHP_URL_QUERY), $query);
 
-    expect(strtok($location, '?'))->toBe('https://auth.test/oauth/authorize')
+    expect(strtok($location, '?'))->toBe('https://account.test/oauth/authorize')
         ->and($query)->toMatchArray([
             'client_id' => 'imprint',
             'redirect_uri' => route('foundry.account.callback'),
@@ -137,7 +137,7 @@ test('the callback trades the code with the secret and verifier, links a row by 
         ->assertRedirect('/probe')
         ->assertCookie(Auth::guard()->getRecallerName());
 
-    Http::assertSent(fn (ClientRequest $request): bool => $request->url() === 'https://auth.test/oauth/token' && $request->data() === [
+    Http::assertSent(fn (ClientRequest $request): bool => $request->url() === 'https://account.test/oauth/token' && $request->data() === [
         'grant_type' => 'authorization_code',
         'client_id' => 'imprint',
         'client_secret' => 'the-secret',
@@ -227,7 +227,7 @@ test('the callback makes a row for an account the imprint has not met, its addre
 });
 
 test('a callback with an error, a state not its own or a code the account refuses signs no one in and offers another try', function (Closure $callback) {
-    Http::fake(['auth.test/oauth/token' => Http::response(['error' => 'invalid_grant'], 400)]);
+    Http::fake(['account.test/oauth/token' => Http::response(['error' => 'invalid_grant'], 400)]);
     $query = authorizeAt();
 
     $this->get(route('foundry.account.callback', $callback($query)))
@@ -330,11 +330,11 @@ test('staff is a verified address on steddle.com', function () {
 test('the settings panel leads to the account\'s page', function () {
     $html = Blade::render('<foundry:steddle-account />');
 
-    expect($html)->toContain('href="https://auth.test/account"')->toContain('Manage your Steddle account')->toContain('leave Imprint');
+    expect($html)->toContain('href="https://account.test/account"')->toContain('Manage your Steddle account')->toContain('leave Imprint');
 });
 
 test('the privacy part names the imprint and the account\'s host, in English and Dutch', function (string $locale, string $heading) {
     app()->setLocale($locale);
 
-    expect(view('foundry::legal.account')->render())->toContain($heading)->toContain('auth.test')->toContain('Imprint');
+    expect(view('foundry::legal.account')->render())->toContain($heading)->toContain('account.test')->toContain('Imprint');
 })->with([['en', 'Your Steddle account'], ['nl', 'Je Steddle-account']]);
