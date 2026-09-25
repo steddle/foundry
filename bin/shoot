@@ -1,0 +1,144 @@
+#!/usr/bin/env node
+//
+// Screenshots of an imprint's pages in Playwright's own Chromium, after a fresh build.
+//
+//   bin/shoot <imprint> <path>... [--dark] [--phone] [--as=<email>] [--out=<dir>] [--url=<base>]
+//
+//   --dark        prefers-color-scheme: dark
+//   --phone       390 wide with touch, 1280 without
+//   --as=<email>  sign that account in first, through the foundry's sign-in link
+//   --out=<dir>   where the PNGs go, a new temp dir without
+//   --url=<base>  the site's root, https://<imprint>.test without
+//
+// <imprint> is a site under ~/Sites, or foundry for this checkout's workbench on http://127.0.0.1:8765.
+// Each page is shot at full length, and its PNG's path printed.
+
+import { spawnSync } from 'node:child_process';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { homedir, tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const foundry = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+
+function usage() {
+    const header = readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n').slice(2, 14);
+    console.error(header.map((line) => line.replace(/^\/\/ ?/, '')).join('\n'));
+    process.exit(1);
+}
+
+function fail(message) {
+    console.error(`shoot: ${message}`);
+    process.exit(1);
+}
+
+const [imprint, ...rest] = process.argv.slice(2);
+const options = Object.fromEntries(rest.filter((arg) => arg.startsWith('--')).map((arg) => {
+    const [key, value = true] = arg.slice(2).split(/=(.*)/s);
+    return [key, value];
+}));
+const paths = rest.filter((arg) => !arg.startsWith('--'));
+
+if (!imprint || paths.length === 0 || Object.keys(options).some((key) => !['dark', 'phone', 'as', 'out', 'url'].includes(key))) {
+    usage();
+}
+
+const root = imprint === 'foundry' ? foundry : join(homedir(), 'Sites', imprint);
+const base = String(options.url ?? (imprint === 'foundry' ? 'http://127.0.0.1:8765' : `https://${imprint}.test`)).replace(/\/$/, '');
+const out = options.out ? resolve(String(options.out)) : mkdtempSync(join(tmpdir(), 'shoot-'));
+
+if (!existsSync(join(root, 'package.json'))) {
+    fail(`no site at ${root}`);
+}
+
+mkdirSync(out, { recursive: true });
+
+const build = spawnSync('npm', ['run', 'build'], { cwd: root, encoding: 'utf8' });
+
+if (build.status !== 0) {
+    console.error((build.stdout + build.stderr).split('\n').slice(-20).join('\n'));
+    fail(`npm run build failed in ${root}`);
+}
+
+let signIn = null;
+
+if (options.as) {
+    // The URL is signed against the root the browser reaches, which need not be APP_URL. Values travel in the
+    // environment, so an address needs no escaping into PHP.
+    const php = `
+        use Illuminate\\Support\\Facades\\{Route, Schema, URL};
+        use Steddle\\Foundry\\Auth\\MagicLink;
+
+        if (! class_exists(MagicLink::class) || ! config('imprint.auth') || ! Route::has('login.magic') || ! Schema::hasTable('magic_links')) {
+            echo "shoot:none\\n";
+        } elseif (! $user = config('auth.providers.users.model')::where('email', getenv('SHOOT_AS'))->first()) {
+            echo "shoot:nobody\\n";
+        } else {
+            URL::forceRootUrl(getenv('SHOOT_BASE'));
+            URL::forceScheme(parse_url(getenv('SHOOT_BASE'), PHP_URL_SCHEME));
+            echo 'shoot:url '.MagicLink::issue($user)->url."\\n";
+        }
+    `;
+    const [command, ...args] = imprint === 'foundry' ? ['vendor/bin/testbench'] : ['php', 'artisan'];
+    const tinker = spawnSync(command, [...args, 'tinker', '--execute', php], {
+        cwd: root,
+        encoding: 'utf8',
+        env: { ...process.env, SHOOT_AS: String(options.as), SHOOT_BASE: base },
+    });
+    const answer = (tinker.stdout ?? '').match(/^shoot:(\S+)(?: (\S+))?$/m);
+
+    if (answer?.[1] === 'none') {
+        fail(`${imprint} has no foundry sign-in (Steddle\\Foundry\\Auth\\MagicLink, imprint.auth, the login.magic route and the magic_links table), so --as cannot sign anyone in`);
+    }
+
+    if (answer?.[1] === 'nobody') {
+        fail(`${imprint} has no account for ${options.as}`);
+    }
+
+    if (answer?.[1] !== 'url') {
+        console.error(tinker.stdout + tinker.stderr);
+        fail('no sign-in link from tinker');
+    }
+
+    signIn = answer[2];
+}
+
+const { chromium } = createRequire(join(root, 'package.json'))('playwright');
+const browser = await chromium.launch();
+
+try {
+    const context = await browser.newContext({
+        viewport: { width: options.phone ? 390 : 1280, height: options.phone ? 844 : 800 },
+        isMobile: Boolean(options.phone),
+        hasTouch: Boolean(options.phone),
+        colorScheme: options.dark ? 'dark' : 'light',
+        reducedMotion: 'reduce',
+        ignoreHTTPSErrors: true,
+    });
+    const page = await context.newPage();
+
+    if (signIn) {
+        // The link lands on a page that posts itself; the POST signs in and redirects.
+        await page.goto(signIn);
+        await page.waitForURL((url) => !url.pathname.startsWith('/login'), { timeout: 15000 })
+            .catch(() => fail(`signing in ${options.as} stopped at ${page.url()}`));
+    }
+
+    for (const path of paths) {
+        const response = await page.goto(base + path, { waitUntil: 'networkidle' });
+        await page.evaluate(() => document.fonts.ready);
+
+        const name = [imprint, path.replace(/^\/|\/$/g, '').replace(/[^\w.-]+/g, '-') || 'home', options.dark && 'dark', options.phone && 'phone']
+            .filter(Boolean).join('-');
+        const file = join(out, `${name}.png`);
+
+        await page.screenshot({ path: file, fullPage: true });
+
+        const status = response?.status() ?? 0;
+        const landed = new URL(page.url()).pathname;
+        console.log([file, status >= 400 && `HTTP ${status}`, landed !== new URL(base + path).pathname && `landed on ${landed}`].filter(Boolean).join('  '));
+    }
+} finally {
+    await browser.close();
+}

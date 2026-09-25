@@ -9,11 +9,9 @@ use Steddle\Foundry\Content;
 use Steddle\Foundry\Locales;
 
 /**
- * What the foundry skill states of the imprint it is installed in. Boost
- * renders `resources/boost/skills/foundry` inside the imprint at
- * `boost:install` and `boost:update`, so the installed skill holds these facts
- * as they stood then; `fingerprint()` closes its SKILL.md, and the imprint's
- * suite fails once the fingerprint no longer matches.
+ * Boost renders the skill in the imprint at `boost:install` and
+ * `boost:update`, so these facts stand as they were then. `fingerprint()`
+ * closes its SKILL.md, and the imprint's suite fails once it no longer matches.
  */
 final class Skill
 {
@@ -47,7 +45,6 @@ final class Skill
         ]);
     }
 
-    /** The reference to one group's components, in markdown. */
     public static function components(string $group): string
     {
         $facts = self::facts();
@@ -60,8 +57,6 @@ final class Skill
     }
 
     /**
-     * Values as inline code, for a line of prose.
-     *
      * @param  iterable<string>  $values
      */
     public static function codes(iterable $values): string
@@ -69,7 +64,6 @@ final class Skill
         return collect($values)->map(fn (string $value): string => "`{$value}`")->implode(', ');
     }
 
-    /** The first sentence of a description, for the index. */
     public static function summary(string $description): string
     {
         return preg_match('/^.+?[.!?](?=\s|$)/s', $description, $match) ? $match[0] : $description;
@@ -81,8 +75,7 @@ final class Skill
     }
 
     /**
-     * The fingerprint an installed copy of the skill closes on, keyed by its
-     * path: every agent's skills directory Boost writes to.
+     * Keyed by every agent's skills directory Boost writes to.
      *
      * @return array<string, ?string>
      */
@@ -98,8 +91,6 @@ final class Skill
     }
 
     /**
-     * The first example that renders in the page's flow, else the first.
-     *
      * @param  list<array{blade: string, ground?: string}>  $examples
      */
     private static function example(array $examples): ?string

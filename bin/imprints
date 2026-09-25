@@ -11,6 +11,8 @@
 #   bin/imprints status [name...]  open files and commits not pushed
 #
 # Without names it runs on every imprint. It commits and pushes nothing.
+# Every command but status holds a lock per imprint in /tmp/steddle-imprints: a second run on the same imprint,
+# from any session, waits and names the holder. A lock whose process is gone is stale and taken over.
 
 set -uo pipefail
 
@@ -25,23 +27,69 @@ IMPRINTS=(
     "fly|$HOME/Sites/fly|php artisan test --compact"
 )
 
+LOCKS=/tmp/steddle-imprints
+
 command="${1:-}"
 shift || true
 
-# sync renders each imprint's CLAUDE.md, AGENTS.md and foundry skill against this working copy, unpushed work
-# included, and those files are tracked: without the reset a sync leaves them dirty for the imprint's next commit.
-if [ "$command" = check ]; then
-    "$0" sync "$@" && "$0" test "$@"
-    result=$?
-    "$0" reset "$@" || result=1
-    exit "$result"
-fi
-failed=0
+HELD=""
+
+# lstart with its spacing folded, so the value read back from a holder file compares equal.
+started() {
+    echo $(ps -o lstart= -p "$1" 2>/dev/null)
+}
+
+lock() {
+    local dir="$LOCKS/$1.lock" pid since what waiting=""
+
+    [ -n "${IMPRINTS_LOCKED:-}" ] && return
+    mkdir -p "$LOCKS"
+
+    until mkdir "$dir" 2>/dev/null; do
+        pid="" since="" what=""
+        { read -r pid; read -r since; read -r what; } < "$dir/holder" 2>/dev/null
+
+        # mkdir and the holder's write are two steps: a lock without a holder is only stale once it is old.
+        if [ -z "$pid" ]; then
+            [ $(( $(date +%s) - $(stat -f %m "$dir" 2>/dev/null || date +%s) )) -gt 10 ] && rm -rf "$dir"
+            sleep 1
+            continue
+        fi
+
+        if [ "$(started "$pid")" != "$since" ]; then
+            echo "$1: taking over the lock of '$what', pid $pid, which is gone"
+            rm -rf "$dir"
+            continue
+        fi
+
+        [ -z "$waiting" ] && echo "$1: waiting for '$what', pid $pid, running since $since"
+        waiting=1
+        sleep 5
+    done
+
+    printf '%s\n%s\n%s\n' "$$" "$(started $$)" "bin/imprints $command $1" > "$dir/holder"
+    HELD="$dir"
+}
+
+release() {
+    local pid=""
+
+    [ -n "$HELD" ] || return 0
+    read -r pid < "$HELD/holder" 2>/dev/null
+    [ "$pid" = "$$" ] && rm -rf "$HELD"
+    HELD=""
+}
+
+trap release EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 case "$command" in
-    sync|test|reset|update|status) ;;
-    *) sed -n '3,14p' "$FOUNDRY/bin/imprints" | sed 's/^# \{0,1\}//'; exit 1 ;;
+    check|sync|test|reset|update|status) ;;
+    *) sed -n '3,16p' "$FOUNDRY/bin/imprints" | sed 's/^# \{0,1\}//'; exit 1 ;;
 esac
+
+failed=0
 
 for imprint in "${IMPRINTS[@]}"; do
     IFS='|' read -r name path tests <<< "$imprint"
@@ -50,8 +98,19 @@ for imprint in "${IMPRINTS[@]}"; do
         continue
     fi
 
+    # sync renders the imprint's CLAUDE.md, AGENTS.md and foundry skill against this working copy, unpushed work
+    # included, and those files are tracked: without the reset a sync leaves them dirty for the imprint's next commit.
+    if [ "$command" = check ]; then
+        lock "$name"
+        IMPRINTS_LOCKED=1 "$0" sync "$name" && IMPRINTS_LOCKED=1 "$0" test "$name" || failed=1
+        IMPRINTS_LOCKED=1 "$0" reset "$name" || failed=1
+        release
+        continue
+    fi
+
     echo "== $name"
     cd "$path" || { failed=1; continue; }
+    [ "$command" = status ] || lock "$name"
 
     case "$command" in
         sync)
@@ -83,6 +142,8 @@ for imprint in "${IMPRINTS[@]}"; do
             echo "not pushed: $(git rev-list --count '@{u}..HEAD' 2>/dev/null || echo 'no remote')"
             ;;
     esac
+
+    release
 done
 
 exit "$failed"
