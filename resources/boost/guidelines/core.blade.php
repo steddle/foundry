@@ -44,6 +44,13 @@ is its own.
   component stands in for its own; what the component needs from the site,
   the site hands it where it uses it. A component of the imprint's own lives
   under `resources/views/components/` and is written `x-name`.
+- **`/components` and `/design`**: `/components` lists the foundry's
+  components and the imprint's own, with a filter to the imprint's own; a
+  site-specific device (bron's provision, Send NDA's signature) is a component
+  and belongs there. `/design` shows the brand in use (lockup, fonts, ramps,
+  scenes, buttons, forms, modals), never a catalogue. Its sections and their
+  order are the same on every imprint; what differs per imprint comes from
+  `config/imprint.php`, never from a site's own design view.
 - **One standard**: before building UI, look in `/components` and in Flux
   Pro; what exists there is extended with a prop or slot in the foundry, never
   drawn a second time in a site. When a foundry component can't do what a page
