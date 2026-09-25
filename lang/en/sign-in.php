@@ -36,6 +36,7 @@ return [
         'subject' => 'Your sign-in link for :name',
         'intro' => 'Sign in to :name with the button below. The link stays valid for :minutes minutes and works once.',
         'action' => 'Sign in',
+        'passkey' => 'Add a passkey in your settings, and next time you sign in with your fingerprint, your face or a security key.',
         'ignore' => "Didn't ask for this? Then you can ignore this email.",
     ],
 ];

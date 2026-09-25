@@ -36,6 +36,7 @@ return [
         'subject' => 'Je inloglink voor :name',
         'intro' => 'Log in bij :name met de knop hieronder. De link is :minutes minuten geldig en werkt één keer.',
         'action' => 'Inloggen',
+        'passkey' => 'Voeg een passkey toe in je instellingen, dan log je voortaan in met je vingerafdruk, je gezicht of een beveiligingssleutel.',
         'ignore' => 'Niet om gevraagd? Dan kun je deze mail negeren.',
     ],
 ];

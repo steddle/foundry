@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passkeys\Contracts\PasskeyUser;
+use Laravel\Passkeys\PasskeyAuthenticatable;
 use Livewire\LivewireServiceProvider;
 use Steddle\Foundry\Auth\LoginLink;
 use Steddle\Foundry\Auth\MagicLink;
@@ -69,6 +71,16 @@ class SignInUser extends Authenticatable
     protected $guarded = [];
 
     public $timestamps = false;
+}
+
+class SignInPasskeyUser extends SignInUser implements PasskeyUser
+{
+    use PasskeyAuthenticatable;
+
+    public function getForeignKey(): string
+    {
+        return 'user_id';
+    }
 }
 
 function mailedLink(string $email = 'ada@imprint.test'): string
@@ -284,6 +296,37 @@ test('the mail carries the link in the reader\'s language, on the foundry\'s gre
 
     $this->from('/login')->post(route('login.magic.send'), ['email' => 'ada@imprint.test']);
     Notification::assertSentTo($user, LoginLink::class, fn (LoginLink $notification): bool => $notification->locale === 'nl');
+});
+
+test('the mail asks an account without a passkey to add one, and leaves an account with one alone', function () {
+    Schema::create('passkeys', function (Blueprint $table): void {
+        $table->id();
+        $table->foreignId('user_id');
+        $table->string('name');
+        $table->string('credential_id')->unique();
+        $table->json('credential');
+        $table->timestamp('last_used_at')->nullable();
+        $table->timestamps();
+    });
+    $user = SignInPasskeyUser::create(['name' => 'Ada', 'email' => 'ada@imprint.test']);
+
+    expect((string) (new LoginLink('https://imprint.test'))->toMail($user)->render())->toContain('Add a passkey in your settings');
+
+    $user->passkeys()->create(['name' => 'Laptop', 'credential_id' => 'id', 'credential' => []]);
+
+    expect((string) (new LoginLink('https://imprint.test'))->toMail($user->fresh())->render())->not->toContain('Add a passkey');
+    expect((string) (new LoginLink('https://imprint.test'))->toMail(SignInUser::create(['name' => 'Bo', 'email' => 'bo@imprint.test']))->render())->not->toContain('Add a passkey');
+});
+
+test('a link\'s row goes a day after it expires, or after imprint.auth.keep days', function () {
+    $user = SignInUser::create(['name' => 'Ada', 'email' => 'ada@imprint.test']);
+    $link = MagicLink::issue($user);
+    $link->forceFill(['expires_at' => now()->subDays(2)])->save();
+
+    expect((new MagicLink)->prunable()->count())->toBe(1);
+
+    config(['imprint.auth.keep' => 30]);
+    expect((new MagicLink)->prunable()->count())->toBe(0);
 });
 
 test('password managers find the passkey settings where passkeys and a settings page are routed', function () {

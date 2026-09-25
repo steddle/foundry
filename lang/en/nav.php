@@ -9,7 +9,7 @@ return [
     'tools' => 'Tools',
     'search' => 'Search',
     'account' => 'Account menu for :name',
-    'log_out' => 'Log out',
+    'log_out' => 'Sign out',
     'confirm_again' => 'Click again',
     'confirm_again_touch' => 'Tap again',
     'confirm_last' => 'One more time',

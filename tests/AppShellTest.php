@@ -61,13 +61,13 @@ test('the account menu opens on the reader\'s name and address, the imprint\'s i
         ->toContain('href="/settings"')
         ->toContain('action="'.url('/logout').'"')
         ->toContain('name="_token"')
-        ->toContain('Log out');
+        ->toContain('Sign out');
 });
 
 test('the account menu leaves out logging out where the imprint has no logout route', function () {
     $html = Blade::render('<foundry:account-menu :user="$user" />', ['user' => $this->user], deleteCachedView: true);
 
-    expect($html)->toContain('Ada Visser')->not->toContain('Log out');
+    expect($html)->toContain('Ada Visser')->not->toContain('Sign out');
 });
 
 test('an ink page sets its toast group through foundry:toasts', function () {

@@ -106,9 +106,9 @@ class MagicLink extends Model
         return $this->used_at === null && $this->expires_at->isFuture();
     }
 
-    /** A row outlives its link by 30 days, so a page for an expired link still reads what it was for. */
+    /** A row outlives its link by `imprint.auth.keep` days, a day by default: long enough for an expired link's page to read what it was for. */
     public function prunable(): Builder
     {
-        return static::where('expires_at', '<', now()->subDays(30));
+        return static::where('expires_at', '<', now()->subDays((int) config('imprint.auth.keep', 1)));
     }
 }

@@ -101,6 +101,8 @@ loosen these.
   tabular-nums`, or its zero reads as an O.
 - **No middle dot.** A separator is ` | `.
 - **No em or en dash in copy.** A colon, a comma or a new sentence.
+- **Sign in, never log in.** English copy says sign in and sign out, never
+  log in, log out or login as a verb.
 - **One marker per viewport.** `foundry:marker` lays lichen behind one phrase
   of the hero headline. Never on body copy or anything clickable.
 - **No emoji.** The glyphs ✓, ✗ and › are type, and allowed.

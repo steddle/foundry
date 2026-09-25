@@ -15,8 +15,8 @@
 
     @example A sign-in
     @code
-    <foundry:layouts.auth title="Log in" description="Log in with a link by email." card>
-        <foundry:heading size="1" level="1">Log in</foundry:heading>
+    <foundry:layouts.auth title="Sign in" description="Sign in with a link by email." card>
+        <foundry:heading size="1" level="1">Sign in</foundry:heading>
         <foundry:text tone="muted">We'll email you a link. No password needed.</foundry:text>
     </foundry:layouts.auth>
 --}}
