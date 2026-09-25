@@ -6,8 +6,6 @@ use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
@@ -39,10 +37,6 @@ beforeEach(function () {
         $table->rememberToken();
     });
 
-    File::ensureDirectoryExists(resource_path('views/layouts'));
-    File::put(resource_path('views/layouts/auth.blade.php'), '@props([\'title\', \'description\'])<main data-title="{{ $title }}">{{ $slot }}</main>');
-    Blade::anonymousComponentPath(resource_path('views/layouts'), 'layouts');
-
     Route::middleware(['web', 'auth'])->get('probe', fn () => 'The page asked for.');
     Route::middleware(['web', 'auth'])->post('probe', fn () => 'Posted.');
     Route::get('login', fn () => 'Log in')->name('login');
@@ -51,7 +45,6 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    File::deleteDirectory(resource_path('views/layouts'));
     $this->artisan('view:clear');
 });
 
@@ -110,9 +103,9 @@ test('the check comes after authentication, and Passport\'s routes take it too',
         ->and(config('passport.middleware'))->toContain(EnsureUserIsOnboarded::class);
 });
 
-test('/welcome asks for a full name in the imprint\'s sign-in layout, empty where the account carries only its address', function () {
+test('/welcome asks for a full name on the foundry\'s sign-in layout, empty where the account carries only its address', function () {
     $this->actingAs(unnamed())->get('/welcome')->assertOk()
-        ->assertSee('data-title="Your name"', false)
+        ->assertSee('<title data-markdown-skip>Your name', false)
         ->assertSee('Full name')
         ->assertSee('autocomplete="name"', false)
         ->assertSee('Signed in as ada@imprint.test');

@@ -13,7 +13,7 @@ An account a magic link, an invitation or a guest send made carries the local pa
 
 - `Steddle\Foundry\Http\Middleware\EnsureUserIsOnboarded` runs on every route that authenticates, as it declares `auth` or through a group of its own, and on Passport's routes through `passport.middleware`, so the consent screen of an agent signing in sends the account through `/welcome` and back. It runs after authentication, so a guest is sent to log in first. A request without an account, or with one that does not use the concern, passes.
 - On a GET it keeps the address as the intended one; `/welcome` itself, `logout` and Livewire's updates pass, and so does a request with no session or one asking for JSON: a token's call to the API or the MCP goes through.
-- `/welcome` (`foundry.welcome`) is a Livewire page in the imprint's own `layouts::auth`: one field, the full name, `autocomplete="name"`. Saving sets `name` and `onboarded_at`, and goes to the intended page, or `imprint.onboarding.home`.
+- `/welcome` (`foundry.welcome`) is a Livewire page on `foundry:layouts.auth`: one field, the full name, `autocomplete="name"`. Saving sets `name` and `onboarded_at`, and goes to the intended page, or `imprint.onboarding.home`.
 
 ## Options
 

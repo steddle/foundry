@@ -179,6 +179,14 @@ final class Imprint
             }
         })->skip(fn (): bool => ! config('imprint.sitemap'), 'The imprint lists no public pages.');
 
+        test('every view compiles, as php artisan optimize caches them on a deploy', function () {
+            try {
+                $this->artisan('view:cache')->assertSuccessful();
+            } finally {
+                $this->artisan('view:clear');
+            }
+        });
+
         test('every error page renders in the imprint\'s words', function (int $code) {
             Route::get('foundry-error-probe', fn () => abort($code));
 
