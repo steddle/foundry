@@ -77,6 +77,10 @@ test('an account named after its address is sent to /welcome from a signed-in pa
     expect(session('url.intended'))->toBe(url('/probe'));
 });
 
+test('/welcome is kept out of search', function () {
+    $this->actingAs(unnamed())->get(route('foundry.welcome'))->assertHeader('X-Robots-Tag');
+});
+
 test('a form it posts is sent on too, without being remembered as where to go back to', function () {
     $this->actingAs(unnamed())->post('/probe')->assertRedirect(route('foundry.welcome'));
 

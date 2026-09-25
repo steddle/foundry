@@ -34,7 +34,7 @@ if (Locales::multilingual()) {
 }
 
 if (config('imprint.onboarding')) {
-    Route::middleware(['web', 'auth'])->group(function (): void {
+    Route::middleware(['web', 'auth', Noindex::class])->group(function (): void {
         Route::view('welcome', 'foundry::onboarding.welcome')->name('foundry.welcome');
     });
 }
