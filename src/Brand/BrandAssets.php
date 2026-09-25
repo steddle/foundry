@@ -5,9 +5,6 @@ namespace Steddle\Foundry\Brand;
 use Illuminate\Support\Facades\File;
 use InvalidArgumentException;
 
-/**
- * The images every imprint publishes, filled from its `config/imprint.php`.
- */
 final class BrandAssets
 {
     public const MANIFEST = 'brand/assets.json';
@@ -42,10 +39,9 @@ final class BrandAssets
     }
 
     /**
-     * The images the foundry's mail theme draws: mail clients draw no SVG and
-     * load no web fonts. No @ in a name: Laravel Cloud's edge answers 404 to
-     * one a mail client asks for unencoded. Read apart from the rest, since a
-     * mail is sent where no og copy need be stated.
+     * Mail clients draw no SVG and load no web fonts. No @ in a name: Laravel
+     * Cloud's edge answers 404 to one a mail client asks for unencoded. Apart
+     * from the rest, since a mail needs no og copy stated.
      *
      * @return array<string, BrandAsset>
      */
@@ -61,9 +57,6 @@ final class BrandAssets
     }
 
     /**
-     * The files written as text rather than rendered: the SVG icons and the
-     * web app manifest.
-     *
      * @return array<string, string>
      */
     public static function files(): array
@@ -130,8 +123,7 @@ final class BrandAssets
         $locale = $copy['locale'] ?? null;
         unset($copy['locale']);
 
-        // A value may be a translation key, so a site whose copy lives in lang/
-        // states it once; a plain sentence has no translation and stays itself.
+        // A translation key, or a plain sentence that stays itself.
         return array_map(
             fn (mixed $value): mixed => is_string($value) ? __($value, [], $locale) : $value,
             array_filter($copy, fn (mixed $value): bool => $value !== null),

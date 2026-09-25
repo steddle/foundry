@@ -5,17 +5,11 @@ namespace Steddle\Foundry;
 use Illuminate\Support\Traits\Localizable;
 use Steddle\Foundry\Contracts\Sitemap;
 
-/**
- * The imprint's public pages in every locale, from the `Sitemap` that
- * `imprint.sitemap` names.
- */
 final class Pages
 {
     use Localizable;
 
     /**
-     * `locale => key => page`.
-     *
      * @return array<string, array<string, array{title: string, description: string, url: string, render: (\Closure(): string)|null}>>
      */
     public function byLocale(): array
@@ -24,8 +18,6 @@ final class Pages
     }
 
     /**
-     * Every page's rendered HTML, with its address, in every locale.
-     *
      * @return list<array{url: string, html: string}>
      */
     public function rendered(): array

@@ -6,10 +6,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Watson\Nameable\Name;
 
 /**
- * `$user->initials` for a model with a `name`, as the account menu and the
- * account row show them: two letters at most, upper case whatever the name's
- * case, and without words in brackets, which Nameable drops, so
- * 'ada visser (Northwind)' reads AV.
+ * Two letters at most, upper case, without words in brackets, which Nameable
+ * drops: 'ada visser (Northwind)' reads AV.
  */
 trait HasInitials
 {

@@ -1,4 +1,3 @@
-{{-- The sample /foundry/mail renders: every component of Laravel's markdown mail, through the foundry's theme. --}}
 <x-mail::message preheader="What the inbox shows beside the subject, and nowhere in the message.">
 <x-slot:above>
 A notice over the message, from the mailable's `above` slot.

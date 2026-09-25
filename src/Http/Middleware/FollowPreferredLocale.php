@@ -9,9 +9,8 @@ use Steddle\Foundry\Locales;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Speaks the visitor's language on a page that states none of its own: the
- * login, the consent, the account. A route that states one with `locale:`
- * runs after this and overrules it.
+ * A route that states its language with `locale:` runs after this and
+ * overrules it.
  */
 class FollowPreferredLocale
 {

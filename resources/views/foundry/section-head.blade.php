@@ -3,7 +3,7 @@
 {{--
     The words every section opens on: the eyebrow, the title and the lede,
     in one place so every section sets them alike. Beside each other on a
-    wide screen, or `stacked`, one above the next, where the section sets
+    wide screen, or stacked, one above the next, where the section sets
     something under them. A div and not a header: a page's markdown drops
     every <header> as chrome.
 
@@ -33,7 +33,6 @@
     'items-start' => $stacked && $align === 'start',
     'items-center text-center' => $stacked && $align === 'center',
 ]) }}>
-    {{-- Stacked, the eyebrow and the title join the lede in one column, one gap apart. --}}
     <div @class(['flex flex-col gap-5' => ! $stacked, 'contents' => $stacked])>
         @if ($eyebrow instanceof \Illuminate\View\ComponentSlot)
             {{ $eyebrow }}

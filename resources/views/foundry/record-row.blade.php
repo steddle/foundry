@@ -2,7 +2,7 @@
 
 {{--
     One record in foundry:rows: its title with a status beside it, a line of
-    metadata under it, and its actions at the end. With `href` the title and
+    metadata under it, and its actions at the end. With an href the title and
     the metadata are one link over the row; the actions stand outside it, so
     their buttons stay their own.
 

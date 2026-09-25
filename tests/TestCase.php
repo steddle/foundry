@@ -12,9 +12,8 @@ use Steddle\Foundry\Markdown\RemoveMarkdownSkipPreprocessor;
 abstract class TestCase extends Orchestra
 {
     /**
-     * What a test file's imprint states and loads before the application
-     * boots, set from its beforeAll(): the foundry reads some of its config,
-     * `imprint.onboarding` among it, only as it boots.
+     * Set from a test file's beforeAll(): the foundry reads some of its
+     * config, `imprint.onboarding` among it, only as it boots.
      *
      * @var array<string, mixed>
      */
@@ -23,10 +22,6 @@ abstract class TestCase extends Orchestra
     /** @var list<class-string> */
     public static array $providers = [];
 
-    /**
-     * The lockup and the mark every imprint supplies, which the foundry's
-     * error pages draw; a test that needs its own writes over them.
-     */
     protected function setUp(): void
     {
         parent::setUp();

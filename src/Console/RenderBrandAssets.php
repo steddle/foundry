@@ -62,8 +62,6 @@ final class RenderBrandAssets extends Command
         $jobFile = tempnam(sys_get_temp_dir(), 'foundry-jobs');
         File::put($jobFile, json_encode($jobs));
 
-        // Playwright's own Chromium reads each page through the site's own
-        // server, so an image carries the stylesheet exactly as the site builds it.
         $result = Process::path(base_path())->timeout(300)->run(['node', __DIR__.'/../../bin/render.mjs', $jobFile]);
         File::delete($jobFile);
 
@@ -109,10 +107,7 @@ final class RenderBrandAssets extends Command
         return self::FAILURE;
     }
 
-    /**
-     * An ICO holding a PNG per size, cut down from the largest icon. Every
-     * browser that still asks for favicon.ico reads PNG entries.
-     */
+    /** Every browser that still asks for favicon.ico reads PNG entries. */
     private function ico(string $source): string
     {
         $image = imagecreatefrompng($source);

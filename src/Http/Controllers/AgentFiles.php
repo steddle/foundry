@@ -11,9 +11,7 @@ use Steddle\Foundry\Markdown\MarkdownUrl;
 use Steddle\Foundry\Pages;
 
 /**
- * The sitemap, and the two files https://llmstxt.org/ names: an index an
- * agent reads first and the whole site's text in one file. All three read
- * `Pages`, so a page added there is listed everywhere.
+ * The sitemap, and the two files https://llmstxt.org/ names.
  */
 final class AgentFiles
 {
@@ -61,8 +59,7 @@ final class AgentFiles
     }
 
     /**
-     * Every page `Pages` can render, in every locale, as one file. The
-     * markdown preprocessors strip whatever layout a page renders with, so
+     * The markdown preprocessors strip whatever layout a page renders with, so
      * nav and footer never reach it.
      */
     public function full(Pages $pages): Response
@@ -75,8 +72,7 @@ final class AgentFiles
     }
 
     /**
-     * Every page's title, description and address in every locale, without
-     * the closure that renders it, which no cache store can hold.
+     * Without the closure that renders a page, which no cache store can hold.
      *
      * @return array<string, array<string, array{title: string, description: string, url: string}>>
      */
@@ -102,8 +98,7 @@ final class AgentFiles
 
     /**
      * The headers `Spatie\MarkdownResponse` puts on every other markdown
-     * response, so both files carry the same AI-training signal as a page's
-     * own `.md` twin.
+     * response, so both files carry a page's AI-training signal.
      */
     private function respond(string $body): Response
     {

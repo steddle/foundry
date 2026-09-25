@@ -7,9 +7,7 @@ use Laravel\Passkeys\Actions\DeletePasskey;
 use Livewire\Attributes\Locked;
 
 /**
- * The signed-in reader's passkeys on a Livewire page, as foundry:passkeys
- * lists them: loaded on mount, again after foundry:passkeys registers one,
- * and removed one at a time. Needs laravel/passkeys.
+ * For foundry:passkeys. Needs laravel/passkeys.
  */
 trait ManagesPasskeys
 {

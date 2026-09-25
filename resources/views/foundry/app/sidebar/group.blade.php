@@ -2,8 +2,8 @@
 
 {{--
     Links in foundry:app.sidebar that fold under a heading, over
-    flux:sidebar.group. With `remember`, the group opens as the reader last
-    left it: each toggle writes its state to the `foundry_sidebar` cookie,
+    flux:sidebar.group. With remember, the group opens as the reader last
+    left it: each toggle writes its state to the foundry_sidebar cookie,
     which the page reads before it renders, so it paints folded or open
     without a flash, and across wire:navigate.
 

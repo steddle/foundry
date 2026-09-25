@@ -7,8 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Mail\Markdown;
 
 /**
- * A sample mail through the foundry's theme, with the imprint's values, as
- * a mailable renders it; `?text` shows its plain-text part.
+ * `?text` shows the plain-text part.
  */
 final class ShowMail
 {

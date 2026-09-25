@@ -7,12 +7,8 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Sends a signed-in account that has not named itself to /welcome, from
- * every route behind `auth` and from Passport's, where
- * FoundryServiceProvider sets it once `imprint.onboarding` is on. A request
- * without an account, or with one that does not onboard, passes, and so
- * does one with no session to come back through: a token's, an agent's
- * call to the imprint's API or MCP, or one that asks for JSON.
+ * A request with no session to come back through passes: a token's, an
+ * agent's call to the imprint's API or MCP, or one that asks for JSON.
  */
 final class EnsureUserIsOnboarded
 {

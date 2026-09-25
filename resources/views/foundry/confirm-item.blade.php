@@ -10,7 +10,7 @@
     The third press fills the row, and once the fill has landed the menu
     closes and the action runs. The action is an Alpine expression rather
     than a wire:click on the item, which would fire on the first press. A
-    Flux item closes its menu by dispatching `lofi-close-popovers` on
+    Flux item closes its menu by dispatching lofi-close-popovers on
     mouseup, before the click, so the wrapper stops every such event from
     the item and closes the menu itself, on the menu.
 

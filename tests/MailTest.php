@@ -24,7 +24,6 @@ afterEach(function () {
     $this->artisan('view:clear');
 });
 
-/** The mail as a reader reads it: its text, tags gone, whitespace collapsed. */
 function readable(string $html): string
 {
     return (string) str(html_entity_decode(strip_tags($html), ENT_QUOTES))->squish();

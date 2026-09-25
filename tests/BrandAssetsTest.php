@@ -6,7 +6,6 @@ use Steddle\Foundry\Brand\BrandAssets;
 use Steddle\Foundry\Brand\Icon;
 
 beforeEach(function () {
-    // The components every imprint supplies itself.
     $directory = resource_path('views/foundry');
     File::ensureDirectoryExists($directory);
     File::put($directory.'/lockup.blade.php', '<span {{ $attributes }}>Imprint</span>');

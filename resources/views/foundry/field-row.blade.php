@@ -3,7 +3,7 @@
 {{--
     One setting: its label and a sentence on it, beside the control from md
     and above it below. The parent draws the rules between rows, as
-    foundry:rows does or with `divide-y`.
+    foundry:rows does or with divide-y.
 
     @group Forms
     @prop label The setting's name, a `<label>` where `for` names its control.

@@ -7,11 +7,9 @@ use Illuminate\Routing\Route;
 use Illuminate\Support\Arr;
 
 /**
- * The languages `imprint.locales` names, the first of them at the root and
- * every other under its own prefix. One language is a site that is not
- * multilingual: no prefix, no switch, no alternates. Translated paths differ,
- * so a page finds its counterpart by route name, `{locale}.{page}`, and
- * `lang/{locale}/routes.php` holds each language's path words.
+ * The first of `imprint.locales` sits at the root, every other under its own
+ * prefix. Translated paths differ, so a page finds its counterpart by route
+ * name, `{locale}.{page}`; `lang/{locale}/routes.php` holds the path words.
  */
 final class Locales
 {
@@ -94,7 +92,6 @@ final class Locales
             return null;
         }
 
-        // A page published in one language has no counterpart in the other.
         if (! app('router')->has("{$locale}.{$page}")) {
             return null;
         }

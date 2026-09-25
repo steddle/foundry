@@ -1,7 +1,7 @@
 @props(['title', 'paper' => 'A4', 'footer' => null])
 
 {{--
-    A page for `Steddle\Foundry\Pdf\Printer`: the whole HTML document, bone
+    A page for Steddle\Foundry\Pdf\Printer: the whole HTML document, bone
     in both themes, on A4 or Letter. Every page keeps 20 mm at the sides, and
     its foot carries the footer on the left and the page count on the right.
     Chrome sets the foot, so a long document needs no running markup of its

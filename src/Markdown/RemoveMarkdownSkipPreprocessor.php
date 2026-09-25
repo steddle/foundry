@@ -5,11 +5,6 @@ namespace Steddle\Foundry\Markdown;
 use Spatie\MarkdownResponse\Preprocessors\Preprocessor;
 
 /**
- * Strips every element carrying `data-markdown-skip`, and everything it
- * nests: a form, a copy button, a dialog, or any other element a page marks
- * as chrome rather than content. A view opts an element out at the source
- * instead of a route growing its own preprocessor.
- *
  * A regex scan for the matching close tag, not a DOMDocument parse: libxml's
  * HTML parser rewrites a `<dialog>`, `<template>` or a table nested inside
  * one, which Flux's modal and date picker print, and a marked element around

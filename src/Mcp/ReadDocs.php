@@ -16,15 +16,12 @@ use Spatie\MarkdownResponse\Facades\Markdown;
 use Steddle\Foundry\Pages;
 
 /**
- * The imprint's public pages as markdown, for an imprint's MCP server to
- * register. Always the English pages, whatever the imprint's root language:
- * the agent translates, and one language keeps one set of paths to cite.
- * Needs laravel/mcp, which the foundry only suggests.
+ * Always the English pages: the agent translates, and one language keeps one
+ * set of paths to cite. Needs laravel/mcp, which the foundry only suggests.
  *
- * A server whose other tools are named another way extends this one for a
- * `Name` of its own. PHP hands an attribute down to no subclass, and
- * laravel/mcp reads a tool's annotations off its own class, so such a
- * subclass repeats `IsReadOnly` and `IsIdempotent` as well.
+ * PHP hands an attribute down to no subclass, and laravel/mcp reads a tool's
+ * annotations off its own class, so a subclass with a `Name` of its own
+ * repeats `IsReadOnly` and `IsIdempotent` as well.
  */
 #[Name('read-docs')]
 #[IsReadOnly]

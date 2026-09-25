@@ -2,7 +2,7 @@
 
 {{--
     The ink band a page opens on, under the header that overlays it. The
-    eyebrow, the title and the lede come first, one gap apart; the `actions`
+    eyebrow, the title and the lede come first, one gap apart; the actions
     and the slot follow at the same gap.
 
     @group Sections

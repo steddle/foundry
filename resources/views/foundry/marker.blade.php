@@ -2,8 +2,8 @@
 
 {{--
     One phrase of a headline laid on the lichen highlighter. Once per
-    viewport, never on body copy or anything clickable. `inline-block
-    leading-none` sizes the mark to the glyphs: an inline box is as tall as
+    viewport, never on body copy or anything clickable. An inline block
+    with no leading sizes the mark to the glyphs: an inline box is as tall as
     the face's content area, which at display sizes spills onto the next
     line.
 

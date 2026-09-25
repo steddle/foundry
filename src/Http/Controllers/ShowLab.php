@@ -5,11 +5,6 @@ namespace Steddle\Foundry\Http\Controllers;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\View as ViewFactory;
 
-/**
- * The lab: its index names the design page, the components and the imprint's
- * experiments from `imprint.labs`; an experiment is the imprint's view
- * `labs.{page}`.
- */
 final class ShowLab
 {
     public function __invoke(?string $page = null): View

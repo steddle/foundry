@@ -1,8 +1,8 @@
 @props(['size' => '2', 'level' => null, 'tone' => 'strong'])
 
 {{--
-    Spectral, on the imprint's scale, drawn by Flux. Colour comes from `tone`
-    alone, so no caller sets two.
+    Spectral, on the imprint's scale, drawn by Flux. Colour comes from the tone
+    prop alone, so no caller sets two.
 
     @group Type
     @prop size display, figure, 1, 2 or 3: the step of the type scale; figure sets a number, in tabular numerals.

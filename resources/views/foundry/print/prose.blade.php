@@ -6,8 +6,8 @@
     Chivo, a quotation on a lichen rule, and code, and only code, in Chivo
     Mono. A paragraph leaves three lines on either side of a break. A table
     stays on the page of the line that introduces it, repeats its head on
-    every page it runs onto, and sets a column markdown aligns right, `--:`,
-    flush right; its figures are tabular throughout.
+    every page it runs onto, and aligns a column right where its markdown
+    does; its figures are tabular throughout.
 
     @prop newPage Starts every h2 on a page of its own, for a long document read part by part.
     @slot slot The rendered markdown, such as `Str::markdown($body)`.

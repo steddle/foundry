@@ -9,14 +9,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 /**
- * Marks a response for exclusion from a search index. The header form, not a
- * meta tag, so a route that answers something other than HTML still carries
- * it. `auth` and `can` answer an unmet guard by throwing rather than
- * returning, so the redirect (or the 403) that becomes has to be built the
- * same way the kernel itself would build it, or it never passes back through
- * here to be marked. Reporting it first keeps a bug on one of these routes
- * as visible to error tracking as it would be anywhere else the kernel
- * catches it.
+ * The header, not a meta tag, so an answer that is not HTML carries it too.
+ * `auth` and `can` throw on an unmet guard, so the redirect or 403 is built
+ * here as the kernel would build it, or it never passes back through to be
+ * marked. It is reported first, so error tracking still sees it.
  */
 class Noindex
 {

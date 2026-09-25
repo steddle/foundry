@@ -5,11 +5,9 @@ namespace Steddle\Foundry;
 use Illuminate\Support\Facades\View;
 
 /**
- * The imprint's docs and legal documents: a table of contents in
- * `resources/content/{locale}/{name}.php`, or `resources/content/{name}.php`
- * for an imprint in one language, and a view per entry. An entry is published
- * where its view exists and nowhere else, so a page listed before it is
- * written is no link to a 404.
+ * A table of contents in `resources/content/{locale}/{name}.php`, or
+ * `resources/content/{name}.php` in one language, and a view per entry. An
+ * entry without its view is left out, so a listed page is never a 404.
  */
 final class Content
 {
@@ -31,8 +29,6 @@ final class Content
     }
 
     /**
-     * The docs' topics, each with the articles that have a view.
-     *
      * @return array<string, array{title: string, icon: string, description: string, articles: array<string, array<int|string, mixed>>}>
      */
     public static function docs(?string $locale = null): array
@@ -41,9 +37,7 @@ final class Content
     }
 
     /**
-     * Once a request for each locale: a page reads it for its nav and its
-     * pager, the routes for their names. The locale is an argument so `once`
-     * keys on it.
+     * The locale is an argument so `once` keys on it.
      *
      * @return array<string, array{title: string, icon: string, description: string, articles: array<string, array<int|string, mixed>>}>
      */
@@ -56,8 +50,6 @@ final class Content
     }
 
     /**
-     * The legal documents' audiences, each with the documents that have a view.
-     *
      * @return array{promises: list<array{0: string, 1: string}>, audiences: array<string, array<string, mixed>>}
      */
     public static function legal(?string $locale = null): array
@@ -66,8 +58,6 @@ final class Content
     }
 
     /**
-     * Once a request for each locale, as `docsIn()`.
-     *
      * @return array{promises: list<array{0: string, 1: string}>, audiences: array<string, array<string, mixed>>}
      */
     private static function legalIn(string $locale): array

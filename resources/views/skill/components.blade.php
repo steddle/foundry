@@ -1,4 +1,3 @@
-{{-- One group of the foundry skill's component reference, in markdown. Boost renders the skill's reference file, which renders this. --}}
 @php
     $cell = fn (?string $text): string => str_replace(['|', "\n"], ['\|', ' '], (string) $text);
 @endphp

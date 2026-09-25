@@ -6,16 +6,14 @@ use Illuminate\Support\Facades\Http;
 use Spatie\Browsershot\Browsershot;
 
 /**
- * Prints a page of the imprint's own to PDF through Browsershot's Chrome.
  * The page sets its paper and margins itself, in the `@page` rule
  * `foundry:print.document` writes.
  */
 class Printer
 {
     /**
-     * The page at a URL, with its stylesheets and the fonts they name pulled
-     * in: a document that links to assets is only as fixed as those assets,
-     * and a stored one has to print the same after they are replaced.
+     * Stylesheets and fonts are pulled in: a stored document has to print the
+     * same after its assets are replaced.
      */
     public function capture(string $url): string
     {
@@ -75,9 +73,8 @@ class Printer
 
     /**
      * A printed page can carry text its readers typed, so a url() in it could
-     * send the server to an internal address and print the answer. Only the
-     * imprint's own origin is fetched, scheme and port included, and a
-     * redirect off it is refused.
+     * send the server to an internal address. Only the imprint's own origin
+     * is fetched, scheme and port included, and a redirect off it is refused.
      */
     private function fetch(string $url): ?string
     {

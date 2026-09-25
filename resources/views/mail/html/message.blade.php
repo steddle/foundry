@@ -1,14 +1,8 @@
 @props(['header' => null, 'footer' => null, 'links' => null, 'legal' => null, 'preheader' => null])
 
 {{--
-    The foundry's markdown mail, which every imprint's `x-mail::message`
-    renders through without publishing it: FoundryServiceProvider adds this
-    folder to `mail.markdown.paths` after the imprint's own, so a file the
-    imprint keeps under resources/views/vendor/mail still stands in for one
-    here; an imprint that sets `mail.markdown` in its config keeps `paths`
-    in it, or its own files are no longer read. Sending stays the
-    imprint's: its `config/mail.php` names the mailer, Resend or another,
-    and the foundry requires no transport.
+    An imprint that sets `mail.markdown` in its config keeps `paths` in it, or
+    its own files under resources/views/vendor/mail are no longer read.
 
     Each option is read from `imprint.mail`, and a prop here sets it for one
     mailable; a notification hands them over as

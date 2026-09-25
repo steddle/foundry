@@ -85,7 +85,6 @@
         @if (config('imprint.visitors'))
             <script src="https://cdn.visitors.now/v.js" data-token="{{ config('imprint.visitors') }}"></script>
 
-            {{-- An event the page handed on through the session for this one request. --}}
             @session('visitors')
                 <script>window.visitors?.track(@js($value['name']), @js($value['props']))</script>
             @endsession

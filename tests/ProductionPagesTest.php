@@ -28,9 +28,6 @@ afterEach(function () {
 });
 
 /**
- * The foundry's routes as an imprint in `$env` registers them, with a login
- * route for the guard to send a guest to.
- *
  * @param  list<string>  $production
  * @param  list<string>  $guard
  */

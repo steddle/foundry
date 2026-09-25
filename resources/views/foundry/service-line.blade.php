@@ -1,6 +1,6 @@
 {{--
     The line every page closes on: the imprint's disclaimer, its copyright,
-    and the house that serves it where `imprint.endorsed` holds, as it does
+    and the house that serves it where imprint.endorsed holds, as it does
     for every imprint but Steddle itself. On ink.
 
     @group Shell
@@ -17,7 +17,6 @@
             <span aria-hidden="true">|</span>
             <span>
                 {{ __('foundry::footer.service_by') }}
-                {{-- Steddle's name in its own face, Spectral 700. --}}
                 <a href="https://steddle.com" target="_blank" rel="noopener" class="font-serif font-bold tracking-[-0.03em] text-zinc-950 dark:text-zinc-50 hover:underline">Steddle</a>
             </span>
         @endif

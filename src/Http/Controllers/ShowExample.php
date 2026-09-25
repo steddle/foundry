@@ -6,9 +6,8 @@ use Illuminate\Contracts\View\View;
 use Steddle\Foundry\Catalog\Catalog;
 
 /**
- * One example of a component alone on a page of its own, which /components
- * frames at a viewport's width, so a section meets its breakpoints as it
- * does on a page.
+ * /components frames this page at a viewport's width, so a section meets its
+ * breakpoints as it does on a page.
  */
 final class ShowExample
 {

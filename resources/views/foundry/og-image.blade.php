@@ -8,10 +8,10 @@
 ])
 
 {{--
-    OG Kit fetches the page's own URL and renders whatever sits in
-    `<template data-og-template>`, at a fixed 1200×630: the page's type scale
+    OG Kit fetches the page's own URL and renders whatever sits in the
+    template marked data-og-template, at a fixed 1200×630: the page's type scale
     is fluid and would not mean the same thing there, so every size here is a
-    literal pixel value instead of the site's `text-heading-*` tokens.
+    literal pixel value instead of the site's heading tokens.
 
     @group Brand
     @prop heading The image's headline, in Spectral at 72px.

@@ -2,9 +2,9 @@
 
 {{--
     An error page, on foundry:layouts.auth: its code, its title and its
-    lead, and a way on. The words are `foundry::errors`, which an imprint
+    lead, and a way on. The words are foundry::errors, which an imprint
     words for itself in lang/vendor/foundry/{locale}/errors.php, and the scene
-    is the one config/imprint.php names under `errors.scene`, grain and the
+    is the one config/imprint.php names under errors.scene, grain and the
     mark without one. The foundry answers 403, 404, 419, 429, 500 and 503 with
     it; an imprint's own resources/views/errors/{code}.blade.php stands in for
     one whose actions are its own.

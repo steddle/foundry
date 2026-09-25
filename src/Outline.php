@@ -5,9 +5,8 @@ namespace Steddle\Foundry;
 use Illuminate\Support\Str;
 
 /**
- * The "On this page" list of a rendered document, read from its own `<h2>`s,
- * so a heading added to a document is listed without a second edit. A heading
- * without an id gets one from its text.
+ * Read from a document's own `<h2>`s. A heading without an id gets one from
+ * its text.
  */
 final class Outline
 {
@@ -38,8 +37,6 @@ final class Outline
     }
 
     /**
-     * The headings as the links of an "On this page" list.
-     *
      * @param  array<string, string>  $headings  id => label
      * @return list<array{label: string, href: string}>
      */

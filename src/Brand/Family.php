@@ -3,9 +3,8 @@
 namespace Steddle\Foundry\Brand;
 
 /**
- * The house and its imprints, as /design shows them side by side: each keeps
- * Steddle's structure in an ink and an accent of its own. `ink` is its
- * zinc-900, `accent` its primary-300, `mark` its pictogram on a 32 by 32 grid.
+ * `ink` is an imprint's zinc-900, `accent` its primary-300, `mark` its
+ * pictogram on a 32 by 32 grid.
  */
 final class Family
 {

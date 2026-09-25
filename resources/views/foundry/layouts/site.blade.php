@@ -4,8 +4,8 @@
 
 {{--
     A public page of the site: the head, foundry:bar, the page's own content,
-    and the footer with the `closing` slot. An imprint hands the footer its
-    links through the `footer` slot. No @fluxAppearance: the site follows the
+    and the footer with the closing slot. An imprint hands the footer its
+    links through the footer slot. No @fluxAppearance: the site follows the
     system theme itself.
 
     @group Shell
