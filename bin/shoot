@@ -14,6 +14,7 @@
 // Each page is shot at full length, and its PNG's path printed.
 
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { homedir, tmpdir } from 'node:os';
@@ -129,8 +130,12 @@ try {
         const response = await page.goto(base + path, { waitUntil: 'networkidle' });
         await page.evaluate(() => document.fonts.ready);
 
-        const name = [imprint, path.replace(/^\/|\/$/g, '').replace(/[^\w.-]+/g, '-') || 'home', options.dark && 'dark', options.phone && 'phone']
-            .filter(Boolean).join('-');
+        // A query can make the path longer than a file name may be: past 80 characters it ends in a short hash of the whole.
+        let slug = path.replace(/^\/|\/$/g, '').replace(/[^\w.-]+/g, '-') || 'home';
+        if (slug.length > 80) {
+            slug = slug.slice(0, 64) + '-' + createHash('sha1').update(path).digest('hex').slice(0, 8);
+        }
+        const name = [imprint, slug, options.dark && 'dark', options.phone && 'phone'].filter(Boolean).join('-');
         const file = join(out, `${name}.png`);
 
         await page.screenshot({ path: file, fullPage: true });
