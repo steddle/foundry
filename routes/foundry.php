@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Steddle\Foundry\Http\Controllers\AgentFiles;
+use Steddle\Foundry\Http\Controllers\MagicLinkController;
+use Steddle\Foundry\Http\Controllers\PasskeyEndpoints;
 use Steddle\Foundry\Http\Controllers\RenderBrandAsset;
 use Steddle\Foundry\Http\Controllers\RootLanguagePrefix;
 use Steddle\Foundry\Http\Controllers\ShowComponent;
@@ -12,7 +14,6 @@ use Steddle\Foundry\Http\Controllers\UpdateLocale;
 use Steddle\Foundry\Http\Middleware\Noindex;
 use Steddle\Foundry\Locales;
 
-// The sitemap and the llms files, for an imprint that lists its pages in `imprint.sitemap`.
 if (config('imprint.sitemap')) {
     Route::middleware('web')->group(function (): void {
         Route::get('sitemap.xml', [AgentFiles::class, 'sitemap'])->name('sitemap');
@@ -32,24 +33,31 @@ if (Locales::multilingual()) {
     });
 }
 
-// Where an account names itself, for an imprint that sets `imprint.onboarding`.
 if (config('imprint.onboarding')) {
     Route::middleware(['web', 'auth'])->group(function (): void {
         Route::view('welcome', 'foundry::onboarding.welcome')->name('foundry.welcome');
     });
 }
 
-// Off a public deployment's route list: the page Playwright renders a brand asset
-// from, kept out of search and nothing more.
+// The GET and the POST are not behind `guest`: a link for another account switches to it.
+if (config('imprint.auth')) {
+    Route::middleware(['web', Noindex::class, 'throttle:magic-link'])->group(function (): void {
+        Route::post('login/magic', [MagicLinkController::class, 'send'])->middleware('guest')->name('login.magic.send');
+        Route::get('login/magic/{user}', [MagicLinkController::class, 'confirm'])->middleware('signed:relative')->name('login.magic');
+        Route::post('login/magic/{user}', [MagicLinkController::class, 'consume'])->middleware('signed:relative')->name('login.magic.consume');
+    });
+
+    Route::get('.well-known/passkey-endpoints', PasskeyEndpoints::class)->name('well-known.passkeys');
+}
+
+// The page Playwright renders a brand asset from.
 if (! app()->isProduction()) {
     Route::get('foundry/brand/{asset}', RenderBrandAsset::class)
         ->middleware(Noindex::class)
         ->name('foundry.brand');
 }
 
-// The imprint's pages about itself, the lab, the design page, the components and the mail,
-// behind `pages.middleware` and, outside local, `pages.guard` from config/imprint.php. In
-// production only those `pages.production` names, and none where no guard keeps them.
+// In production, none where no guard keeps them.
 $served = match (true) {
     ! app()->isProduction() => ['labs', 'design', 'components', 'mail'],
     config('imprint.pages.guard', []) === [] => [],

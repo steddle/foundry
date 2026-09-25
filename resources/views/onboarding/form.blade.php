@@ -1,7 +1,7 @@
 <div class="contents">
     <div class="flex flex-col gap-3">
         <foundry:heading size="1" level="1">{{ __('foundry::onboarding.title') }}</foundry:heading>
-        <foundry:text tone="muted">{{ __('foundry::onboarding.description', ['name' => config('imprint.name')]) }}</foundry:text>
+        <foundry:text tone="muted">{{ $lead ? $lead.' ' : '' }}{{ __('foundry::onboarding.description', ['name' => config('imprint.name')]) }}</foundry:text>
     </div>
 
     <form wire:submit="save" class="flex flex-col gap-5">

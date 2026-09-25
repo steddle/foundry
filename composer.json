@@ -13,14 +13,21 @@
         "watson/nameable": "^4.1"
     },
     "require-dev": {
+        "laravel/fortify": "^1.37",
         "laravel/mcp": "^1.0",
+        "laravel/passkeys": "^0.2",
+        "laravel/passport": "^13.8",
         "laravel/pint": "^1.32",
+        "laravel/sanctum": "^4.3",
         "orchestra/testbench": "^11.0",
         "pestphp/pest": "^5.0"
     },
     "suggest": {
-        "laravel/mcp": "For Steddle\\Foundry\\Mcp\\ReadDocs, the read-docs tool an imprint's MCP server registers (^1.0).",
-        "laravel/passkeys": "For Steddle\\Foundry\\Concerns\\ManagesPasskeys and foundry:passkeys, with @laravel/passkeys in the imprint's package.json (^0.2)."
+        "laravel/mcp": "For Steddle\\Foundry\\Mcp\\ReadDocs, the read-docs tool an imprint's MCP server registers, and Steddle\\Foundry\\Mcp\\HasImprintIcons (^1.0).",
+        "laravel/passkeys": "For Steddle\\Foundry\\Concerns\\ManagesPasskeys and foundry:passkeys, with @laravel/passkeys in the imprint's package.json (^0.2).",
+        "laravel/fortify": "For the sign-in the foundry wires: its login view, limiters, password confirmation and Noindex (^1.37).",
+        "laravel/passport": "For imprint.mcp: the consent screen, the OAuth hardening, Steddle\\Foundry\\Concerns\\ManagesAgentConnections and foundry:agent-connections (^13.7).",
+        "laravel/sanctum": "For Steddle\\Foundry\\Auth\\DeleteAccount to delete an account's Sanctum tokens (^4.3)."
     },
     "autoload": {
         "psr-4": {
@@ -57,5 +64,8 @@
             "type": "composer",
             "url": "https://composer.fluxui.dev"
         }
-    ]
+    ],
+    "scripts": {
+        "post-autoload-dump": "@php vendor/bin/testbench workbench:sync --ansi"
+    }
 }

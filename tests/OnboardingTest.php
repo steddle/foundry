@@ -131,6 +131,26 @@ test('the imprint can fill the name in from what it knows', function () {
     Livewire::actingAs(unnamed())->test(Welcome::class)->assertSet('name', 'Ada Visser');
 });
 
+class LeadFromInvitation
+{
+    public function __invoke(OnboardingUser $user): ?string
+    {
+        return $user->email === 'ada@imprint.test' ? 'Bo Jansen sent you an NDA.' : null;
+    }
+}
+
+test('the imprint can say a sentence of its own before the description, such as who sent the account an NDA', function () {
+    config(['imprint.onboarding.lead' => LeadFromInvitation::class]);
+
+    Livewire::actingAs(unnamed())->test(Welcome::class)
+        ->assertSet('lead', 'Bo Jansen sent you an NDA.')
+        ->assertSee('Bo Jansen sent you an NDA. This is the name Imprint uses for you.');
+
+    Livewire::actingAs(OnboardingUser::create(['name' => 'cy', 'email' => 'cy@imprint.test']))->test(Welcome::class)
+        ->assertSet('lead', null)
+        ->assertSee('>This is the name Imprint uses for you.', false);
+});
+
 test('saving the name marks the account onboarded and goes back where it was headed, or home', function () {
     $user = unnamed();
     session(['url.intended' => url('/probe')]);

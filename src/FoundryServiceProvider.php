@@ -3,20 +3,31 @@
 namespace Steddle\Foundry;
 
 use Closure;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Channels\MailChannel as LaravelMailChannel;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Laravel\Fortify\Fortify;
+use Laravel\Mcp\Server\Http\Controllers\OAuthRegisterController;
+use Laravel\Passport\Passport;
 use Livewire\Livewire;
 use LogicException;
 use Spatie\MarkdownResponse\Middleware\RewriteMarkdownUrls as BaseRewriteMarkdownUrls;
 use Steddle\Foundry\Console\RenderBrandAssets;
+use Steddle\Foundry\Http\Middleware\BrandOAuthMetadata;
 use Steddle\Foundry\Http\Middleware\EnsureUserIsOnboarded;
 use Steddle\Foundry\Http\Middleware\FollowPreferredLocale;
 use Steddle\Foundry\Http\Middleware\FollowVisitorLanguage;
@@ -35,25 +46,36 @@ class FoundryServiceProvider extends ServiceProvider
 
         $this->app->bind(BaseRewriteMarkdownUrls::class, RewriteMarkdownUrls::class);
 
-        // Laravel reads an error page from `errors/` under each of `view.paths`, in order, so
-        // the foundry's sit under a path of their own at the end: an imprint's own
-        // resources/views/errors/{code}.blade.php stands in for one.
+        // Laravel reads `errors/` under each of `view.paths` in order, so an imprint's own error page wins.
         $this->app['config']->push('view.paths', dirname(__DIR__).'/resources/fallback');
 
-        // Markdown mail reads its components and its theme from these paths in order, so the
-        // foundry's come after the imprint's own: a file under resources/views/vendor/mail
-        // stands in for the foundry's of that name. Laravel's own come last of all. A cached
-        // config holds the path already.
+        // Read in order, so an imprint's resources/views/vendor/mail wins. A cached config holds the path already.
         if (! $this->app->configurationIsCached()) {
             $this->app['config']->push('mail.markdown.paths', dirname(__DIR__).'/resources/views/mail');
         }
 
-        // Hands the notification view the greeting for its recipient.
         $this->app->bind(LaravelMailChannel::class, MailChannel::class);
 
-        // Passport's routes take this list as their group's middleware, the consent screen among them.
+        // Passport's route group, the consent screen included, takes this list as its middleware.
         if ($this->app['config']->get('imprint.onboarding') && ! in_array(EnsureUserIsOnboarded::class, $this->app['config']->get('passport.middleware', []), true)) {
             $this->app['config']->push('passport.middleware', EnsureUserIsOnboarded::class);
+        }
+
+        // In register: Fortify reads these as it boots.
+        if ($this->app['config']->get('imprint.auth') && class_exists(Fortify::class)) {
+            if (! in_array(Noindex::class, $middleware = $this->app['config']->get('fortify.middleware', ['web']), true)) {
+                $this->app['config']->set('fortify.middleware', [...$middleware, Noindex::class]);
+            }
+
+            // Fortify's default is no limiter; signIn() defines these.
+            foreach (['login', 'passkeys'] as $limiter) {
+                $this->app['config']->set("fortify.limiters.{$limiter}", $this->app['config']->get("fortify.limiters.{$limiter}") ?? $limiter);
+            }
+        }
+
+        // In register: Passport registers the device routes and grant on this flag as it boots, and no imprint holds their table.
+        if ($this->app['config']->get('imprint.mcp') && class_exists(Passport::class)) {
+            Passport::$deviceCodeGrantEnabled = false;
         }
     }
 
@@ -61,19 +83,19 @@ class FoundryServiceProvider extends ServiceProvider
     {
         $this->tag();
 
-        // An imprint's own file under resources/views/foundry stands in for the
-        // foundry's component of that name, as a published Flux component does.
+        // In boot, after Livewire merges its defaults under the imprint's config/livewire.php, so this holds over both.
+        config(['livewire.make_command.type' => 'mfc', 'livewire.make_command.emoji' => false]);
+
+        // First, so an imprint's file under resources/views/foundry stands in for the foundry's.
         Blade::anonymousComponentPath(resource_path('views/foundry'), 'foundry');
 
         Blade::anonymousComponentPath(__DIR__.'/../resources/views/foundry', 'foundry');
 
-        // The components the foundry's own pages are built from, which no imprint writes.
         Blade::anonymousComponentPath(__DIR__.'/../resources/views/components', 'foundry');
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'foundry');
 
-        // A notification's mail, which hands its options to the foundry's theme: after an
-        // imprint's own resources/views/vendor/notifications, before Laravel's.
+        // An imprint's resources/views/vendor/notifications, then the foundry's, then Laravel's.
         $this->callAfterResolving('view', function (Factory $view): void {
             $view->prependNamespace('notifications', __DIR__.'/../resources/views/notifications');
 
@@ -95,13 +117,16 @@ class FoundryServiceProvider extends ServiceProvider
 
         $this->onboarding();
 
+        $this->signIn();
+
+        $this->mcp();
+
         $this->loadRoutesFrom(__DIR__.'/../routes/foundry.php');
     }
 
     /**
-     * `<foundry:button>` is `<x-foundry::button>`. The rewrite runs before
-     * Blade compiles the component tags, where a `precompiler` would run after
-     * them; Flux copies Laravel's three tag patterns for the same reason.
+     * Runs before Blade compiles component tags, where a `precompiler` would
+     * run after them.
      */
     private function tag(): void
     {
@@ -109,12 +134,11 @@ class FoundryServiceProvider extends ServiceProvider
     }
 
     /**
-     * The framework's priority list names the interface `Authenticate`
-     * implements, not the class, and an unlisted middleware is pushed to the
-     * end of it wherever a route puts it. Naming the interface keeps Noindex
-     * ahead of `auth`, so the redirect to login carries it. Set on the router,
-     * not the kernel: the kernel's own methods copy its middleware groups over
-     * the router's, and drop what a package pushed onto them.
+     * The priority list names the interface `Authenticate` implements, and an
+     * unlisted middleware goes to its end, after `auth`: Noindex must precede
+     * it so the redirect to login carries it. Set on the router, not the
+     * kernel, whose methods copy its groups over the router's and drop what a
+     * package pushed.
      */
     private function noindexBeforeAuth(): void
     {
@@ -129,15 +153,10 @@ class FoundryServiceProvider extends ServiceProvider
         array_splice($router->middlewarePriority, $at === false ? count($router->middlewarePriority) : $at, 0, [Noindex::class]);
     }
 
-    /**
-     * For an imprint that sets `imprint.onboarding`: an account that has not
-     * named itself goes to /welcome first, from every route behind `auth` and
-     * from Passport's consent screen. The migration it needs is published,
-     * never run from here, so an imprint that does not onboard changes nothing.
-     */
     private function onboarding(): void
     {
-        $this->publishesMigrations([__DIR__.'/../database/migrations' => database_path('migrations')], 'foundry-onboarding');
+        $migration = '2026_09_25_000000_add_onboarded_at_to_users_table.php';
+        $this->publishesMigrations([__DIR__.'/../database/migrations/'.$migration => database_path('migrations/'.$migration)], 'foundry-onboarding');
 
         if (! config('imprint.onboarding')) {
             return;
@@ -172,16 +191,63 @@ class FoundryServiceProvider extends ServiceProvider
         Livewire::component('foundry.welcome', Welcome::class);
     }
 
+    private function signIn(): void
+    {
+        $migration = '2026_09_25_000001_create_magic_links_table.php';
+        $this->publishesMigrations([__DIR__.'/../database/migrations/'.$migration => database_path('migrations/'.$migration)], 'foundry-sign-in');
+
+        if (! config('imprint.auth')) {
+            return;
+        }
+
+        RateLimiter::for('login', fn (Request $request): Limit => Limit::perMinute(5)
+            ->by(Str::transliterate(Str::lower((string) $request->input(config('fortify.username', 'email'))).'|'.$request->ip())));
+
+        RateLimiter::for('magic-link', fn (Request $request): Limit => Limit::perMinute(5)
+            ->by(($request->route('user') ?? Str::lower((string) $request->input('email'))).'|'.$request->ip()));
+
+        // By IP alone: the credential id is the client's to choose, so keying on it resets the limit.
+        RateLimiter::for('passkeys', fn (Request $request): Limit => Limit::perMinute(10)->by((string) $request->ip()));
+
+        // Laravel's default sends to a `dashboard` route, which an account may not be allowed to open.
+        RedirectIfAuthenticated::redirectUsing(fn (): string => url(config('fortify.home', '/')));
+
+        if (class_exists(Fortify::class)) {
+            Fortify::loginView(fn () => view('foundry::auth.login'));
+
+            // Fortify routes password confirmation whatever its features say, and no account has a password.
+            Fortify::confirmPasswordView(fn () => redirect()->route('login'));
+        }
+    }
+
     /**
-     * `Route::localized()` registers the pages its callback names once per
-     * language, named `{locale}.{page}`, the root language at the root; an
-     * imprint in one language registers them once, named as they are.
-     * `Route::docs()` and `Route::legal()` register the pages `Content`
-     * publishes, inside it or on their own. A site with more than one language
-     * also gets the visitor's language on a page that states none, and a plain
-     * cookie for the switch; routes/foundry.php adds the switch's route and
-     * the root language's prefix sent to the root.
+     * laravel/mcp registers its OAuth routes from the imprint's routes/ai.php
+     * as it boots, before or after the foundry, so they take their middleware
+     * as they match.
      */
+    private function mcp(): void
+    {
+        if (! config('imprint.mcp') || ! class_exists(Passport::class)) {
+            return;
+        }
+
+        Passport::authorizationView('foundry::mcp.authorize');
+
+        RateLimiter::for('api', fn (Request $request): Limit => Limit::perMinute(120)
+            ->by($request->user()?->getAuthIdentifier() ?? $request->ip()));
+
+        Event::listen(RouteMatched::class, function (RouteMatched $event): void {
+            // The prefix keeps this count apart from the address's other throttled requests.
+            if ($event->route->getControllerClass() === OAuthRegisterController::class) {
+                $event->route->middleware('throttle:10,60,oauth-register:');
+            }
+
+            if ($event->route->named('mcp.oauth.authorization-server', 'mcp.oauth.authorization-server.nested')) {
+                $event->route->middleware(BrandOAuthMetadata::class);
+            }
+        });
+    }
+
     private function localize(): void
     {
         Route::macro('localized', function (Closure $pages): void {
@@ -201,7 +267,6 @@ class FoundryServiceProvider extends ServiceProvider
             }
         });
 
-        // The docs and the legal documents, one page per entry `Content` publishes.
         Route::macro('docs', function (?Closure $path = null, ?string $locale = null): void {
             $path ??= fn (string $english): string => '/'.$english;
 
@@ -242,9 +307,18 @@ class FoundryServiceProvider extends ServiceProvider
         if (Locales::multilingual()) {
             $router->pushMiddlewareToGroup('web', FollowPreferredLocale::class);
             EncryptCookies::except([Locales::COOKIE]);
+
+            // Login fires for the foundry's link, a passkey and a remember cookie alike.
+            Event::listen(Login::class, function (Login $event): void {
+                $locale = $event->user instanceof HasLocalePreference ? $event->user->preferredLocale() : null;
+
+                if (in_array($locale, Locales::all(), true)) {
+                    Cookie::queue(Cookie::forever(Locales::COOKIE, $locale, sameSite: 'lax'));
+                }
+            });
         }
 
-        // foundry:app.sidebar.group's folds, which the browser writes itself.
+        // foundry:app.sidebar.group's folds: the browser writes this cookie itself.
         EncryptCookies::except(['foundry_sidebar']);
     }
 }

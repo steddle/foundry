@@ -23,6 +23,7 @@ Under `imprint.onboarding`:
 |---|---|
 | `home` | Where an account goes after, when it asked for no page |
 | `prefill` | An invokable class of the imprint's own, handed the account, returning the name it already knows or null, such as the name on an NDA sent to it |
+| `lead` | An invokable class of the imprint's own, handed the account, returning a sentence set before the description or null, such as who sent it an NDA |
 | `next` | A route name for a step of the imprint's own after the name, a phone number for instance; it ends with `redirect()->intended(...)`, and the intended page waits for it |
 
 ## Tests

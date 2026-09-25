@@ -6,9 +6,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
- * An account that names itself once, on /welcome, before any signed-in page:
- * one made by a magic link, an invitation or a guest send carries the local
- * part of its address as its name until then.
+ * An account made by a magic link, an invitation or a guest send carries the
+ * local part of its address as its name until it names itself on /welcome.
  *
  * @property ?Carbon $onboarded_at
  */

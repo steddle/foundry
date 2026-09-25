@@ -23,4 +23,6 @@ A multilingual imprint gets:
 - `POST locale/{locale}` (`locale.update`) for the switch, `foundry:locale-switch`;
 - an address under the root language's prefix sent 301 to the same path without it (`RootLanguagePrefix`).
 
+The switch sets the cookie, then fires `Steddle\Foundry\Events\LocaleChosen` with the `locale` and the signed-in `user`, or null for a guest. Every sign-in sets the cookie for good from the user's `preferredLocale()` where the user implements `HasLocalePreference` and names one of `imprint.locales`. An imprint with a `users.locale` implements `HasLocalePreference` and listens to `LocaleChosen` to save the choice, so its mails and every device the user signs in on follow it.
+
 The published images and the README are English whatever languages the site speaks; see `published-images.md`.

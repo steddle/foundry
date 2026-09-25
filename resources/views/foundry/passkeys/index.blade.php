@@ -4,8 +4,8 @@
     The signed-in reader's passkeys on an foundry:panel: each one with the
     authenticator that holds it, when it was added and last used, and a
     button to remove it, then a way to add one. The page's Livewire
-    component uses `Steddle\Foundry\Concerns\ManagesPasskeys`, which holds
-    `$passkeys` and answers `loadPasskeys` and `deletePasskey`. The script is
+    component uses Steddle\Foundry\Concerns\ManagesPasskeys, which holds
+    $passkeys and answers loadPasskeys and deletePasskey. The script is
     the foundry's resources/js/passkeys.js, which the imprint's Vite builds.
 
     @group Forms

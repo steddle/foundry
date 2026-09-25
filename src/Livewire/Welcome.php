@@ -4,17 +4,16 @@ namespace Steddle\Foundry\Livewire;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
-/**
- * An account names itself once, on /welcome, and goes on where it was
- * headed: the page it asked for, or `imprint.onboarding.home`. Where
- * `imprint.onboarding.next` names a route, that step comes first, and ends
- * where this one would have.
- */
 final class Welcome extends Component
 {
     public string $name = '';
+
+    /** A sentence of the imprint's own before the description, such as who sent the account an NDA. */
+    #[Locked]
+    public ?string $lead = null;
 
     public function mount(): void
     {
@@ -32,6 +31,8 @@ final class Welcome extends Component
         $prefill = config('imprint.onboarding.prefill');
 
         $this->name = ($prefill ? app($prefill)($user) : null) ?? ($user->hasPlaceholderName() ? '' : (string) $user->name);
+
+        $this->lead = ($lead = config('imprint.onboarding.lead')) ? app($lead)($user) : null;
     }
 
     public function save(): void

@@ -2,7 +2,7 @@
 
 return [
     'title' => 'Passkeys',
-    'lead' => 'Log in with your fingerprint, your face or a security key instead of a link by email.',
+    'lead' => 'Sign in with your fingerprint, your face or a security key instead of a link by email.',
     'none' => 'No passkeys yet.',
     'added' => 'Added :time',
     'used' => 'last used :time',
@@ -16,6 +16,6 @@ return [
     'cancel' => 'Cancel',
     'unsupported' => 'This browser does not support passkeys.',
     'or' => 'or',
-    'sign_in' => 'Log in with a passkey',
-    'signing_in' => 'Logging in',
+    'sign_in' => 'Sign in with a passkey',
+    'signing_in' => 'Signing in',
 ];

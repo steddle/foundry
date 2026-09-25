@@ -6,10 +6,15 @@ use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Laravel\Passport\Client;
+use Laravel\Passport\Contracts\AuthorizationViewResponse;
+use Laravel\Passport\Passport;
 use Livewire\Livewire;
+use Steddle\Foundry\Auth\LoginLink;
 use Steddle\Foundry\Boost\Skill;
 use Steddle\Foundry\Catalog\Catalog;
 use Steddle\Foundry\Livewire\Welcome;
@@ -19,16 +24,11 @@ use Steddle\Foundry\Markdown\MarkdownUrl;
 use Steddle\Foundry\Pages;
 
 /**
- * The tests every imprint runs for what the foundry gives it, so each site
- * holds the foundry to one standard. A site registers them from one file in
- * its suite:
+ * Registered from one file in an imprint's suite:
  *
  *     Imprint::tests(viewer: fn () => User::factory()->create());
  *
- * `viewer` makes the user the lab opens for where `imprint.pages.guard`
- * guards it; without a guard the lab is open and `viewer` is left out.
- * Pest files a test under the file that registered it, so these run as the
- * site's own.
+ * `viewer` is the user the lab opens for where `imprint.pages.guard` guards it.
  */
 final class Imprint
 {
@@ -108,6 +108,53 @@ final class Imprint
             }
         });
 
+        test('sign-in mails a link that signs its account in once, remembered, from the foundry\'s login page', function () {
+            if (! config('imprint.auth')) {
+                $this->markTestSkipped('The imprint does not sign in by email.');
+            }
+
+            Notification::fake();
+            $user = config('auth.providers.users.model')::factory()->create();
+
+            $this->get(route('login'))->assertOk()->assertSee('autocomplete="email webauthn"', false);
+            $this->from(route('login'))->post(route('login.magic.send'), ['email' => $user->email])->assertRedirect(route('login'));
+            $this->get(route('login'))->assertSee(__('foundry::sign-in.sent.heading'));
+
+            $url = null;
+            Notification::assertSentTo($user, LoginLink::class, function (LoginLink $notification) use (&$url): bool {
+                $url = $notification->url;
+
+                return true;
+            });
+
+            $this->get($url)->assertOk()->assertSee('foundry-sign-in');
+            $this->post($url)->assertRedirect()->assertCookie(auth()->guard()->getRecallerName());
+            $this->assertAuthenticatedAs($user);
+        });
+
+        test('an agent connects through the foundry\'s consent screen, with the device grant off, registration throttled and the icon in the metadata', function () {
+            if (! config('imprint.mcp') || ! class_exists(Passport::class)) {
+                $this->markTestSkipped('The imprint has no MCP server on Passport.');
+            }
+
+            $consent = app(AuthorizationViewResponse::class)->withParameters([
+                'client' => new Client(['name' => 'Claude Code (foundry)', 'redirect_uris' => ['http://localhost:33418/callback']]),
+                'user' => (object) ['name' => 'Ada Visser', 'email' => 'ada@example.com'],
+                'scopes' => [],
+                'request' => request(),
+                'authToken' => 'foundry-auth-token',
+            ])->toResponse(request())->getContent();
+
+            expect($consent)->toContain(e(__('foundry::mcp.consent.heading', ['client' => 'Claude Code', 'name' => config('imprint.name')])))
+                ->toContain('<strong class="font-semibold text-zinc-950 dark:text-zinc-50">localhost</strong>')
+                ->and(Route::has('passport.device'))->toBeFalse();
+
+            if (Route::has('mcp.oauth.authorization-server')) {
+                $this->postJson('/oauth/register', [])->assertHeader('X-RateLimit-Limit', '10');
+                $this->getJson('/.well-known/oauth-authorization-server')->assertJsonPath('op_logo_uri', asset('icon-512.png'));
+            }
+        });
+
         test('a mail renders through the foundry\'s theme, under the imprint\'s name and over its footer', function () {
             $options = MailOptions::resolve();
             $html = (string) (new MailMessage)->greeting('Dear Ada,')->line('A line only this test writes.')->action('Open', url('/'))->render();
@@ -130,7 +177,7 @@ final class Imprint
                     $this->get(MarkdownUrl::of($page['url']))->assertOk()->assertHeader('Content-Type', 'text/markdown; charset=UTF-8');
                 }
             }
-        });
+        })->skip(fn (): bool => ! config('imprint.sitemap'), 'The imprint lists no public pages.');
 
         test('every error page renders in the imprint\'s words', function (int $code) {
             Route::get('foundry-error-probe', fn () => abort($code));
@@ -152,13 +199,12 @@ final class Imprint
             $this->get('/llms-full.txt')->assertOk()->assertHeader('Content-Type', 'text/plain; charset=UTF-8');
 
             expect(Cache::has('llms-full.txt'))->toBeTrue();
-        });
+        })->skip(fn (): bool => ! config('imprint.sitemap'), 'The imprint lists no public pages.');
     }
 
     /**
-     * The test signed in as the viewer where the lab asks for one. Public
-     * because Pest binds each test's closure to the test case, so the
-     * closure no longer sees this class's private members.
+     * Public: Pest binds each test's closure to the test case, where this
+     * class's private members are out of reach.
      *
      * @param  Closure(): ?Authenticatable  $viewer
      */
@@ -169,11 +215,7 @@ final class Imprint
         return $user ? $test->actingAs($user) : $test;
     }
 
-    /**
-     * An account from the imprint's own user factory that has not named
-     * itself: its name the local part of its address. Public for the reason
-     * open() is.
-     */
+    /** Public for the reason open() is. */
     public static function unnamed(): Authenticatable
     {
         $user = config('auth.providers.users.model')::factory()->create();
@@ -183,8 +225,6 @@ final class Imprint
     }
 
     /**
-     * Every `bare` example, as [slug, index].
-     *
      * @return list<array{0: string, 1: int}>
      */
     private static function frames(): array

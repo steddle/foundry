@@ -1,9 +1,10 @@
 {{--
     Signs a reader in with a passkey over the browser's credential API, under
-    the sign-in form, set off from it by 'or'. It shows only where the browser
-    can use one, so the 'or' never stands alone, and leads to where the
-    passkey routes answer, else to `fortify.home`. The script is the
-    foundry's resources/js/passkeys.js, which the imprint's Vite builds.
+    the sign-in form, set off from it by 'or', and keeps them signed in. It
+    shows only where the browser can use one, so the 'or' never stands alone,
+    and leads to where the passkey routes answer, else to Fortify's home. The
+    script is the foundry's resources/js/passkeys.js, which the imprint's Vite
+    builds.
 
     @group Forms
 
@@ -40,6 +41,7 @@
                         options: '{{ route('passkey.login-options') }}',
                         submit: '{{ route('passkey.login') }}',
                     },
+                    remember: true,
                 });
 
                 window.location.assign(response.redirect || '{{ url(config('fortify.home', '/')) }}');
