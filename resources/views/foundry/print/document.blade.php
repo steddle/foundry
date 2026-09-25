@@ -25,7 +25,7 @@
 @endphp
 
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"@if (config('imprint.palette')) data-palette="{{ config('imprint.palette') }}"@endif>
 <head>
     <meta charset="utf-8">
     <title>{{ $title }}</title>

@@ -11,6 +11,7 @@ return [
     'stylesheet' => 'workbench/resources/css/app.css',
 
     // Steddle's: Foundry is the house's workshop, not an imprint with colours of its own.
+    'palette' => 'steddle',
     'ink' => '#0b231c',
     'paper' => '#f1f2ea',
 

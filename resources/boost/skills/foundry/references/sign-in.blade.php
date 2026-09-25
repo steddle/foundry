@@ -11,7 +11,7 @@ With `imprint.auth` set in `config/imprint.php`, the foundry signs a reader in w
 
 ## What the foundry does then
 
-- `login` is Fortify's route with the foundry's view on `foundry:layouts.auth`: one field, `autocomplete="email webauthn"` so the browser offers a passkey in it, and `foundry:passkey-sign-in` under it where passkey sign-in is routed. After a send, a card with the address stands in for the form. Without signup the card reads 'if this address has an account', so the answer is the same either way.
+- `login` is Fortify's route with the foundry's view on `foundry:layouts.auth` as a card: the imprint's lockup over it, leading home, and at the page's foot Terms and Privacy where the imprint publishes them, and steddle.com. One field, `autocomplete="email webauthn"` so the browser offers a passkey in it, and `foundry:passkey-sign-in` under it where passkey sign-in is routed. After a send, a card with the address stands in for the form. Without signup the card reads 'if this address has an account', so the answer is the same either way.
 - `login.magic.send` (POST `login/magic`) mails `Steddle\Foundry\Auth\LoginLink`, queued on `imprint.auth.queue` where set, in the reader's language, on the mail theme and its greeting, with a line to add a passkey for an account that has none. The link is signed per account and works once, for 15 minutes.
 - `login.magic` (GET `login/magic/{user}`) shows a page that posts itself with a spinner, and a `noscript` button. It spends nothing: a mail scanner that fetches the link runs no script. `login.magic.consume` (POST, same path) spends the token under a lock, signs out another account first, signs the link's account in with remember, marks its address verified, and redirects.
 - A used or expired link says so and offers a new one.
@@ -24,7 +24,8 @@ With `imprint.auth` set in `config/imprint.php`, the foundry signs a reader in w
 |---|---|
 | `signup` | Whether the first link to an address makes its account |
 | `redirect` | An invokable class of the imprint's own, handed the `MagicLink` and the request after the sign-in, returning a redirect or null |
-| `client` | An invokable class of the imprint's own, handed the request, returning `['name' => ..., 'icon' => ?url, 'email' => ?string]` or null: the login page's heading, description and 48px icon above the heading, and the mail, sign in to `name`, the mail comes from `name` on `mail.from.address`, and `email` fills the address field; null leaves `imprint.name` and `mail.from` |
+| `client` | An invokable class of the imprint's own, handed the request, returning `['name' => ..., 'icon' => ?url, 'email' => ?string, 'palette' => ?string, 'lockup' => ?url, 'icons' => ?url, 'ink' => ?colour]` or null. The login page's heading, description and 48px icon above the heading, and the mail, sign in to `name`; the mail comes from `name` on `mail.from.address`; `email` fills the address field. `foundry:layouts.auth` takes the rest, on the login page and wherever else it renders, the link's confirm page and the consent screen among them: `palette` on the page, `lockup` as an image over the card, `icons` as the base URL of `favicon.svg`, `favicon-96x96.png` and `apple-touch-icon.png`, `ink` as the browser chrome, and `name` in `<title>`. Null, or a key that is null, leaves the imprint's own |
+| `note` | An invokable class of the imprint's own, handed the request, returning one line for the foot of the login card, small and muted over a rule, or null for none |
 | `queue` | The queue the link's mail goes out on |
 | `keep` | Days a link's row outlives its expiry before `model:prune` removes it, 1 by default |
 

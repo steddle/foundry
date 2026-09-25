@@ -2,9 +2,9 @@
 
 return [
     'error' => [
-        'heading' => 'Sign-in did not go through',
-        'lede' => 'Your Steddle account could not confirm who you are. Try again.',
-        'again' => 'Try again',
+        'heading' => "Sign-in didn't go through",
+        'lede' => 'Something went wrong between :name and your Steddle account.',
+        'again' => 'Sign in again',
     ],
     'settings' => [
         'title' => 'Steddle account',

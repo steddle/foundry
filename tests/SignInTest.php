@@ -7,6 +7,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
@@ -331,6 +333,125 @@ class ClientFromRequest
     public function __invoke(Request $request): ?array
     {
         return $request->query('client') ? ['name' => $request->query('client'), 'icon' => 'https://sendnda.test/icon-512.png', 'email' => $request->query('login_hint')] : null;
+    }
+}
+
+test('the card sits under the imprint\'s lockup, without a header or the service line, over one line of Terms, Privacy and steddle.com', function () {
+    $html = $this->get('/login')->assertOk()->getContent();
+
+    expect($html)->not->toContain('<header')
+        ->toContain('aria-label="'.e(__('foundry::nav.home', ['name' => 'Imprint'])).'"')
+        ->toContain('<a href="https://steddle.com" class="py-3')
+        ->not->toContain('>Terms</a>')
+        ->not->toContain('>Privacy</a>')
+        ->not->toContain('© '.now()->year);
+
+    File::ensureDirectoryExists(resource_path('views/legal/documents'));
+    File::ensureDirectoryExists(resource_path('content'));
+    File::put(resource_path('content/legal.php'), "<?php return ['promises' => [], 'audiences' => ['everyone' => ['title' => 'Everyone', 'documents' => ['privacy' => 'Privacy policy', 'terms' => 'Terms of use']]]];");
+    File::put(resource_path('views/legal/documents/privacy.blade.php'), '<p>Privacy.</p>');
+    Route::get('legal/{document}', fn () => 'A document.')->name('legal.show');
+    Route::getRoutes()->refreshNameLookups();
+
+    try {
+        expect($this->get('/login')->getContent())
+            ->toContain('>Privacy</a>')
+            ->toContain('href="'.route('legal.show', 'privacy').'"')
+            ->not->toContain('>Terms</a>');
+    } finally {
+        File::delete([resource_path('content/legal.php'), resource_path('views/legal/documents/privacy.blade.php')]);
+    }
+});
+
+test('a card takes a footer as a sunken band at its foot, and a card without one has none', function () {
+    $card = fn (string $footer): string => Blade::render('<foundry:layouts.auth title="Continue" description="Continue." card><p>The consent.</p>'.$footer.'</foundry:layouts.auth>', deleteCachedView: true);
+
+    expect($card('<x-slot:footer><p>You will continue to sendnda.com.</p></x-slot:footer>'))
+        ->toMatch('#<div class="flex flex-col gap-3 rounded-b-lg border-t border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900/50 px-6 py-5 sm:px-9 sm:py-6">\s*<p>You will continue to sendnda.com.</p>#')
+        ->and($card(''))->not->toContain('rounded-b-lg');
+});
+
+test('a card takes a line under it, in its column on the ground, and a card without one has none', function () {
+    $card = fn (string $after): string => Blade::render('<foundry:layouts.auth title="Continue" description="Continue." card><p>The consent.</p>'.$after.'</foundry:layouts.auth>', deleteCachedView: true);
+
+    expect($card('<x-slot:after>You can leave Send NDA at any time in your Steddle account.</x-slot:after>'))
+        ->toMatch('#<p class="[^"]*ink w-full max-w-md text-center[^"]*"[^>]*>You can leave Send NDA at any time in your Steddle account.</p>#')
+        ->and($card(''))->not->toContain('max-w-md text-center')
+        ->and($card('<x-slot:after> </x-slot:after><x-slot:footer> </x-slot:footer>'))->not->toContain('max-w-md text-center')->not->toContain('rounded-b-lg');
+});
+
+test('a sign-in for a client takes its palette, lockup, icons, chrome and name, and without one the imprint\'s', function () {
+    expect($this->get('/login')->getContent())->toContain('<html lang="en">');
+
+    config(['imprint.palette' => 'steddle']);
+
+    $own = $this->get('/login')->getContent();
+
+    expect($own)->toContain('<html lang="en" data-palette="steddle">')
+        ->toContain('<title data-markdown-skip>Sign in | Imprint</title>')
+        ->toContain('<link rel="manifest" href="/site.webmanifest">')
+        ->toContain('media="(prefers-color-scheme: dark)"')
+        ->toContain('<span class="h-8 sm:h-10">Imprint</span>')
+        ->not->toContain('<img src="https://sendnda.test/brand/lockup.svg"')
+        ->not->toContain('mark-paper.svg');
+
+    config(['imprint.auth.client' => ThemedClient::class]);
+
+    $themed = $this->get('/login')->getContent();
+
+    expect($themed)->toContain('<html lang="en" data-palette="sendnda">')
+        ->toContain('<title data-markdown-skip>Sign in | Send NDA</title>')
+        ->toContain('<img src="https://sendnda.test/brand/lockup.svg" alt="Send NDA" class="h-8 w-auto sm:h-10">')
+        ->toContain('<img src="https://sendnda.test/brand/logos/mark-paper.svg" alt=""')
+        ->toContain('<link rel="icon" href="https://sendnda.test/favicon.svg" type="image/svg+xml">')
+        ->toContain('<link rel="icon" href="https://sendnda.test/favicon-96x96.png" type="image/png" sizes="96x96">')
+        ->toContain('<link rel="apple-touch-icon" href="https://sendnda.test/apple-touch-icon.png">')
+        ->toContain('<meta name="theme-color" content="#2b1720">')
+        ->not->toContain('site.webmanifest')
+        ->not->toContain('<span class="h-8 sm:h-10">Imprint</span>');
+});
+
+test('a client that names no palette, lockup, icons or ink leaves the imprint\'s', function () {
+    config(['imprint.palette' => 'bron', 'imprint.auth.client' => ClientFromRequest::class]);
+
+    expect($this->get('/login?client=Send+NDA')->getContent())
+        ->toContain('<html lang="en" data-palette="bron">')
+        ->toContain('<title data-markdown-skip>Sign in | Send NDA</title>')
+        ->toContain('<span class="h-8 sm:h-10">Imprint</span>')
+        ->toContain('<link rel="manifest" href="/site.webmanifest">');
+});
+
+class ThemedClient
+{
+    /** @return array{name: string, icon: ?string, palette: ?string, lockup: ?string, icons: ?string, ink: ?string} */
+    public function __invoke(Request $request): array
+    {
+        return [
+            'name' => 'Send NDA',
+            'icon' => 'https://sendnda.test/icon-512.png',
+            'palette' => 'sendnda',
+            'lockup' => 'https://sendnda.test/brand/lockup.svg',
+            'icons' => 'https://sendnda.test',
+            'ink' => '#2b1720',
+        ];
+    }
+}
+
+test('the imprint\'s note stands at the foot of the card, and nothing where it has none', function () {
+    config(['imprint.auth.note' => SignInNote::class]);
+
+    $this->get('/login')->assertSee('One account for Send NDA, Bron and Fly');
+
+    config(['imprint.auth.note' => null]);
+
+    $this->get('/login')->assertDontSee('One account for');
+});
+
+class SignInNote
+{
+    public function __invoke(Request $request): ?string
+    {
+        return 'One account for Send NDA, Bron and Fly';
     }
 }
 

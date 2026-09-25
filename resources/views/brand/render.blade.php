@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"@if (config('imprint.palette')) data-palette="{{ config('imprint.palette') }}"@endif>
 <head>
     <meta charset="utf-8">
     <title>{{ $asset->name }}</title>

@@ -232,21 +232,46 @@ test('a callback with an error, a state not its own or a code the account refuse
 
     $this->get(route('foundry.account.callback', $callback($query)))
         ->assertOk()
-        ->assertSee('Sign-in did not go through')
+        ->assertSee("Sign-in didn't go through")
+        ->assertSee('Something went wrong between Imprint and your Steddle account.')
+        ->assertSee('Sign in again')
+        ->assertDontSee('Try again')
         ->assertSee(route('login'));
 
     $this->assertGuest();
 })->with([
-    'an error' => [fn (array $query): array => ['error' => 'access_denied', 'state' => $query['state']]],
+    'an error' => [fn (array $query): array => ['error' => 'server_error', 'state' => $query['state']]],
     'another state' => [fn (array $query): array => ['code' => 'the-code', 'state' => 'forged']],
     'a refused code' => [fn (array $query): array => ['code' => 'the-code', 'state' => $query['state']]],
+]);
+
+test('turning the consent down goes back to the page a guest was on, and home from one behind auth', function (?string $intended, string $back) {
+    Route::middleware('web')->get('pricing', fn () => 'Pricing.');
+    Route::getRoutes()->refreshNameLookups();
+    Http::fake();
+
+    $query = authorizeAt();
+
+    if ($intended !== null) {
+        session(['url.intended' => url($intended)]);
+    }
+
+    $this->get(route('foundry.account.callback', ['error' => 'access_denied', 'state' => $query['state']]))
+        ->assertRedirect(url($back));
+
+    $this->assertGuest();
+    Http::assertNothingSent();
+})->with([
+    'a public page' => ['/pricing', '/pricing'],
+    'a page behind auth' => ['/probe', '/'],
+    'no page' => [null, '/'],
 ]);
 
 test('the account being unreachable signs no one in', function () {
     Http::fake(fn () => throw new ConnectionException('Down'));
     $query = authorizeAt();
 
-    $this->get(route('foundry.account.callback', ['code' => 'the-code', 'state' => $query['state']]))->assertOk()->assertSee('Sign-in did not go through');
+    $this->get(route('foundry.account.callback', ['code' => 'the-code', 'state' => $query['state']]))->assertOk()->assertSee("Sign-in didn't go through");
     $this->assertGuest();
 });
 

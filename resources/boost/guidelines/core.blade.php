@@ -11,9 +11,12 @@ is its own.
   site's `app.css` imports it after `tailwindcss` and Flux.
 - **Colour**: a view names seven ramps on steps 25 to 950 and nothing else;
   Tailwind's palettes are reset. `secondary` (lichen), `info`, `success`,
-  `warning` and `danger` live in the foundry; a site's theme adds `zinc`, its
-  grey, and `primary`. The foundry also declares `spring` and `wax`, the
-  ramps bron's and sendnda's themes point `primary` at, never named in a
+  `warning` and `danger` live in the foundry. `zinc`, the grey, and `primary`
+  are the imprint's palette, named by `imprint.palette` from the foundry's
+  (steddle, sendnda, bron and righted; fly and account take steddle's) and
+  set on `<html data-palette>`; a sign-in or a consent for another product
+  takes that product's. The foundry also declares `spring` and `wax`, the
+  ramps sendnda's and bron's palettes point `primary` at, never named in a
   view. `300` is the colour and text on ink, `700` text on bone, `50` a
   wash, `800` hover on bone. Flux fills with `primary-300` under `zinc-950`
   text. There are no role tokens: a component writes the pair out,
@@ -39,7 +42,7 @@ is its own.
   enters the foundry, and every imprint's suite renders it.
 - **What an imprint supplies**: `foundry:lockup`, `foundry:mark` and
   `foundry:bar`, the bar over every page, the signed-in ones included, under
-  `resources/views/foundry/`, and the `zinc` and `primary` ramps. A file of
+  `resources/views/foundry/`, and its `imprint.palette`. A file of
   that name there stands in for the foundry's component, as a published Flux
   component stands in for its own; what the component needs from the site,
   the site hands it where it uses it. A component of the imprint's own lives

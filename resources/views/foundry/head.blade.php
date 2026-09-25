@@ -2,7 +2,7 @@
 @use('Steddle\Foundry\Locales')
 @use('Steddle\Foundry\Markdown\MarkdownUrl')
 
-@props(['title', 'description', 'analytics' => null])
+@props(['title', 'description', 'analytics' => null, 'icons' => null, 'ink' => null])
 
 {{--
     The page's head: its meta, its canonical address and, where the imprint
@@ -15,6 +15,8 @@
     @prop title The page's `<title>`, and its Open Graph title and image alt, as given.
     @prop description The meta and Open Graph description.
     @prop analytics Loads the imprint's analytics; without it, only on a page that is indexed, as a noindex page may carry a token in its address.
+    @prop icons Passed to foundry:favicons: a base URL whose icons stand in for the imprint's.
+    @prop ink Passed to foundry:favicons: the browser chrome's colour in place of the imprint's.
     @slot slot What is the page's own, after the stylesheet and script.
 
     @example In a page's head
@@ -71,7 +73,7 @@
 @endif
 <meta name="twitter:image" content="{{ $ogImage }}" />
 
-<foundry:favicons />
+<foundry:favicons :$icons :$ink />
 
 @vite(array_filter([config('imprint.stylesheet'), config('imprint.script')]))
 

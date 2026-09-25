@@ -27,7 +27,7 @@
     </foundry:layouts.site>
 --}}
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ app()->getLocale() }}"@if (config('imprint.palette')) data-palette="{{ config('imprint.palette') }}"@endif>
     <head>
         <foundry:head :$title :$description />
         {{ $head ?? '' }}

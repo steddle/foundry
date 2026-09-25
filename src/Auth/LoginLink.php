@@ -19,7 +19,7 @@ class LoginLink extends Notification implements ShouldQueue
 
     public function __construct(public string $url, public ?string $name = null) {}
 
-    /** @return array{name: string, icon: ?string, email?: ?string}|null */
+    /** @return array{name: string, icon: ?string, email?: ?string, palette?: ?string, lockup?: ?string, icons?: ?string, ink?: ?string}|null */
     public static function clientFor(Request $request): ?array
     {
         return ($client = config('imprint.auth.client')) ? app($client)($request) : null;

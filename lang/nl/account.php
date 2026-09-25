@@ -2,9 +2,9 @@
 
 return [
     'error' => [
-        'heading' => 'Inloggen is niet gelukt',
-        'lede' => 'Je Steddle-account kon niet bevestigen wie je bent. Probeer het opnieuw.',
-        'again' => 'Opnieuw proberen',
+        'heading' => 'Aanmelden lukte niet',
+        'lede' => 'Er ging iets mis tussen :name en je Steddle-account.',
+        'again' => 'Opnieuw aanmelden',
     ],
     'settings' => [
         'title' => 'Steddle-account',

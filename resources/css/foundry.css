@@ -39,10 +39,11 @@
 }
 
 /*
- * Seven ramps on steps 25 to 950. A site's theme adds `zinc`, its grey, and
- * `primary`; the other five are the same in every imprint. `700` is text on
- * bone in every ramp, `300` the colour itself and text on ink, `50` a wash.
- * `static`, so a ramp no utility names still reaches Flux and the compat names.
+ * Seven ramps on steps 25 to 950. `zinc`, the grey, and `primary` are the
+ * imprint's, from its palette below; the other five are the same in every
+ * imprint. `700` is text on bone in every ramp, `300` the colour itself and
+ * text on ink, `50` a wash. `static`, so a ramp no utility names still
+ * reaches Flux and the compat names.
  */
 @theme static {
     --color-*: initial;
@@ -144,6 +145,32 @@
     --color-wax-800: #70254e;
     --color-wax-900: #521638;
     --color-wax-950: #320720;
+
+    /* zinc and primary: Steddle's, the house's, until an imprint's theme or its palette sets its own. Named here, so their utilities exist. */
+    --color-zinc-25: #f7f8f3;
+    --color-zinc-50: #f1f2ea;
+    --color-zinc-100: #e6e8de;
+    --color-zinc-200: #d3d7cc;
+    --color-zinc-300: #b5bbb0;
+    --color-zinc-400: #929a91;
+    --color-zinc-500: #6e7873;
+    --color-zinc-600: #525d58;
+    --color-zinc-700: #3a4741;
+    --color-zinc-800: #21322b;
+    --color-zinc-900: #0b231c;
+    --color-zinc-950: #061711;
+    --color-primary-25: var(--color-secondary-25);
+    --color-primary-50: var(--color-secondary-50);
+    --color-primary-100: var(--color-secondary-100);
+    --color-primary-200: var(--color-secondary-200);
+    --color-primary-300: var(--color-secondary-300);
+    --color-primary-400: var(--color-secondary-400);
+    --color-primary-500: var(--color-secondary-500);
+    --color-primary-600: var(--color-secondary-600);
+    --color-primary-700: var(--color-secondary-700);
+    --color-primary-800: var(--color-secondary-800);
+    --color-primary-900: var(--color-secondary-900);
+    --color-primary-950: var(--color-secondary-950);
 
     /* Interim: Flux's colour props name Tailwind's palettes. Each resolves to the nearest family ramp until no view passes one. */
     --color-red-50: var(--color-danger-50);
@@ -382,6 +409,127 @@
     --color-accent: var(--color-primary-300);
     --color-accent-content: var(--color-primary-700);
     --color-accent-foreground: var(--color-zinc-950);
+}
+
+/*
+ * Palettes: each imprint's zinc and primary by name, set on `<html
+ * data-palette>` from `imprint.palette`, or from the client a sign-in is
+ * for. On the root element, so the names above that resolve through zinc and
+ * primary (gray, accent, the shadows) resolve through the palette too. fly
+ * and account take steddle's.
+ */
+@layer theme {
+    /* stone and lichen. */
+    :root[data-palette='steddle'] {
+        --color-zinc-25: #f7f8f3;
+        --color-zinc-50: #f1f2ea;
+        --color-zinc-100: #e6e8de;
+        --color-zinc-200: #d3d7cc;
+        --color-zinc-300: #b5bbb0;
+        --color-zinc-400: #929a91;
+        --color-zinc-500: #6e7873;
+        --color-zinc-600: #525d58;
+        --color-zinc-700: #3a4741;
+        --color-zinc-800: #21322b;
+        --color-zinc-900: #0b231c;
+        --color-zinc-950: #061711;
+        --color-primary-25: var(--color-secondary-25);
+        --color-primary-50: var(--color-secondary-50);
+        --color-primary-100: var(--color-secondary-100);
+        --color-primary-200: var(--color-secondary-200);
+        --color-primary-300: var(--color-secondary-300);
+        --color-primary-400: var(--color-secondary-400);
+        --color-primary-500: var(--color-secondary-500);
+        --color-primary-600: var(--color-secondary-600);
+        --color-primary-700: var(--color-secondary-700);
+        --color-primary-800: var(--color-secondary-800);
+        --color-primary-900: var(--color-secondary-900);
+        --color-primary-950: var(--color-secondary-950);
+    }
+
+    /* gall and wax. */
+    :root[data-palette='sendnda'] {
+        --color-zinc-25: #faf5f8;
+        --color-zinc-50: #f7eff2;
+        --color-zinc-100: #eee4e8;
+        --color-zinc-200: #ddd1d6;
+        --color-zinc-300: #c1b5ba;
+        --color-zinc-400: #9f9499;
+        --color-zinc-500: #7c7276;
+        --color-zinc-600: #61565b;
+        --color-zinc-700: #4c3f45;
+        --color-zinc-800: #38282f;
+        --color-zinc-900: #2b1720;
+        --color-zinc-950: #1d0d15;
+        --color-primary-25: var(--color-wax-25);
+        --color-primary-50: var(--color-wax-50);
+        --color-primary-100: var(--color-wax-100);
+        --color-primary-200: var(--color-wax-200);
+        --color-primary-300: var(--color-wax-300);
+        --color-primary-400: var(--color-wax-400);
+        --color-primary-500: var(--color-wax-500);
+        --color-primary-600: var(--color-wax-600);
+        --color-primary-700: var(--color-wax-700);
+        --color-primary-800: var(--color-wax-800);
+        --color-primary-900: var(--color-wax-900);
+        --color-primary-950: var(--color-wax-950);
+    }
+
+    /* well and spring. */
+    :root[data-palette='bron'] {
+        --color-zinc-25: #f3f8fa;
+        --color-zinc-50: #ebf3f5;
+        --color-zinc-100: #dee9ec;
+        --color-zinc-200: #cbd8db;
+        --color-zinc-300: #aebbc0;
+        --color-zinc-400: #8e9a9e;
+        --color-zinc-500: #6d777b;
+        --color-zinc-600: #515c61;
+        --color-zinc-700: #39464c;
+        --color-zinc-800: #203039;
+        --color-zinc-900: #0a212c;
+        --color-zinc-950: #05151f;
+        --color-primary-25: var(--color-spring-25);
+        --color-primary-50: var(--color-spring-50);
+        --color-primary-100: var(--color-spring-100);
+        --color-primary-200: var(--color-spring-200);
+        --color-primary-300: var(--color-spring-300);
+        --color-primary-400: var(--color-spring-400);
+        --color-primary-500: var(--color-spring-500);
+        --color-primary-600: var(--color-spring-600);
+        --color-primary-700: var(--color-spring-700);
+        --color-primary-800: var(--color-spring-800);
+        --color-primary-900: var(--color-spring-900);
+        --color-primary-950: var(--color-spring-950);
+    }
+
+    /* night, and navy with cornflower at 300. */
+    :root[data-palette='righted'] {
+        --color-zinc-25: #f5f7fc;
+        --color-zinc-50: #eef1f7;
+        --color-zinc-100: #e3e7ef;
+        --color-zinc-200: #d0d5df;
+        --color-zinc-300: #b3b9c3;
+        --color-zinc-400: #9298a3;
+        --color-zinc-500: #6f7581;
+        --color-zinc-600: #535a68;
+        --color-zinc-700: #3b4454;
+        --color-zinc-800: #1a2743;
+        --color-zinc-900: #051233;
+        --color-zinc-950: #02081f;
+        --color-primary-25: #f8faff;
+        --color-primary-50: #f1f5fe;
+        --color-primary-100: #dde8fe;
+        --color-primary-200: #c2d6fe;
+        --color-primary-300: #a0bffe;
+        --color-primary-400: #709bf8;
+        --color-primary-500: #5a84e0;
+        --color-primary-600: #426ac5;
+        --color-primary-700: #2b51aa;
+        --color-primary-800: #1d3c86;
+        --color-primary-900: #102864;
+        --color-primary-950: #04143e;
+    }
 }
 
 @theme {

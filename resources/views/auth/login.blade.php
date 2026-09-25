@@ -1,8 +1,9 @@
 @php
     $client = \Steddle\Foundry\Auth\LoginLink::clientFor(request());
     $name = $client['name'] ?? config('imprint.name');
+    $note = ($noted = config('imprint.auth.note')) ? app($noted)(request()) : null;
 @endphp
-<foundry:layouts.auth :title="__('foundry::sign-in.title')" :description="__('foundry::sign-in.description', ['name' => $name])" card>
+<foundry:layouts.auth :title="__('foundry::sign-in.title')" :description="__('foundry::sign-in.description', ['name' => $name])" :$client card>
     @if (session('sign_in_email'))
         <flux:icon.envelope variant="outline" class="size-8 text-primary-700 dark:text-primary-300" />
 
@@ -39,5 +40,9 @@
         @if (Route::has('passkey.login'))
             <foundry:passkey-sign-in />
         @endif
+    @endif
+
+    @if ($note)
+        <foundry:text variant="small" tone="muted" class="border-t border-zinc-200 dark:border-zinc-700 pt-6">{{ $note }}</foundry:text>
     @endif
 </foundry:layouts.auth>
