@@ -334,6 +334,14 @@ class ClientFromRequest
     }
 }
 
+test('the mail comes from the client\'s name on the imprint\'s address, and from mail.from without a client', function () {
+    config(['mail.from' => ['address' => 'hello@steddle.com', 'name' => 'Steddle']]);
+    $user = SignInUser::create(['name' => 'ada', 'email' => 'ada@imprint.test']);
+
+    expect((new LoginLink('https://imprint.test', 'Send NDA'))->toMail($user)->from)->toBe(['hello@steddle.com', 'Send NDA'])
+        ->and((new LoginLink('https://imprint.test'))->toMail($user)->from)->toBe([]);
+});
+
 test('the mail asks an account without a passkey to add one, and leaves an account with one alone', function () {
     Schema::create('passkeys', function (Blueprint $table): void {
         $table->id();

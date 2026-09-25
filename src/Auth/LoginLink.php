@@ -41,7 +41,9 @@ class LoginLink extends Notification implements ShouldQueue
     {
         $name = $this->name ?? config('imprint.name');
 
+        // The client's name on the imprint's address: one sending address keeps deliverability in one place.
         return (new MailMessage)
+            ->when($this->name !== null, fn (MailMessage $mail) => $mail->from(config('mail.from.address'), $this->name))
             ->subject(__('foundry::sign-in.mail.subject', ['name' => $name]))
             ->line(__('foundry::sign-in.mail.intro', ['name' => $name, 'minutes' => MagicLink::MINUTES]))
             ->action(__('foundry::sign-in.mail.action'), $this->url)
