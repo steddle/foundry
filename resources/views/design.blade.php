@@ -70,10 +70,8 @@
 @endphp
 
 {{--
-    One page for every imprint, in one order: the brand, the foundations, the
-    imagery, then the controls in use. What is the imprint's own comes from
-    config/imprint.php under `design`; a component of its own is shown on
-    /components, never here.
+    What is the imprint's own comes from config/imprint.php under `design`; a
+    component of its own is shown on /components, never here.
 --}}
 <x-layouts::site :title="'Design | '.$name" :description="'The '.$name.' design system: the brand, the colours, the type and the controls, rendered from the code that ships them.'" flux>
     <foundry:sections.page-title title="Design" lead="The brand, the colours, the type and the controls the site is built from, rendered from the code that ships them." />
@@ -302,11 +300,23 @@
         <foundry:brand-assets group="icon" />
     </foundry:numbered-section>
 
-    <foundry:numbered-section number="08" name="Social images" note="Rendered by foundry:assets">
+    <foundry:numbered-section number="08" name="Tab" note="The mark and one line on a white plate, against an edge: an entry point, not a logo.">
+        <div class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-200 dark:bg-zinc-700 lg:grid-cols-2">
+            @foreach ([['bone bg-zinc-50', 'On bone'], ['ink bg-zinc-900', 'On ink']] as [$ground, $label])
+                <div class="relative flex h-72 flex-col p-8 {{ $ground }}">
+                    <p class="text-small text-zinc-600 dark:text-zinc-400">{{ $label }}</p>
+                    <foundry:tab :label="$design['tab'] ?? null" class="absolute bottom-0 left-8" />
+                    <foundry:tab edge="right" class="absolute top-16 right-0" />
+                </div>
+            @endforeach
+        </div>
+    </foundry:numbered-section>
+
+    <foundry:numbered-section number="09" name="Social images" note="Rendered by foundry:assets">
         <foundry:brand-assets />
     </foundry:numbered-section>
 
-    <foundry:numbered-section number="09" name="Buttons" note="One primary per viewport">
+    <foundry:numbered-section number="10" name="Buttons" note="One primary per viewport">
         <div class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-200 dark:bg-zinc-700 lg:grid-cols-2">
             <div class="flex flex-col gap-4 bg-zinc-25 dark:bg-zinc-800 p-6">
                 <foundry:text variant="label" tone="muted">On a card: primary and secondary</foundry:text>
@@ -326,7 +336,7 @@
         </div>
     </foundry:numbered-section>
 
-    <foundry:numbered-section number="10" name="Forms" note="livewire/flux: every control is Flux, never a native one">
+    <foundry:numbered-section number="11" name="Forms" note="livewire/flux: every control is Flux, never a native one">
         <div class="grid grid-cols-1 gap-x-8 gap-y-6 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-25 dark:bg-zinc-800 p-6 sm:p-8 md:grid-cols-2">
             <flux:input label="Full name" placeholder="Ada Visser" icon="user" />
 
@@ -376,7 +386,7 @@
         </div>
     </foundry:numbered-section>
 
-    <foundry:numbered-section number="11" name="Feedback" note="What the site tells a reader">
+    <foundry:numbered-section number="12" name="Feedback" note="What the site tells a reader">
         <div class="flex flex-col gap-8">
             {{-- The badge's own example, so the two pages cannot show it apart. --}}
             {!! Blade::render(Catalog::shared()['badge']['examples'][0]['blade']) !!}
@@ -405,5 +415,5 @@
             </div>
         </div>
     </foundry:numbered-section>
-</x-layouts::site>
     @include('foundry::design.mail', ['number' => '13'])
+</x-layouts::site>
