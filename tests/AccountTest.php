@@ -168,6 +168,43 @@ test('the remember cookie alone signs the account back in, though it has no pass
         ->and(Auth::guard()->validate(['email' => 'ada@imprint.test', 'password' => '']))->toBeFalse();
 });
 
+test('the migration takes the password and its resets from Laravel\'s stock users table, so a first sign-in makes its row, and puts them back', function () {
+    Schema::drop('users');
+    Schema::create('users', function (Blueprint $table): void {
+        $table->id();
+        $table->string('name');
+        $table->string('email')->unique();
+        $table->timestamp('email_verified_at')->nullable();
+        $table->string('password');
+        $table->rememberToken();
+    });
+    Schema::create('password_reset_tokens', function (Blueprint $table): void {
+        $table->string('email')->primary();
+        $table->string('token');
+        $table->timestamp('created_at')->nullable();
+    });
+    $migration = require dirname(__DIR__).'/database/migrations/2026_09_25_000002_add_steddle_id_to_users_table.php';
+    $migration->up();
+
+    expect(Schema::hasColumn('users', 'password'))->toBeFalse()
+        ->and(Schema::hasColumn('users', 'steddle_id'))->toBeTrue()
+        ->and(Schema::hasTable('password_reset_tokens'))->toBeFalse();
+
+    tokenAnswers(['id' => '01K0NEW', 'email' => 'cy@imprint.test', 'name' => 'Cy']);
+    $query = authorizeAt();
+    $this->get(route('foundry.account.callback', ['code' => 'the-code', 'state' => $query['state']]))->assertRedirect();
+
+    $user = AccountUser::sole();
+    expect($user->steddle_id)->toBe('01K0NEW')->and($user->getAuthPassword())->toBe('');
+    $this->assertAuthenticatedAs($user);
+
+    $migration->down();
+
+    expect(Schema::hasColumn('users', 'password'))->toBeTrue()
+        ->and(Schema::hasColumn('users', 'steddle_id'))->toBeFalse()
+        ->and(Schema::hasTable('password_reset_tokens'))->toBeTrue();
+});
+
 test('the callback finds a linked row by its id whatever its address, and goes home', function () {
     $linked = AccountUser::create(['steddle_id' => '01K0ACCOUNT', 'name' => 'Ada Visser', 'email' => 'old@imprint.test']);
     AccountUser::create(['steddle_id' => '01K0SOMEONE', 'name' => 'Bo', 'email' => 'bo@imprint.test']);

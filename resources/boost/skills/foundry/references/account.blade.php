@@ -6,7 +6,7 @@ With `imprint.account` set in `config/imprint.php`, the imprint signs in through
 
 1. `composer require laravel/socialite`.
 2. `use Steddle\Foundry\Concerns\HasSteddleAccount;` on the `User` model.
-3. `php artisan vendor:publish --tag=foundry-account`, then `php artisan migrate`: `steddle_id` on `users`, nullable and unique.
+3. `php artisan vendor:publish --tag=foundry-account`, then `php artisan migrate`: `steddle_id` on `users`, nullable and unique, and `users.password` and the `password_reset_tokens` table dropped where they exist. The account signs in on auth, and a row made at a first sign-in has no password.
 4. In `config/imprint.php`, `'account' => ['client' => '{{ config('imprint.account.client') ?? 'name' }}', 'secret' => env('STEDDLE_ACCOUNT_SECRET'), 'server' => env('STEDDLE_ACCOUNT_URL', 'https://auth.steddle.com'), 'home' => '/dashboard']`. The client and its secret are the ones auth's `config/clients.php` holds for the imprint.
 5. `SESSION_DRIVER=database`, so signing out everywhere reaches the imprint's sessions.
 6. Delete what the account now does: `imprint.auth` and `imprint.onboarding`, Fortify and its config and provider, `PasskeyUser` and `PasskeyAuthenticatable` on `User`, the `passkeys` table, `onboarded_at`, and in settings `foundry:passkeys` and the delete button, where `foundry:steddle-account` stands instead.

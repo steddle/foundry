@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
@@ -54,6 +55,16 @@ final class Imprint
 
             foreach ($installed as $path => $fingerprint) {
                 expect($fingerprint)->toBe(Skill::fingerprint(), "{$path} was rendered before the components or the config moved: run `php artisan boost:update`.");
+            }
+        });
+
+        test('the foundry skill names no local host, so boost:update renders it the same on every machine', function () {
+            foreach (array_keys(Skill::installed()) as $path) {
+                foreach (File::allFiles(base_path(dirname($path))) as $file) {
+                    preg_match_all('#https?://[a-z0-9.-]+\.test\b#i', $file->getContents(), $hosts);
+
+                    expect($hosts[0])->toBe([], dirname($path).'/'.$file->getRelativePathname().' names a local host: a default in a component\'s @props is read from the machine\'s config.');
+                }
             }
         });
 
@@ -162,6 +173,28 @@ final class Imprint
             $this->assertAuthenticatedAs($user);
             expect($user->refresh()->steddle_id)->toBe('foundry-test-account')
                 ->and(session('credential'))->toBe(['kind' => 'magic_link', 'link_id' => 'foundry-test-credential']);
+        });
+
+        test('a first sign-in through the Steddle account makes the row of an address the imprint has not met', function () {
+            if (! config('imprint.account')) {
+                $this->markTestSkipped('The imprint does not sign in through the Steddle account.');
+            }
+
+            $model = config('auth.providers.users.model');
+            $made = $model::factory()->make();
+            Http::fake([Account::server('oauth/token') => Http::response([
+                'token_type' => 'Bearer',
+                'access_token' => 'unused',
+                'user' => ['id' => 'foundry-test-new-account', 'email' => $made->email, 'name' => $made->name, 'locale' => null],
+                'credential' => ['kind' => 'magic_link', 'id' => 'foundry-test-credential'],
+            ])]);
+
+            parse_str((string) parse_url($this->get(route('login'))->headers->get('Location'), PHP_URL_QUERY), $query);
+            $this->get(route('foundry.account.callback', ['code' => 'foundry-test-code', 'state' => $query['state']]))->assertRedirect();
+
+            $user = $model::firstWhere('steddle_id', 'foundry-test-new-account');
+            expect($user)->not->toBeNull()->and($user->email)->toBe($made->email);
+            $this->assertAuthenticatedAs($user);
         });
 
         test('a remembered sign-in comes back from the cookie alone, and no password signs the account in', function () {

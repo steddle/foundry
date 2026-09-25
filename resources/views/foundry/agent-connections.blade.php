@@ -1,4 +1,4 @@
-@props(['agents', 'url' => \Steddle\Foundry\Mcp\Agents::url(), 'command' => \Steddle\Foundry\Mcp\Agents::command()])
+@props(['agents', 'url' => null, 'command' => null])
 
 {{--
     How the signed-in reader connects an agent, on a foundry:panel: the MCP
@@ -19,6 +19,11 @@
     @example None yet
     <foundry:agent-connections :agents="[]" url="https://bron.steddle.com/mcp" command="claude mcp add --transport http bron https://bron.steddle.com/mcp" class="max-w-3xl" />
 --}}
+@php
+    // Resolved here, not in @props: the catalogue and the skill read a default in @props as the machine's live URL.
+    $url ??= \Steddle\Foundry\Mcp\Agents::url();
+    $command ??= \Steddle\Foundry\Mcp\Agents::command();
+@endphp
 <foundry:panel :title="__('foundry::mcp.agents.title')" :lead="__('foundry::mcp.agents.lead', ['name' => config('imprint.name')])" {{ $attributes }}>
     <div class="flex flex-col gap-3">
         <foundry:text variant="label" tone="strong">{{ __('foundry::mcp.agents.url') }}</foundry:text>
