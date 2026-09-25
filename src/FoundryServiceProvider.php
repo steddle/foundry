@@ -56,6 +56,9 @@ class FoundryServiceProvider extends ServiceProvider
 
         $this->app->bind(LaravelMailChannel::class, MailChannel::class);
 
+        // laravel/boost writes Claude Code's guidelines to AGENTS.md by default, and Claude Code reads CLAUDE.md.
+        $this->app['config']->set('boost.agents.claude_code.guidelines_path', $this->app['config']->get('boost.agents.claude_code.guidelines_path', 'CLAUDE.md'));
+
         // Passport's route group, the consent screen included, takes this list as its middleware.
         if ($this->app['config']->get('imprint.onboarding') && ! in_array(EnsureUserIsOnboarded::class, $this->app['config']->get('passport.middleware', []), true)) {
             $this->app['config']->push('passport.middleware', EnsureUserIsOnboarded::class);

@@ -98,7 +98,7 @@ for imprint in "${IMPRINTS[@]}"; do
         continue
     fi
 
-    # sync renders the imprint's CLAUDE.md, AGENTS.md and foundry skill against this working copy, unpushed work
+    # sync renders the imprint's CLAUDE.md and foundry skill against this working copy, unpushed work
     # included, and those files are tracked: without the reset a sync leaves them dirty for the imprint's next commit.
     if [ "$command" = check ]; then
         lock "$name"

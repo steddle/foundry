@@ -23,10 +23,10 @@ The lab is `/labs`, `/design`, `/components` and `/foundry/mail`, set by `pages`
 ## Carrying a change through
 
 1. `vendor/bin/pest --compact` and `vendor/bin/pint` on the files you changed here.
-2. `bin/imprints check`: sync, test, then reset, holding a lock per imprint that a second run from any session waits on. Every imprint runs this checkout from its `vendor/`, with the guideline and the `foundry` skill installed from it, then goes back to its locked foundry, so its tracked `CLAUDE.md`, `AGENTS.md` and skill are left as they were. `sync` and `test` run the halves alone to look into a failure; `reset` puts an imprint back after.
+2. `bin/imprints check`: sync, test, then reset, holding a lock per imprint that a second run from any session waits on. Every imprint runs this checkout from its `vendor/`, with the guideline and the `foundry` skill installed from it, then goes back to its locked foundry, so its tracked `CLAUDE.md` and skill are left as they were. `sync` and `test` run the halves alone to look into a failure; `reset` puts an imprint back after.
 3. Commit and push the foundry once every suite passes.
 4. `bin/imprints update` (`composer update steddle/foundry` and `boost:install`), then `bin/imprints test` again.
-5. Commit each imprint by pathspec: its `composer.lock`, its `CLAUDE.md` and `AGENTS.md`, its skills directories, and what the change touched in it. Push an imprint only on Mischa's word.
+5. Commit each imprint by pathspec: its `composer.lock`, its `CLAUDE.md`, its skills directories, and what the change touched in it. Push an imprint only on Mischa's word.
 
 A visual change is looked at with `bin/shoot <imprint> <path>... [--dark] [--phone] [--as=<email>]`: it builds the imprint, renders each page at full length in Playwright's Chromium and prints the PNG paths; `--as` signs in through the foundry's sign-in link, so it works only in an imprint that has adopted it.
 
