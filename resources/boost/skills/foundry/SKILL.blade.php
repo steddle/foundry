@@ -1,6 +1,6 @@
 ---
 name: foundry
-description: "Steddle's foundry as this imprint uses it: every x-site component it renders, the foundry's and its own, with props, slots and an example; composing a page from sections; writing a component of the imprint's own; languages and localized routes; docs and legal pages; sitemap.xml, llms.txt and the markdown answer for agents; the OG image, social preview, README banner and icons from foundry:assets; printed PDFs; and the lab at /labs, /design and /components. Use for any page, component, route, copy or asset work in the site."
+description: "Steddle's foundry as this imprint uses it: every component it renders, the foundry's `foundry:*` and its own `x-name`, with props, slots and an example; composing a page from sections; writing a component of the imprint's own; languages and localized routes; docs and legal pages; sitemap.xml, llms.txt and the markdown answer for agents; the OG image, social preview, README banner and icons from foundry:assets; printed PDFs; the mail theme; sign-in; onboarding; agents over MCP and deleting an account; and the lab at /labs, /design, /components and /foundry/mail. Use for any page, component, route, copy or asset work in the site."
 ---
 @php
     $facts = \Steddle\Foundry\Boost\Skill::facts();
@@ -25,7 +25,9 @@ Open the one the task needs.
 | `references/published-images.md` | The OG image, social preview, README banner, favicons and MCP icons, `foundry:assets` |
 | `references/print.md` | A PDF from a page of the site's own |
 | `references/mail.md` | The mail theme: `imprint.mail`, its images, the greeting, per-mailable options, `/foundry/mail` |
+| `references/sign-in.md` | `imprint.auth`: a link by email and a passkey, remembered, on Fortify's login route |
 | `references/onboarding.md` | `imprint.onboarding`: an account names itself on /welcome before any signed-in page |
+| `references/mcp.md` | `imprint.mcp`: the consent screen, OAuth hardening, connecting and disconnecting agents, deleting an account |
 | `references/lab.md` | `/labs`, `/design`, `/components` and `/foundry/mail`, and an experiment's life |
 
 ## {{ $name }} at a glance

@@ -24,7 +24,7 @@ Its `banner`:
 
 ## Icons
 
-The same command draws the favicons, the touch and manifest icons, `site.webmanifest` and `favicon.ico` from `foundry:mark` in the imprint's `ink` and `paper`, and the MCP server's two icons where `mcp_icons` names them. `foundry:favicons` links them in a head, with the browser chrome in those two colours. `foundry:brand-assets` shows either set on `/design`, `group="social"` or `group="icon"`.
+The same command draws the favicons, the touch and manifest icons, `site.webmanifest` and `favicon.ico` from `foundry:mark` in the imprint's `ink` and `paper`, and the MCP server's two icons where `mcp_icons` names them, which `Steddle\Foundry\Mcp\HasImprintIcons` hands the server. `foundry:favicons` links them in a head, with the browser chrome in those two colours. `foundry:brand-assets` shows either set on `/design`, `group="social"` or `group="icon"`.
 
 ## Mail
 

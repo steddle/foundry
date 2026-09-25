@@ -7,7 +7,7 @@ Outside production the foundry registers `/labs`, `/design`, `/components` and `
 
 ## Experiments
 
-`/labs` lists the design page, the components and the experiments `imprint.labs` names, slug => [title, summary], each the imprint's own view `labs.{slug}`: a question still open. An experiment that ships is deleted: its answer lives in the page it shipped to.
+`/labs` lists the design page, the components, the mail and the experiments `imprint.labs` names, slug => [title, summary], each the imprint's own view `labs.{slug}`: a question still open. An experiment that ships is deleted: its answer lives in the page it shipped to.
 
 {{ $facts['name'] }}'s experiments: {!! $facts['labs'] === [] ? 'none' : collect($facts['labs'])->map(fn ($title, $slug) => '`'.$slug.'` ('.$title.')')->implode(', ') !!}.
 
