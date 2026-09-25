@@ -6,7 +6,7 @@
 //
 //   --dark        prefers-color-scheme: dark
 //   --phone       390 wide with touch, 1280 without
-//   --as=<email>  sign that account in first, through the foundry's sign-in link
+//   --as=<email>  sign that account in first, through the foundry's local sign-in route
 //   --out=<dir>   where the PNGs go, a new temp dir without
 //   --url=<base>  the site's root, https://<imprint>.test without
 //
@@ -65,20 +65,17 @@ if (build.status !== 0) {
 let signIn = null;
 
 if (options.as) {
-    // The URL is signed against the root the browser reaches, which need not be APP_URL. Values travel in the
+    // Signed relative, so it holds on the root the browser reaches, which need not be APP_URL. Values travel in the
     // environment, so an address needs no escaping into PHP.
     const php = `
-        use Illuminate\\Support\\Facades\\{Route, Schema, URL};
-        use Steddle\\Foundry\\Auth\\MagicLink;
+        use Illuminate\\Support\\Facades\\{Route, URL};
 
-        if (! class_exists(MagicLink::class) || ! config('imprint.auth') || ! Route::has('login.magic') || ! Schema::hasTable('magic_links')) {
+        if (! Route::has('foundry.shoot')) {
             echo "shoot:none\\n";
         } elseif (! $user = config('auth.providers.users.model')::where('email', getenv('SHOOT_AS'))->first()) {
             echo "shoot:nobody\\n";
         } else {
-            URL::forceRootUrl(getenv('SHOOT_BASE'));
-            URL::forceScheme(parse_url(getenv('SHOOT_BASE'), PHP_URL_SCHEME));
-            echo 'shoot:url '.MagicLink::issue($user)->url."\\n";
+            echo 'shoot:url '.rtrim(getenv('SHOOT_BASE'), '/').URL::temporarySignedRoute('foundry.shoot', now()->addMinutes(5), ['user' => $user->getKey()], absolute: false)."\\n";
         }
     `;
     const [command, ...args] = imprint === 'foundry' ? ['vendor/bin/testbench'] : ['php', 'artisan'];
@@ -90,7 +87,7 @@ if (options.as) {
     const answer = (tinker.stdout ?? '').match(/^shoot:(\S+)(?: (\S+))?$/m);
 
     if (answer?.[1] === 'none') {
-        fail(`${imprint} has no foundry sign-in (Steddle\\Foundry\\Auth\\MagicLink, imprint.auth, the login.magic route and the magic_links table), so --as cannot sign anyone in`);
+        fail(`${imprint} has no foundry.shoot route: it is local only, so --as needs APP_ENV=local`);
     }
 
     if (answer?.[1] === 'nobody') {
@@ -120,9 +117,9 @@ try {
     const page = await context.newPage();
 
     if (signIn) {
-        // The link lands on a page that posts itself; the POST signs in and redirects.
+        // The GET signs in and redirects; a refused signature stays on the route, a guest ends on the sign-in.
         await page.goto(signIn);
-        await page.waitForURL((url) => !url.pathname.startsWith('/login'), { timeout: 15000 })
+        await page.waitForURL((url) => !url.pathname.startsWith('/foundry/shoot') && !url.pathname.startsWith('/login'), { timeout: 15000 })
             .catch(() => fail(`signing in ${options.as} stopped at ${page.url()}`));
     }
 

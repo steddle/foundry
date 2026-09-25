@@ -30,8 +30,9 @@ With `imprint.auth` set in `config/imprint.php`, the foundry signs a reader in w
 
 - The redirect: `redirect` where it answers, else the link's `intended`, else the session's intended URL, else `fortify.home`. A send stores the session's intended URL on the row, so a link opened in another browser still reaches the page it was sent from.
 - A link of the imprint's own: `MagicLink::issue($user, 'nda', intended: $url, expiresAt: now()->addDays(7), attributes: ['contract_id' => $id])` returns the row with its `url`; columns of the imprint's own come in with a migration of its own. Mail it with a notification of its own, and resolve its `purpose` in `redirect`.
+- Beside `imprint.account`, where the Steddle account signs readers in, `imprint.auth` keeps only the links of the imprint's own: `login.magic` and `login.magic.consume` with the `magic-link` limiter, and `redirect`. No `login.magic.send`, no `.well-known/passkey-endpoints`, no Fortify login view or password confirmation, and `login` is the account's.
 - Copy: `lang/vendor/foundry/{locale}/sign-in.php` overrides a line. Markup: `resources/views/vendor/foundry/auth/login.blade.php` or `confirm.blade.php`; the confirm view is handed `$usable`, `$action` and `$link`, the row or null.
 
 ## Tests
 
-The site's suite, where it sets `imprint.auth`, renders the login page, sends a link to an account, opens it and posts it, and checks the remember cookie. Where it does not, the test is skipped.
+The site's suite, where it sets `imprint.auth` without `imprint.account`, renders the login page, sends a link to an account, opens it and posts it, and checks the remember cookie. Where it does not, the test is skipped.

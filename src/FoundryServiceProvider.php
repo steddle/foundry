@@ -207,11 +207,16 @@ class FoundryServiceProvider extends ServiceProvider
             return;
         }
 
-        RateLimiter::for('login', fn (Request $request): Limit => Limit::perMinute(5)
-            ->by(Str::transliterate(Str::lower((string) $request->input(config('fortify.username', 'email'))).'|'.$request->ip())));
-
         RateLimiter::for('magic-link', fn (Request $request): Limit => Limit::perMinute(5)
             ->by(($request->route('user') ?? Str::lower((string) $request->input('email'))).'|'.$request->ip()));
+
+        // Beside the Steddle account only the imprint's own links sign in here: the account holds the rest.
+        if (config('imprint.account')) {
+            return;
+        }
+
+        RateLimiter::for('login', fn (Request $request): Limit => Limit::perMinute(5)
+            ->by(Str::transliterate(Str::lower((string) $request->input(config('fortify.username', 'email'))).'|'.$request->ip())));
 
         // By IP alone: the credential id is the client's to choose, so keying on it resets the limit.
         RateLimiter::for('passkeys', fn (Request $request): Limit => Limit::perMinute(10)->by((string) $request->ip()));

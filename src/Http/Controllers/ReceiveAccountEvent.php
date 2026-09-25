@@ -2,6 +2,7 @@
 
 namespace Steddle\Foundry\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Steddle\Foundry\Auth\DeleteAccount;
@@ -33,10 +34,18 @@ final class ReceiveAccountEvent
 
         match ($event) {
             'updated' => $user->fillFromSteddleAccount($request->json()->all())->save(),
-            'left' => app(DeleteAccount::class)($user),
+            'left' => $this->leave($user),
             'signed-out' => $user->signOutEverywhere(),
         };
 
         return response('');
+    }
+
+    /** Its sessions first: a session row pointing at a deleted account stays in the table until it expires. */
+    private function leave(Model $user): void
+    {
+        $user->signOutEverywhere();
+
+        app(DeleteAccount::class)($user);
     }
 }

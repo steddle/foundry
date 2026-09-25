@@ -12,6 +12,7 @@ use Steddle\Foundry\Http\Controllers\ShowComponent;
 use Steddle\Foundry\Http\Controllers\ShowExample;
 use Steddle\Foundry\Http\Controllers\ShowLab;
 use Steddle\Foundry\Http\Controllers\ShowMail;
+use Steddle\Foundry\Http\Controllers\SignInToShoot;
 use Steddle\Foundry\Http\Controllers\UpdateLocale;
 use Steddle\Foundry\Http\Middleware\Noindex;
 use Steddle\Foundry\Locales;
@@ -44,12 +45,17 @@ if (config('imprint.onboarding')) {
 // The GET and the POST are not behind `guest`: a link for another account switches to it.
 if (config('imprint.auth')) {
     Route::middleware(['web', Noindex::class, 'throttle:magic-link'])->group(function (): void {
-        Route::post('login/magic', [MagicLinkController::class, 'send'])->middleware('guest')->name('login.magic.send');
+        if (! config('imprint.account')) {
+            Route::post('login/magic', [MagicLinkController::class, 'send'])->middleware('guest')->name('login.magic.send');
+        }
+
         Route::get('login/magic/{user}', [MagicLinkController::class, 'confirm'])->middleware('signed:relative')->name('login.magic');
         Route::post('login/magic/{user}', [MagicLinkController::class, 'consume'])->middleware('signed:relative')->name('login.magic.consume');
     });
 
-    Route::get('.well-known/passkey-endpoints', PasskeyEndpoints::class)->name('well-known.passkeys');
+    if (! config('imprint.account')) {
+        Route::get('.well-known/passkey-endpoints', PasskeyEndpoints::class)->name('well-known.passkeys');
+    }
 }
 
 if (config('imprint.account')) {
@@ -61,6 +67,12 @@ if (config('imprint.account')) {
 
     // Server to server: no session, no CSRF token, signed instead.
     Route::post('foundry/account/events', ReceiveAccountEvent::class)->name('foundry.account.events');
+}
+
+if (app()->isLocal()) {
+    Route::get('foundry/shoot/{user}', SignInToShoot::class)
+        ->middleware(['web', Noindex::class, 'signed:relative'])
+        ->name('foundry.shoot');
 }
 
 // The page Playwright renders a brand asset from.

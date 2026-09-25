@@ -29,7 +29,7 @@ The lab is `/labs`, `/design`, `/components` and `/foundry/mail`, set by `pages`
 4. `bin/imprints update` (`composer update steddle/foundry` and `boost:install`), then `bin/imprints test` again.
 5. Commit each imprint by pathspec: its `composer.lock`, its `CLAUDE.md`, its skills directories, and what the change touched in it. Push an imprint only on Mischa's word.
 
-A visual change is looked at with `bin/shoot <imprint> <path>... [--dark] [--phone] [--as=<email>]`: it builds the imprint, renders each page at full length in Playwright's Chromium and prints the PNG paths; `--as` signs in through the foundry's sign-in link, so it works only in an imprint that has adopted it.
+A visual change is looked at with `bin/shoot <imprint> <path>... [--dark] [--phone] [--as=<email>]`: it builds the imprint, renders each page at full length in Playwright's Chromium and prints the PNG paths; `--as` signs in through the foundry's `foundry.shoot` route, signed and registered only where `APP_ENV` is local, whether the imprint signs in by link or through the Steddle account.
 
 A change to the copy or markup of the published images needs `php artisan foundry:assets --url=https://<imprint>.test` in each imprint, or its suite fails the asset check.
 

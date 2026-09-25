@@ -306,9 +306,11 @@ test('signing out everywhere drops the account\'s sessions and its remember toke
     expect(DB::table('sessions')->pluck('id')->all())->toBe(['bo'])
         ->and($user->refresh()->remember_token)->not->toBe('remembered');
 
+    DB::table('sessions')->insert(['id' => 'ada-again', 'user_id' => $user->id, 'payload' => '', 'last_activity' => 0]);
     postEvent(['event' => 'left', 'id' => '01K0ACCOUNT'])->assertOk();
 
-    expect(AccountUser::count())->toBe(0);
+    expect(AccountUser::count())->toBe(0)
+        ->and(DB::table('sessions')->pluck('id')->all())->toBe(['bo']);
 });
 
 test('an unknown event is refused', function () {

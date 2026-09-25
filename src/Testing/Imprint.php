@@ -96,6 +96,8 @@ final class Imprint
             foreach (['labs' => 'labs/{page?}', 'design' => 'design', 'components' => 'components/{component?}', 'mail' => 'foundry/mail'] as $page => $uri) {
                 in_array($page, $served, true) ? expect($uris)->toContain($uri) : expect($uris)->not->toContain($uri);
             }
+
+            expect($uris)->not->toContain('foundry/shoot/{user}');
         });
 
         test('a notification greets its recipient by first name, or without a name where they gave none', function () {
@@ -124,8 +126,8 @@ final class Imprint
         });
 
         test('sign-in mails a link that signs its account in once, remembered, from the foundry\'s login page', function () {
-            if (! config('imprint.auth')) {
-                $this->markTestSkipped('The imprint does not sign in by email.');
+            if (! config('imprint.auth') || config('imprint.account')) {
+                $this->markTestSkipped('The imprint does not sign in by email, or signs in through the Steddle account.');
             }
 
             Notification::fake();
