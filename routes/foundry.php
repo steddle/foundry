@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Steddle\Foundry\Http\Controllers\AccountController;
 use Steddle\Foundry\Http\Controllers\AgentFiles;
 use Steddle\Foundry\Http\Controllers\MagicLinkController;
 use Steddle\Foundry\Http\Controllers\PasskeyEndpoints;
+use Steddle\Foundry\Http\Controllers\ReceiveAccountEvent;
 use Steddle\Foundry\Http\Controllers\RenderBrandAsset;
 use Steddle\Foundry\Http\Controllers\RootLanguagePrefix;
 use Steddle\Foundry\Http\Controllers\ShowComponent;
@@ -48,6 +50,17 @@ if (config('imprint.auth')) {
     });
 
     Route::get('.well-known/passkey-endpoints', PasskeyEndpoints::class)->name('well-known.passkeys');
+}
+
+if (config('imprint.account')) {
+    Route::middleware(['web', Noindex::class])->group(function (): void {
+        Route::get('login', [AccountController::class, 'redirect'])->middleware('guest')->name('login');
+        Route::get('foundry/account/callback', [AccountController::class, 'callback'])->name('foundry.account.callback');
+        Route::post('logout', [AccountController::class, 'logout'])->name('logout');
+    });
+
+    // Server to server: no session, no CSRF token, signed instead.
+    Route::post('foundry/account/events', ReceiveAccountEvent::class)->name('foundry.account.events');
 }
 
 // The page Playwright renders a brand asset from.

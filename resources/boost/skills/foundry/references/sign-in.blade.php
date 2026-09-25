@@ -24,6 +24,7 @@ With `imprint.auth` set in `config/imprint.php`, the foundry signs a reader in w
 |---|---|
 | `signup` | Whether the first link to an address makes its account |
 | `redirect` | An invokable class of the imprint's own, handed the `MagicLink` and the request after the sign-in, returning a redirect or null |
+| `client` | An invokable class of the imprint's own, handed the request, returning `['name' => ..., 'icon' => ?url, 'email' => ?string]` or null: the login page's heading, description and 48px icon above the heading, and the mail, sign in to `name`, and `email` fills the address field; null leaves `imprint.name` |
 | `queue` | The queue the link's mail goes out on |
 | `keep` | Days a link's row outlives its expiry before `model:prune` removes it, 1 by default |
 

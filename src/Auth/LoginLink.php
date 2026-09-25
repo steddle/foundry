@@ -4,6 +4,7 @@ namespace Steddle\Foundry\Auth;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Laravel\Passkeys\Contracts\PasskeyUser;
@@ -16,7 +17,13 @@ class LoginLink extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(public string $url) {}
+    public function __construct(public string $url, public ?string $name = null) {}
+
+    /** @return array{name: string, icon: ?string, email?: ?string}|null */
+    public static function clientFor(Request $request): ?array
+    {
+        return ($client = config('imprint.auth.client')) ? app($client)($request) : null;
+    }
 
     /** @return array<int, string> */
     public function via(object $notifiable): array
@@ -32,7 +39,7 @@ class LoginLink extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        $name = config('imprint.name');
+        $name = $this->name ?? config('imprint.name');
 
         return (new MailMessage)
             ->subject(__('foundry::sign-in.mail.subject', ['name' => $name]))

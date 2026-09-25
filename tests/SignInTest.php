@@ -298,6 +298,42 @@ test('the mail carries the link in the reader\'s language, on the foundry\'s gre
     Notification::assertSentTo($user, LoginLink::class, fn (LoginLink $notification): bool => $notification->locale === 'nl');
 });
 
+test('the imprint names what the mail and the login page sign in to, from the request, or leaves it to the imprint\'s name', function () {
+    config(['imprint.auth.client' => ClientFromRequest::class]);
+    $user = SignInUser::create(['name' => 'ada', 'email' => 'ada@imprint.test']);
+
+    $this->get('/login?client=Send+NDA&login_hint=ada@imprint.test')->assertOk()
+        ->assertSee('<h1', false)->assertSee('Sign in to Send NDA</h1>', false)
+        ->assertSee('<meta name="description" content="Sign in to Send NDA with a link by email. No password needed." />', false)
+        ->assertSee('<img src="https://sendnda.test/icon-512.png" alt="" width="48" height="48"', false)
+        ->assertSee('value="ada@imprint.test"', false);
+    $this->get('/login')->assertSee('Sign in to Imprint</h1>', false)->assertDontSee('icon-512.png');
+
+    $this->from('/login?client=Send+NDA')->post(route('login.magic.send', ['client' => 'Send NDA']), ['email' => 'ada@imprint.test']);
+    $this->from('/login')->post(route('login.magic.send'), ['email' => 'ada@imprint.test']);
+
+    $sent = [];
+    Notification::assertSentTo($user, LoginLink::class, function (LoginLink $notification) use (&$sent, $user): bool {
+        $mail = $notification->toMail($user);
+        $sent[] = [$mail->subject, $mail->introLines[0]];
+
+        return true;
+    });
+
+    expect($sent[0][0])->toBe('Your sign-in link for Send NDA')->and($sent[0][1])->toStartWith('Sign in to Send NDA')
+        ->and($sent[1][0])->toBe('Your sign-in link for Imprint');
+
+});
+
+class ClientFromRequest
+{
+    /** @return array{name: string, icon: ?string}|null */
+    public function __invoke(Request $request): ?array
+    {
+        return $request->query('client') ? ['name' => $request->query('client'), 'icon' => 'https://sendnda.test/icon-512.png', 'email' => $request->query('login_hint')] : null;
+    }
+}
+
 test('the mail asks an account without a passkey to add one, and leaves an account with one alone', function () {
     Schema::create('passkeys', function (Blueprint $table): void {
         $table->id();

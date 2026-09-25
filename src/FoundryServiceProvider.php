@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Contracts\View\Factory;
@@ -16,6 +17,7 @@ use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -122,6 +124,8 @@ class FoundryServiceProvider extends ServiceProvider
 
         $this->signIn();
 
+        $this->account();
+
         $this->mcp();
 
         $this->loadRoutesFrom(__DIR__.'/../routes/foundry.php');
@@ -221,6 +225,20 @@ class FoundryServiceProvider extends ServiceProvider
             // Fortify routes password confirmation whatever its features say, and no account has a password.
             Fortify::confirmPasswordView(fn () => redirect()->route('login'));
         }
+    }
+
+    private function account(): void
+    {
+        $migration = '2026_09_25_000002_add_steddle_id_to_users_table.php';
+        $this->publishesMigrations([__DIR__.'/../database/migrations/'.$migration => database_path('migrations/'.$migration)], 'foundry-account');
+
+        Gate::define('staff', fn (Authenticatable $user): bool => $user->email_verified_at !== null && Str::endsWith(Str::lower((string) $user->email), '@steddle.com'));
+
+        if (! config('imprint.account')) {
+            return;
+        }
+
+        RedirectIfAuthenticated::redirectUsing(fn (): string => url(config('imprint.account.home') ?? '/'));
     }
 
     /**

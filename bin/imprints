@@ -25,6 +25,7 @@ IMPRINTS=(
     "sendnda|$HOME/Sites/sendnda|php artisan test --compact"
     "righted|$HOME/Sites/righted|php artisan test --compact"
     "fly|$HOME/Sites/fly|php artisan test --compact"
+    "auth|$HOME/Sites/auth|php artisan test --compact"
 )
 
 LOCKS=/tmp/steddle-imprints

@@ -6,6 +6,8 @@ use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Route;
@@ -14,7 +16,9 @@ use Laravel\Passport\Client;
 use Laravel\Passport\Contracts\AuthorizationViewResponse;
 use Laravel\Passport\Passport;
 use Livewire\Livewire;
+use Steddle\Foundry\Account;
 use Steddle\Foundry\Auth\LoginLink;
+use Steddle\Foundry\Auth\MagicLink;
 use Steddle\Foundry\Boost\Skill;
 use Steddle\Foundry\Catalog\Catalog;
 use Steddle\Foundry\Livewire\Welcome;
@@ -130,6 +134,100 @@ final class Imprint
             $this->get($url)->assertOk()->assertSee('foundry-sign-in');
             $this->post($url)->assertRedirect()->assertCookie(auth()->guard()->getRecallerName());
             $this->assertAuthenticatedAs($user);
+        });
+
+        test('sign-in goes through the Steddle account and back, linking the account by its address, remembered, with the credential it used', function () {
+            if (! config('imprint.account')) {
+                $this->markTestSkipped('The imprint does not sign in through the Steddle account.');
+            }
+
+            $user = config('auth.providers.users.model')::factory()->create(['steddle_id' => null]);
+            Http::fake([Account::server('oauth/token') => Http::response([
+                'token_type' => 'Bearer',
+                'access_token' => 'unused',
+                'user' => ['id' => 'foundry-test-account', 'email' => $user->email, 'name' => $user->name, 'locale' => null],
+                'credential' => ['kind' => 'magic_link', 'id' => 'foundry-test-credential'],
+            ])]);
+
+            $location = $this->get(route('login'))->assertRedirect()->headers->get('Location');
+            parse_str((string) parse_url($location, PHP_URL_QUERY), $query);
+
+            expect($location)->toStartWith(Account::server('oauth/authorize').'?')
+                ->and($query)->toMatchArray(['client_id' => config('imprint.account.client'), 'redirect_uri' => route('foundry.account.callback'), 'code_challenge_method' => 'S256']);
+
+            $this->get(route('foundry.account.callback', ['code' => 'foundry-test-code', 'state' => $query['state']]))
+                ->assertRedirect()
+                ->assertCookie(auth()->guard()->getRecallerName());
+
+            $this->assertAuthenticatedAs($user);
+            expect($user->refresh()->steddle_id)->toBe('foundry-test-account')
+                ->and(session('credential'))->toBe(['kind' => 'magic_link', 'link_id' => 'foundry-test-credential']);
+        });
+
+        test('a remembered sign-in comes back from the cookie alone, and no password signs the account in', function () {
+            if (! config('imprint.auth') && ! config('imprint.account')) {
+                $this->markTestSkipped('The imprint signs no one in.');
+            }
+
+            $model = config('auth.providers.users.model');
+
+            if (config('imprint.account')) {
+                $user = $model::factory()->create(['steddle_id' => null]);
+                Http::fake([Account::server('oauth/token') => Http::response([
+                    'token_type' => 'Bearer',
+                    'access_token' => 'unused',
+                    'user' => ['id' => 'foundry-test-account', 'email' => $user->email, 'name' => $user->name, 'locale' => null],
+                    'credential' => ['kind' => 'passkey', 'id' => 'foundry-test-credential'],
+                ])]);
+                parse_str((string) parse_url($this->get(route('login'))->headers->get('Location'), PHP_URL_QUERY), $query);
+                $response = $this->get(route('foundry.account.callback', ['code' => 'foundry-test-code', 'state' => $query['state']]));
+            } else {
+                $user = $model::factory()->create();
+                $response = $this->post(MagicLink::issue($user)->url);
+            }
+
+            $recaller = auth()->guard()->getRecallerName();
+            $cookie = $response->assertCookie($recaller)->getCookie($recaller);
+
+            $this->flushSession();
+            $this->app['auth']->forgetGuards();
+            Route::middleware(['web', 'auth'])->get('foundry-recall-probe', fn () => 'Recalled.');
+
+            $this->withCookie($recaller, $cookie->getValue())->get('/foundry-recall-probe')->assertOk();
+            $this->assertAuthenticatedAs($user);
+            expect(auth()->guard()->validate(['email' => $user->email, 'password' => '']))->toBeFalse();
+        });
+
+        test('the Steddle account\'s events are refused unsigned, and fill, sign out and delete the account', function () {
+            if (! config('imprint.account')) {
+                $this->markTestSkipped('The imprint does not sign in through the Steddle account.');
+            }
+
+            $user = config('auth.providers.users.model')::factory()->create(['steddle_id' => 'foundry-test-account', 'remember_token' => 'foundry-test-token']);
+            $send = function (array $payload, ?string $secret = null) {
+                $timestamp = (string) now()->getTimestamp();
+                $signature = hash_hmac('sha256', $timestamp.'.'.json_encode($payload), $secret ?? (string) config('imprint.account.secret'));
+
+                return $this->postJson(route('foundry.account.events'), $payload, ['Steddle-Timestamp' => $timestamp, 'Steddle-Signature' => 'sha256='.$signature]);
+            };
+
+            $send(['event' => 'updated', 'id' => 'foundry-test-account', 'name' => 'Mallory'], 'not-the-secret')->assertForbidden();
+            $send(['event' => 'updated', 'id' => 'foundry-test-account', 'name' => 'Ada Visser'])->assertOk();
+            expect($user->refresh()->name)->toBe('Ada Visser');
+
+            $send(['event' => 'signed-out', 'id' => 'foundry-test-account'])->assertOk();
+            expect($user->refresh()->remember_token)->not->toBe('foundry-test-token');
+
+            $send(['event' => 'left', 'id' => 'foundry-test-account'])->assertOk();
+            expect($user->fresh())->toBeNull();
+        });
+
+        test('staff is a verified address on steddle.com', function () {
+            $model = config('auth.providers.users.model');
+
+            expect(Gate::forUser($model::factory()->make(['email' => 'foundry-test@steddle.com', 'email_verified_at' => now()]))->allows('staff'))->toBeTrue()
+                ->and(Gate::forUser($model::factory()->make(['email' => 'foundry-test@steddle.com', 'email_verified_at' => null]))->allows('staff'))->toBeFalse()
+                ->and(Gate::forUser($model::factory()->make(['email' => 'foundry-test@example.com', 'email_verified_at' => now()]))->allows('staff'))->toBeFalse();
         });
 
         test('an agent connects through the foundry\'s consent screen, with the device grant off, registration throttled and the icon in the metadata', function () {

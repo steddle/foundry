@@ -38,8 +38,8 @@ final class MagicLinkController
             // opened in another browser still reaches it.
             $link = MagicLink::issue($user, intended: $request->session()->get('url.intended'));
 
-            // Rendered on the queue, where the request's language is gone.
-            $user->notify((new LoginLink($link->url))->locale(app()->getLocale()));
+            // Rendered on the queue, where the request's language and session are gone.
+            $user->notify((new LoginLink($link->url, LoginLink::clientFor($request)['name'] ?? null))->locale(app()->getLocale()));
         }
 
         return back()->with('sign_in_email', $email);

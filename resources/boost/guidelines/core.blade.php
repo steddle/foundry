@@ -79,8 +79,8 @@ is its own.
   slots and an example, the imprint's own among them; composing a page;
   writing a component of the imprint's own; languages; docs and legal;
   the sitemap, llms.txt and markdown for agents; the published images and
-  icons; printed documents; the mail theme; sign-in; onboarding; agents
-  over MCP; and the lab. What it says of the imprint it reads at `boost:update`, and the
+  icons; printed documents; the mail theme; sign-in; the Steddle account;
+  onboarding; agents over MCP; and the lab. What it says of the imprint it reads at `boost:update`, and the
   imprint's suite fails once that no longer holds. Beside it the foundry
   ships `laravel-code-simplifier`, for a diff before its commit, and
   `sync-docs`, the drift sweep, which reads the imprint's surfaces and

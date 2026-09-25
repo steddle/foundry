@@ -15,6 +15,7 @@ The rules the imprints follow are the foundry's guideline, the same text Laravel
 | sendnda | `~/Sites/sendnda` | `sendnda/app` | en | signed in, open in local; absent in production |
 | righted | `~/Sites/righted` | none yet | en | open; absent in production |
 | fly | `~/Sites/fly` | `steddle/fly` | en | signed in everywhere; `/design` in production |
+| auth | `~/Sites/auth` | none yet | en, nl | open; absent in production |
 
 The lab is `/labs`, `/design`, `/components` and `/foundry/mail`, set by `pages` in each `config/imprint.php`: `pages.middleware` holds everywhere, `pages.guard` everywhere but local, and production serves only what `pages.production` names, and only behind a guard.
 

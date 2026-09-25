@@ -19,6 +19,7 @@
         "laravel/passport": "^13.8",
         "laravel/pint": "^1.32",
         "laravel/sanctum": "^4.3",
+        "laravel/socialite": "^5.31",
         "orchestra/testbench": "^11.0",
         "pestphp/pest": "^5.0"
     },
@@ -27,7 +28,8 @@
         "laravel/passkeys": "For Steddle\\Foundry\\Concerns\\ManagesPasskeys and foundry:passkeys, with @laravel/passkeys in the imprint's package.json (^0.2).",
         "laravel/fortify": "For the sign-in the foundry wires: its login view, limiters, password confirmation and Noindex (^1.37).",
         "laravel/passport": "For imprint.mcp: the consent screen, the OAuth hardening, Steddle\\Foundry\\Concerns\\ManagesAgentConnections and foundry:agent-connections (^13.7).",
-        "laravel/sanctum": "For Steddle\\Foundry\\Auth\\DeleteAccount to delete an account's Sanctum tokens (^4.3)."
+        "laravel/sanctum": "For Steddle\\Foundry\\Auth\\DeleteAccount to delete an account's Sanctum tokens (^4.3).",
+        "laravel/socialite": "For imprint.account: signing in through the Steddle account (^5.31)."
     },
     "autoload": {
         "psr-4": {
