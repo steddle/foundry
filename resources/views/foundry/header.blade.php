@@ -76,8 +76,8 @@
                 @endif
 
                 @if ($menu)
-                    <button type="button" x-ref="toggle" :aria-controls="$id('site-menu')" :aria-expanded="open" aria-label="{{ $menuLabel }}" @click="open = ! open"
-                        class="group relative -mr-2 shrink-0 cursor-pointer rounded-md p-2 text-zinc-950 dark:text-zinc-50 hover:bg-zinc-50/5 lg:hidden">
+                    <flux:button variant="ghost" square x-ref="toggle" x-bind:aria-controls="$id('site-menu')" x-bind:aria-expanded="open" aria-label="{{ $menuLabel }}" x-on:click="open = ! open"
+                        class="group -mr-2 shrink-0 cursor-pointer text-zinc-950! dark:text-zinc-50! hover:bg-zinc-50/5! lg:hidden">
                         <span class="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden" aria-hidden="true"></span>
                         <svg class="size-6 group-aria-expanded:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
                             <path d="M4 6h16M4 12h16M4 18h16" />
@@ -85,7 +85,7 @@
                         <svg class="size-6 not-group-aria-expanded:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
                             <path d="M18 6 6 18M6 6l12 12" />
                         </svg>
-                    </button>
+                    </flux:button>
                 @endif
             </div>
         </foundry:container>

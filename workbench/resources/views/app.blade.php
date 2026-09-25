@@ -24,7 +24,7 @@
             </foundry:app.sidebar.group>
 
             <x-slot:footer>
-                <foundry:app.sidebar.item href="/labs" icon="swatch">Design lab</foundry:app.sidebar.item>
+                <foundry:app.sidebar.item href="/labs" icon="swatch">Lab</foundry:app.sidebar.item>
             </x-slot:footer>
 
             <x-slot:account>

@@ -1,4 +1,5 @@
 @use('Illuminate\Support\Js')
+@use('Illuminate\Support\Facades\Route')
 @use('Steddle\Foundry\Markdown\MarkdownUrl')
 
 @props(['page' => null, 'all' => null])
@@ -9,14 +10,14 @@
 
     @group Navigation
     @prop page The page's markdown address; without one, the current address's, as MarkdownUrl::of() states it.
-    @prop all The address of every page's markdown at once; without one, the `llms.full` route.
+    @prop all The address of every page's markdown at once; without one, the `llms.full` route where the imprint has a sitemap, and without either the menu offers the page alone.
 
     @example Beside a page title
     <foundry:copy-menu />
 --}}
 @php
     $page ??= MarkdownUrl::of(url()->current());
-    $all ??= route('llms.full');
+    $all ??= Route::has('llms.full') ? route('llms.full') : null;
 @endphp
 
 {{--
@@ -40,7 +41,7 @@
             if (this.loaded) return;
             this.loaded = true;
             this.fetch('page');
-            this.fetch('all');
+            if (this.urls.all) this.fetch('all');
         },
         async fetch(kind) {
             try {
@@ -77,13 +78,17 @@
                 <span class="flex-1 text-start" x-text="copied === 'page' ? {{ Js::from(__('foundry::agents.copied')) }} : {{ Js::from(__('foundry::agents.copy_page')) }}"></span>
                 <span class="ms-auto ps-6 text-xs text-zinc-600 dark:text-zinc-400" x-text="format(tokens.page)"></span>
             </flux:menu.item>
-            <flux:menu.item @click="copy('all')">
-                <span class="flex-1 text-start" x-text="copied === 'all' ? {{ Js::from(__('foundry::agents.copied')) }} : {{ Js::from(__('foundry::agents.copy_all')) }}"></span>
-                <span class="ms-auto ps-6 text-xs text-zinc-600 dark:text-zinc-400" x-text="format(tokens.all)"></span>
-            </flux:menu.item>
+            @if ($all)
+                <flux:menu.item @click="copy('all')">
+                    <span class="flex-1 text-start" x-text="copied === 'all' ? {{ Js::from(__('foundry::agents.copied')) }} : {{ Js::from(__('foundry::agents.copy_all')) }}"></span>
+                    <span class="ms-auto ps-6 text-xs text-zinc-600 dark:text-zinc-400" x-text="format(tokens.all)"></span>
+                </flux:menu.item>
+            @endif
             <flux:menu.separator />
             <flux:menu.item href="{{ $page }}" target="_blank">{{ __('foundry::agents.open_page') }}</flux:menu.item>
-            <flux:menu.item href="{{ $all }}" target="_blank">{{ __('foundry::agents.open_all') }}</flux:menu.item>
+            @if ($all)
+                <flux:menu.item href="{{ $all }}" target="_blank">{{ __('foundry::agents.open_all') }}</flux:menu.item>
+            @endif
         </flux:menu>
     </flux:dropdown>
 </div>

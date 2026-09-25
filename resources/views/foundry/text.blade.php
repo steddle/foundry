@@ -1,4 +1,4 @@
-@props(['variant' => 'copy', 'tone' => 'body', 'inline' => false])
+@props(['variant' => 'copy', 'tone' => 'body', 'inline' => false, 'as' => null])
 
 {{--
     Chivo, in a variant for its role and a tone for its colour, drawn by
@@ -8,6 +8,7 @@
     @prop variant lede, copy, small, label or meta: the step of the type scale; meta sets tabular numerals.
     @prop tone body, strong, muted, accent, error or inherit: the colour, or none of its own.
     @prop inline Renders a span instead of a paragraph.
+    @prop as div for a line that holds a block, such as a tooltip or a badge, which a paragraph cannot.
 
     @example Variants
     <div class="flex flex-col gap-4">
@@ -31,10 +32,14 @@
         'strong' => 'text-zinc-950 dark:text-zinc-50',
         'muted' => 'text-zinc-600 dark:text-zinc-400',
         'accent' => 'text-primary-700 dark:text-primary-300',
-        'error' => 'text-danger-700 dark:text-danger-400',
+        'error' => 'text-danger-700 dark:text-danger-300',
         'inherit' => '',
     ];
 @endphp
 
 {{-- Flux sets its size and colour inside :where(), so these classes win without `!`. Colour comes from `tone` alone. --}}
-<flux:text :$inline {{ $attributes->class([$variants[$variant], $tones[$tone]]) }}>{{ $slot }}</flux:text>
+@if ($as === 'div')
+    <div {{ $attributes->class([$variants[$variant], $tones[$tone]]) }} data-flux-text>{{ $slot }}</div>
+@else
+    <flux:text :$inline {{ $attributes->class([$variants[$variant], $tones[$tone]]) }}>{{ $slot }}</flux:text>
+@endif

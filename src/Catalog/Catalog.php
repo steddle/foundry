@@ -8,18 +8,13 @@ use LogicException;
 use Symfony\Component\Finder\Finder;
 
 /**
- * Every component /components shows. A component describes itself in the
- * comment its file opens on: the prose is its description, `@group` its place
- * in the index, `@prop name …` and `@slot name …` a line each of its props
- * and slots, and each `@example Title` a live example, its Blade the lines
- * after it, optionally led by `@ground page|ink|bare`, where `bare` frames it
- * at a viewport's width, and `@code` to print the Blade without rendering it.
- * The foundry's components and the imprint's own are read the same way; the
- * lockup and the mark, which every imprint draws itself, are described here.
+ * A component's opening comment: the prose is its description, then `@group`,
+ * `@prop name …`, `@slot name …`, and each `@example Title` with its Blade on
+ * the lines after, optionally led by `@ground page|ink|bare` (`bare` frames it
+ * at a viewport's width) and `@code` (printed, not rendered).
  */
 final class Catalog
 {
-    /** The index's groups, in order. Every component names one, the imprint's as the foundry's. */
     private const GROUPS = ['Shell', 'Sections', 'Layout', 'Navigation', 'Type', 'Elements', 'Forms', 'Brand', 'Print'];
 
     /**
@@ -31,8 +26,6 @@ final class Catalog
     }
 
     /**
-     * The foundry's own components, and the two every imprint supplies.
-     *
      * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}>
      */
     public static function shared(): array
@@ -41,9 +34,6 @@ final class Catalog
     }
 
     /**
-     * The imprint's own components: every file under its
-     * resources/views/components, each naming its group.
-     *
      * @return array<string, array{name: string, group: string, from: string, tag?: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>}>
      */
     public static function custom(): array
@@ -58,16 +48,12 @@ final class Catalog
         });
     }
 
-    /**
-     * Whether the imprint keeps a file of its own in place of the foundry's
-     * component, which /components exists to show. The lockup and the mark it
-     * supplies are no such stand-in.
-     */
+    /** Whether the imprint keeps its own file in place of the foundry's component. */
     public static function held(string $tag): bool
     {
         $name = str_replace('.', '/', Str::after($tag, 'foundry:'));
 
-        if (in_array($name, ['lockup', 'mark'], true)) {
+        if (in_array($name, ['lockup', 'mark', 'bar'], true)) {
             return false;
         }
 
@@ -97,10 +83,9 @@ final class Catalog
     }
 
     /**
-     * The components under a directory, the Livewire ones left out. A folder
-     * with an index is one component and its other files are its parts; a
-     * file in a folder named after a group is in that group, and every other
-     * names its own, or the read throws.
+     * A folder with an index is one component, its other files its parts. A
+     * file in a folder named after a group takes that group; any other names
+     * its own, or the read throws.
      *
      * @return array<string, array{name: string, group: string, from: string, tag: string, file: string, description: string, props: list<array{name: string, default: ?string, description: string}>, slots: list<array{name: string, description: string}>, examples: list<array<string, mixed>>}>
      */
@@ -150,11 +135,7 @@ final class Catalog
         return $entries;
     }
 
-    /**
-     * Whether the file is Livewire's rather than Blade's: a single-file
-     * component, which declares its class itself, or anything inside a
-     * multi-file component's folder, which holds the class beside the view.
-     */
+    /** A single-file component declares its class itself; a multi-file one holds it beside the view. */
     private static function livewire(string $path, string $source): bool
     {
         $directory = dirname($path);
@@ -166,8 +147,6 @@ final class Catalog
     }
 
     /**
-     * What a component's opening comment says of it.
-     *
      * @return array{description: string, group: ?string, examples: list<array{title: string, blade: string, ground?: string, code?: bool}>, props: array<string, string>, slots: list<array{name: string, description: string}>}
      */
     private static function comment(string $source): array
@@ -205,10 +184,8 @@ final class Catalog
     }
 
     /**
-     * Every prop the component's `@props` declares, with its default as PHP
-     * writes it or null where it is required, and the `@prop` line that
-     * describes it; a `@prop` for a name `@props` does not declare, an
-     * attribute the component passes on, follows them as `passed on`.
+     * The default is null where a prop is required. A `@prop` for a name
+     * `@props` does not declare is an attribute passed on.
      *
      * @param  array<string, string>  $documented  name => description
      * @return list<array{name: string, default: ?string, description: string}>

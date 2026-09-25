@@ -2,7 +2,8 @@
 
 {{--
     The bar of the lab's own pages, on bone: the lockup home, then the lab,
-    the design page and the components, each where the imprint serves it.
+    the design page, the components and the mail, each where the imprint
+    serves it.
 
     @group Shell
     @prop home Where the lockup leads.
@@ -15,12 +16,12 @@
 @php
     $homeLabel ??= __('foundry::nav.home', ['name' => config('imprint.name')]);
     // In production an imprint serves only the pages `pages.production` names.
-    $pages = array_filter(['Lab' => 'foundry.lab', 'Design' => 'foundry.design', 'Components' => 'foundry.components'], fn (string $name): bool => Route::has($name));
+    $pages = array_filter(['Lab' => 'foundry.lab', 'Design' => 'foundry.design', 'Components' => 'foundry.components', 'Mail' => 'foundry.mail'], fn (string $name): bool => Route::has($name));
 @endphp
 
 <header class="border-b border-zinc-200 dark:border-zinc-700">
     <nav aria-label="Lab">
-        <foundry:container class="flex items-center justify-between gap-6 py-5">
+        <foundry:container class="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-5">
             <a href="{{ $home }}" aria-label="{{ $homeLabel }}" class="shrink-0 text-zinc-950 dark:text-zinc-50">
                 <foundry:lockup class="h-5" />
             </a>

@@ -1,7 +1,9 @@
 <?php
 
+use Flux\FluxServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
+use Livewire\LivewireServiceProvider;
 
 test('a site resolves the foundry components under foundry:', function () {
     $html = Blade::render('<foundry:section id="band">Body</foundry:section>');
@@ -72,4 +74,30 @@ test('steps check what is done, mark the current one, number the rest and open a
         ->and(substr_count($html, 'aria-current="step"'))->toBe(1)
         ->and($html)->toMatch('/\s4\s*<\/flux:timeline.indicator>/')
         ->not->toMatch('/\s3\s*<\/flux:timeline.indicator>/');
+});
+
+test('a ghost button reads on bone and on ink, bordered only at base with a label, and takes Flux\'s sizes and an icon alone', function () {
+    $this->app->register(LivewireServiceProvider::class);
+    $this->app->register(FluxServiceProvider::class);
+
+    $labelled = Blade::render('<foundry:button href="#" variant="ghost">Ghost</foundry:button>', deleteCachedView: true);
+    $icon = Blade::render('<foundry:button variant="ghost" size="sm" icon="ellipsis-horizontal" aria-label="More" />', deleteCachedView: true);
+
+    expect($labelled)
+        ->toContain('text-zinc-950! dark:text-zinc-50!')
+        ->toContain('border border-zinc-950/13 dark:border-zinc-50/13')
+        ->toContain('h-10')
+        ->and($icon)
+        ->toContain('h-8 text-sm rounded-md gap-2 w-8')
+        ->toContain('data-flux-icon')
+        ->toContain('aria-label="More"')
+        ->not->toContain('border-zinc-950/13');
+});
+
+test('text renders as a div for a line that holds a block', function () {
+    $html = Blade::render('<foundry:text variant="small" tone="muted" as="div">Added <div>tooltip</div></foundry:text>');
+
+    expect($html)
+        ->toStartWith('<div class="text-small text-zinc-600 dark:text-zinc-400"')
+        ->not->toContain('<p');
 });

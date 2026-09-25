@@ -11,12 +11,12 @@
             <div class="flex flex-col gap-12">
                 {{-- The title and its lede open the column, so the index beside it starts under the bar. --}}
                 <div class="flex flex-col gap-4">
-                    <foundry:heading size="1" level="1">{{ $entry['name'] }}.</foundry:heading>
+                    <foundry:heading size="1" level="1">{{ $entry['name'] }}</foundry:heading>
                     <foundry:text variant="lede" class="max-w-[60ch]">{{ $entry['description'] }}</foundry:text>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-                    <code class="font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums">{{ $entry['tag'] ?? 'foundry:'.$slug }}</code>
+                    <foundry:text tone="strong" class="font-medium">{{ $entry['tag'] ?? 'foundry:'.$slug }}</foundry:text>
                     @if ($own)
                         <foundry:text variant="small" tone="strong" class="font-medium">✗ This imprint keeps a file of its own, in place of the foundry's.</foundry:text>
                     @elseif ($entry['from'] === 'custom')
@@ -47,7 +47,7 @@
                                 <flux:table.rows>
                                     @foreach ($rows as $row)
                                         <flux:table.row>
-                                            <flux:table.cell class="align-top"><code class="font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero">{{ $row['name'] }}</code></flux:table.cell>
+                                            <flux:table.cell class="align-top"><foundry:text variant="small" tone="strong" class="font-medium">{{ $row['name'] }}</foundry:text></flux:table.cell>
                                             @if ($heading === 'Props')
                                                 <flux:table.cell class="align-top">
                                                     @if ($row['default'] === null)

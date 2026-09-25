@@ -8,19 +8,14 @@ use Steddle\Foundry\Catalog\Catalog;
 
 final class ShowComponent
 {
-    /**
-     * Without a component the index, every group with each component's
-     * description. `?from=foundry` narrows it to the foundry's components,
-     * and `?from=custom` to the imprint's own.
-     */
     public function __invoke(Request $request, ?string $component = null): View
     {
         $from = in_array($request->query('from'), ['foundry', 'custom'], true) ? $request->query('from') : null;
-        $entries = match ($from) {
+        $entries = array_map(self::plain(...), match ($from) {
             'foundry' => Catalog::shared(),
             'custom' => Catalog::custom(),
             null => Catalog::all(),
-        };
+        });
         $entry = $component === null ? null : ($entries[$component] ?? abort(404));
         $query = $from ? ['from' => $from] : [];
 
@@ -52,5 +47,16 @@ final class ShowComponent
             'hasCustom' => $hasCustom,
             'own' => $entry['from'] === 'foundry' && Catalog::held($entry['tag']),
         ]);
+    }
+
+    /**
+     * The foundry skill renders the same prose as markdown, where backticks
+     * mark code, so the catalogue keeps them and the page strips them.
+     */
+    private static function plain(array $entry): array
+    {
+        $strip = fn (array $row): array => [...$row, 'description' => str_replace('`', '', $row['description'])];
+
+        return [...$strip($entry), 'props' => array_map($strip, $entry['props']), 'slots' => array_map($strip, $entry['slots'])];
     }
 }

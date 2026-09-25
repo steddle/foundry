@@ -1,5 +1,5 @@
 <x-layouts::site :title="'Lab | '.config('imprint.name')" description="The design system, the components and the experiments behind the site.">
-    <foundry:sections.page-title title="Lab." lead="The design system, every component the site renders, and the questions still open, one page each.">
+    <foundry:sections.page-title title="Lab" lead="The design system, every component the site renders, and the questions still open, one page each.">
         <div class="flex flex-col divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-zinc-700 dark:border-zinc-700">
             {{-- In production an imprint serves only the pages `pages.production` names. --}}
             @if (Route::has('foundry.design'))

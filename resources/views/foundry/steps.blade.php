@@ -34,12 +34,12 @@
                 </flux:timeline.indicator>
                 <flux:timeline.content class="w-full">
                     @if (isset($step['click']))
-                        <button type="button" wire:click="{{ $step['click'] }}" @if ($step['status'] === 'current') aria-current="step" @endif class="group w-full min-w-0 cursor-pointer text-center">
+                        <flux:button variant="subtle" :loading="false" wire:click="{{ $step['click'] }}" :aria-current="$step['status'] === 'current' ? 'step' : null" class="group flex! h-auto! w-full min-w-0 cursor-pointer flex-col items-stretch! gap-0! px-0! text-center hover:bg-transparent!">
                             <span class="block truncate text-small font-semibold text-zinc-950 dark:text-zinc-50">{{ $step['label'] }}</span>
                             @if (filled($step['meta'] ?? null))
-                                <span class="block truncate text-small text-zinc-600 dark:text-zinc-400 group-hover:underline">{{ $step['meta'] }}</span>
+                                <span class="block truncate text-small font-normal text-zinc-600 dark:text-zinc-400 group-hover:underline">{{ $step['meta'] }}</span>
                             @endif
-                        </button>
+                        </flux:button>
                     @else
                         <div @if ($step['status'] === 'current') aria-current="step" @endif class="min-w-0 text-center">
                             <span class="block truncate text-small font-semibold text-zinc-950 dark:text-zinc-50">{{ $step['label'] }}</span>

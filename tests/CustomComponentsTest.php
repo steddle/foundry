@@ -138,3 +138,27 @@ test('a Livewire component, single-file or multi-file, is no catalogue component
 
     expect(array_keys(Catalog::custom()))->toContain('stamp')->not->toContain('counter', 'meter', 'meter-placeholder');
 });
+
+test('the component pages print docblock prose without its backticks, which the catalogue keeps for the skill', function () {
+    File::put(resource_path('views/components/pin.blade.php'), <<<'BLADE'
+@props(['size' => 'small'])
+{{--
+    Set `absolute` against an edge.
+    @group Elements
+    @prop size The step, `small` or `copy`.
+    @slot trailing After the `line`.
+    @example Alone
+    <x-pin />
+--}}
+<span>the pin</span>
+BLADE);
+
+    expect(Catalog::custom()['pin']['description'])->toBe('Set `absolute` against an edge.');
+
+    $this->get('/components/pin')->assertOk()
+        ->assertSee('Set absolute against an edge.')
+        ->assertSee('The step, small or copy.')
+        ->assertSee('After the line.');
+
+    $this->get('/components')->assertOk()->assertSee('Set absolute against an edge.');
+});

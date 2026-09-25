@@ -49,3 +49,13 @@ test('outside the lab the bar ends on a link to it', function () {
         ->toContain('>Docs</a>')
         ->toContain('href="'.route('foundry.lab').'"');
 });
+
+test('the lab\'s bar links the lab, the design page, the components and the mail', function () {
+    $html = Blade::render('<foundry:lab-nav />', deleteCachedView: true);
+
+    expect($html)->toContain('aria-label="Lab"')
+        ->toContain('href="'.route('foundry.lab').'"')
+        ->toContain('href="'.route('foundry.design').'"')
+        ->toContain('href="'.route('foundry.components').'"')
+        ->toContain('href="'.route('foundry.mail').'"');
+});

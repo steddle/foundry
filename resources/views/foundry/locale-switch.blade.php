@@ -28,7 +28,7 @@
                 <form method="POST" action="{{ route('locale.update', $locale) }}">
                     @csrf
                     <input type="hidden" name="to" value="{{ $to }}" />
-                    <button type="submit" lang="{{ $locale }}" class="flex cursor-pointer rounded-sm px-2 py-1 text-zinc-400 hover:text-zinc-50">{{ strtoupper($locale) }}</button>
+                    <flux:button type="submit" variant="subtle" size="sm" :loading="false" lang="{{ $locale }}" class="h-7! cursor-pointer rounded-sm! px-2! font-semibold! dark:hover:text-zinc-50! hover:bg-transparent!">{{ strtoupper($locale) }}</flux:button>
                 </form>
             @endif
         </li>

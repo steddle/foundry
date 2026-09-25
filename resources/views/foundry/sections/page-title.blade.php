@@ -13,7 +13,7 @@
 
     @example A title and a lede
     @ground bare
-    <foundry:sections.page-title title="Lab." lead="The design system, every component the site renders, and the questions still open." />
+    <foundry:sections.page-title title="Lab" lead="The design system, every component the site renders, and the questions still open." />
 --}}
 <foundry:section {{ $attributes }}>
     <foundry:section-head stacked :level="1" :$eyebrow :$title :$lead />

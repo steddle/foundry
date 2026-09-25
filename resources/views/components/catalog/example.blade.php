@@ -5,15 +5,12 @@
 @php
     $ground = $example['ground'] ?? 'page';
     $grounds = ['page' => 'bg-zinc-50 dark:bg-zinc-900', 'ink' => 'bg-zinc-900 ink'];
-    $choice = 'rounded-sm px-2.5 py-0.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 aria-pressed:bg-zinc-200 aria-pressed:text-zinc-950 dark:aria-pressed:bg-zinc-700 dark:aria-pressed:text-zinc-50';
+    $choice = 'rounded-sm! px-2.5! text-small! text-zinc-600! dark:text-zinc-400! hover:text-zinc-950! dark:hover:text-zinc-50! aria-pressed:bg-zinc-200! aria-pressed:text-zinc-950! dark:aria-pressed:bg-zinc-700! dark:aria-pressed:text-zinc-50!';
 @endphp
 
 {{--
-    One example: the Blade rendered live, then the Blade itself with a copy
-    button. `bare` is a band or a page that brings its own ground: it renders
-    on a page of its own in a frame at a desktop's or a phone's width, scaled
-    to the column, so it meets its breakpoints as a page does. Anything else
-    renders in place, on the page's ground or on ink.
+    `bare` renders on a page of its own in a frame at a desktop's or a phone's
+    width, scaled to the column, so it meets its breakpoints as a page does.
 --}}
 <figure class="flex flex-col gap-3" data-example>
     <div class="flex flex-wrap items-center justify-between gap-3">
@@ -21,11 +18,11 @@
         @unless ($example['code'] ?? false)
             <div class="flex rounded-md border border-zinc-200 dark:border-zinc-700 p-0.5 text-small font-medium" role="group" aria-label="{{ $ground === 'bare' ? 'Width' : 'Ground' }}">
                 @if ($ground === 'bare')
-                    <button type="button" data-width="1280" aria-pressed="true" class="{{ $choice }}">Desktop</button>
-                    <button type="button" data-width="390" aria-pressed="false" class="{{ $choice }}">Phone</button>
+                    <flux:button variant="subtle" size="xs" data-width="1280" aria-pressed="true" :class="$choice">Desktop</flux:button>
+                    <flux:button variant="subtle" size="xs" data-width="390" aria-pressed="false" :class="$choice">Phone</flux:button>
                 @else
                     @foreach ($grounds as $name => $classes)
-                        <button type="button" data-ground="{{ $classes }}" aria-pressed="{{ $name === $ground ? 'true' : 'false' }}" class="{{ $choice }}">{{ ucfirst($name) }}</button>
+                        <flux:button variant="subtle" size="xs" :data-ground="$classes" :aria-pressed="$name === $ground ? 'true' : 'false'" :class="$choice">{{ ucfirst($name) }}</flux:button>
                     @endforeach
                 @endif
             </div>
@@ -46,7 +43,9 @@
 
     <div class="relative">
         <pre class="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-950 p-4 pr-20 font-mono text-code text-zinc-950 dark:text-zinc-50 slashed-zero tabular-nums"><code>{{ $example['blade'] }}</code></pre>
-        <button type="button" data-copy-example class="absolute top-2 right-2 rounded-sm border border-zinc-200 dark:border-zinc-700 bg-zinc-25 dark:bg-zinc-800 px-2 py-0.5 text-small font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50">Copy</button>
+        <div class="absolute top-2 right-2">
+            <foundry:button variant="secondary" size="xs" data-copy-example>Copy</foundry:button>
+        </div>
     </div>
 </figure>
 

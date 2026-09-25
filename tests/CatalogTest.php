@@ -45,3 +45,17 @@ test('every component the foundry keeps is in the index, its parts with it', fun
 
     expect(array_keys(Catalog::shared()))->toContain(...$components);
 });
+
+test('the lockup, the mark and the bar an imprint supplies are no stand-in, a copy of another component is', function () {
+    File::put(resource_path('views/foundry/bar.blade.php'), '<nav {{ $attributes }}></nav>');
+    File::put(resource_path('views/foundry/heading.blade.php'), '<h2 {{ $attributes }}>{{ $slot }}</h2>');
+
+    try {
+        expect(Catalog::held('foundry:lockup'))->toBeFalse()
+            ->and(Catalog::held('foundry:mark'))->toBeFalse()
+            ->and(Catalog::held('foundry:bar'))->toBeFalse()
+            ->and(Catalog::held('foundry:heading'))->toBeTrue();
+    } finally {
+        File::delete([resource_path('views/foundry/bar.blade.php'), resource_path('views/foundry/heading.blade.php')]);
+    }
+});

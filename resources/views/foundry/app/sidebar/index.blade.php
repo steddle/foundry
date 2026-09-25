@@ -7,11 +7,11 @@
     and it opens at the offset the reader last left it at, across pages and
     reloads in the tab. Below lg it is a drawer, opened from a
     bar across the top that holds the lockup and the account menu. An imprint
-    sets it in the `sidebar` slot of foundry:layouts.app.sidebar. Its parts:
+    sets it in the sidebar slot of foundry:layouts.app.sidebar. Its parts:
     foundry:app.sidebar.item, a link with an icon and a count, the current one
     on a lichen rule and marked aria-current="page";
     foundry:app.sidebar.group, links that fold under a heading, and with
-    `remember` open as the reader last left them; and
+    remember open as the reader last left them; and
     foundry:app.sidebar.search, the button that opens the imprint's search.
 
     @group Shell
@@ -46,7 +46,7 @@
             </foundry:app.sidebar.group>
 
             <x-slot:footer>
-                <foundry:app.sidebar.item href="#" icon="swatch">Design lab</foundry:app.sidebar.item>
+                <foundry:app.sidebar.item href="#" icon="swatch">Lab</foundry:app.sidebar.item>
             </x-slot:footer>
 
             <x-slot:account>
