@@ -77,6 +77,11 @@
 
 @vite(array_filter([config('imprint.stylesheet'), config('imprint.script')]))
 
+{{-- Flux ships its table extensions switched off, and the table alone fails to boot without its rows and cells. Here in the head, because an editor that arrives in a Livewire morph never runs a script inside it. --}}
+<script data-navigate-once>
+    document.addEventListener('flux:editor', (event) => ['table', 'tableRow', 'tableHeader', 'tableCell'].forEach((name) => event.detail.enableExtension(name)));
+</script>
+
 {{ $slot }}
 
 @production

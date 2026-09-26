@@ -1055,3 +1055,34 @@
         display: none;
     }
 }
+
+/*
+ * foundry:annotated. The CSS Custom Highlight API paints ranges without touching the DOM, so the
+ * text Livewire renders stays as it rendered it. A highlight takes colour and decoration only.
+ */
+::highlight(foundry-comment) {
+    background-color: color-mix(in oklab, var(--color-warning-300) 35%, transparent);
+}
+
+::highlight(foundry-suggestion) {
+    background-color: color-mix(in oklab, var(--color-info-300) 30%, transparent);
+    text-decoration: underline wavy var(--color-info-700);
+}
+
+::highlight(foundry-focus) {
+    background-color: color-mix(in oklab, var(--color-warning-300) 70%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+    ::highlight(foundry-comment) {
+        background-color: color-mix(in oklab, var(--color-warning-300) 25%, transparent);
+    }
+
+    ::highlight(foundry-suggestion) {
+        text-decoration-color: var(--color-info-300);
+    }
+
+    ::highlight(foundry-focus) {
+        background-color: color-mix(in oklab, var(--color-warning-300) 45%, transparent);
+    }
+}
