@@ -17,9 +17,10 @@ class LoginLink extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(public string $url, public ?string $name = null) {}
+    /** @param  array{name: string, email?: ?string, palette?: ?string, lockup?: ?string, icons?: ?string, ink?: ?string}|null  $client */
+    public function __construct(public string $url, public ?array $client = null) {}
 
-    /** @return array{name: string, icon: ?string, email?: ?string, palette?: ?string, lockup?: ?string, icons?: ?string, ink?: ?string}|null */
+    /** @return array{name: string, email?: ?string, palette?: ?string, lockup?: ?string, icons?: ?string, ink?: ?string}|null */
     public static function clientFor(Request $request): ?array
     {
         return ($client = config('imprint.auth.client')) ? app($client)($request) : null;
@@ -39,11 +40,11 @@ class LoginLink extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        $name = $this->name ?? config('imprint.name');
+        $name = $this->client['name'] ?? config('imprint.name');
 
         // The client's name on the imprint's address: one sending address keeps deliverability in one place.
         return (new MailMessage)
-            ->when($this->name !== null, fn (MailMessage $mail) => $mail->from(config('mail.from.address'), $this->name))
+            ->when($this->client !== null, fn (MailMessage $mail) => $mail->from(config('mail.from.address'), $name)->markdown('notifications::email', ['mail' => ['client' => $this->client]]))
             ->subject(__('foundry::sign-in.mail.subject', ['name' => $name]))
             ->line(__('foundry::sign-in.mail.intro', ['name' => $name, 'minutes' => MagicLink::MINUTES]))
             ->action(__('foundry::sign-in.mail.action'), $this->url)

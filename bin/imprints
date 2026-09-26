@@ -7,7 +7,7 @@
 #   bin/imprints sync   [name...]  copy this checkout into each vendor/, boost:install, clear views, build
 #   bin/imprints test   [name...]  run each imprint's suite
 #   bin/imprints reset  [name...]  reinstall the locked foundry and render boost against it again
-#   bin/imprints update [name...]  composer update steddle/foundry, then boost:install
+#   bin/imprints update [name...]  composer update steddle/foundry, boost:install, clear views, build
 #   bin/imprints status [name...]  open files and commits not pushed
 #
 # Without names it runs on every imprint. It commits and pushes nothing.
@@ -136,6 +136,7 @@ for imprint in "${IMPRINTS[@]}"; do
             composer update steddle/foundry -q \
                 && php artisan boost:install --guidelines --skills --no-interaction > /dev/null \
                 && php artisan view:clear -q \
+                && npm run build > /dev/null 2>&1 \
                 || failed=1
             ;;
         status)

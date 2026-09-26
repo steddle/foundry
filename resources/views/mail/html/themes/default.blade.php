@@ -6,9 +6,13 @@
         return '#'.implode('', array_map(fn (int $x, int $y): string => sprintf('%02x', round($x + ($y - $x) * $share)), $a, $b));
     };
 
-    $ink = config('imprint.ink', '#0b231c');
-    $paper = config('imprint.paper', '#f1f2ea');
-    $accent = config('imprint.mail.accent');
+    // A client's palette, for the product a sign-in mail is for: its ink and paper, and its primary as the accent.
+    $palette = $mail['client']['palette'] ?? null;
+    $colour = fn (string $name): ?string => $palette === null ? null : \Steddle\Foundry\Brand\Palette::colour($palette, $name);
+
+    $ink = $colour('zinc-900') ?? config('imprint.ink', '#0b231c');
+    $paper = $colour('zinc-50') ?? config('imprint.paper', '#f1f2ea');
+    $accent = $palette === null ? config('imprint.mail.accent') : $colour('primary-300');
 
     $text = $mix($ink, $paper, 0.12);
     $muted = $mix($ink, $paper, 0.45);

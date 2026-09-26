@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Process;
+use Steddle\Foundry\Brand\Palette;
 
 /** Tailwind's own compiler, on the foundry's stylesheet alone, with the utilities named. */
 function compiled(array $utilities): string
@@ -51,4 +52,14 @@ test('a page names the imprint\'s palette on its root element, and none where th
     config(['imprint.palette' => 'righted']);
 
     expect($page())->toContain('<html lang="en" data-palette="righted">');
+});
+
+test('a palette\'s colour reads as hex from foundry.css, through the ramp it points at', function () {
+    expect(Palette::colour('sendnda', 'zinc-900'))->toBe('#2b1720')
+        ->and(Palette::colour('sendnda', 'primary-300'))->toBe('#f862b3')
+        ->and(Palette::colour('bron', 'primary-300'))->toBe('#70d8fe')
+        ->and(Palette::colour('righted', 'primary-300'))->toBe('#a0bffe')
+        ->and(Palette::colour('steddle', 'primary-300'))->toMatch('/^#[0-9a-f]{6}$/')
+        ->and(Palette::colour('elsewhere', 'zinc-900'))->toBeNull()
+        ->and(Palette::colour('sendnda', 'teal-300'))->toBeNull();
 });

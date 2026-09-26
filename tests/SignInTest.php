@@ -20,6 +20,7 @@ use Livewire\LivewireServiceProvider;
 use Steddle\Foundry\Auth\LoginLink;
 use Steddle\Foundry\Auth\MagicLink;
 use Steddle\Foundry\FoundryServiceProvider;
+use Steddle\Foundry\Http\Controllers\ShowMail;
 use Steddle\Foundry\Tests\TestCase;
 
 beforeAll(function () {
@@ -307,7 +308,7 @@ test('the imprint names what the mail and the login page sign in to, from the re
     $this->get('/login?client=Send+NDA&login_hint=ada@imprint.test')->assertOk()
         ->assertSee('<h1', false)->assertSee('Sign in to Send NDA</h1>', false)
         ->assertSee('<meta name="description" content="Sign in to Send NDA with a link by email. No password needed." />', false)
-        ->assertSee('<img src="https://sendnda.test/icon-512.png" alt="" width="48" height="48"', false)
+        ->assertDontSee('<img src="https://sendnda.test/icon-512.png"', false)
         ->assertSee('value="ada@imprint.test"', false);
     $this->get('/login')->assertSee('Sign in to Imprint</h1>', false)->assertDontSee('icon-512.png');
 
@@ -329,10 +330,10 @@ test('the imprint names what the mail and the login page sign in to, from the re
 
 class ClientFromRequest
 {
-    /** @return array{name: string, icon: ?string}|null */
+    /** @return array{name: string, email: ?string, icon: string}|null An icon, as account's hook hands one, which the card leaves out. */
     public function __invoke(Request $request): ?array
     {
-        return $request->query('client') ? ['name' => $request->query('client'), 'icon' => 'https://sendnda.test/icon-512.png', 'email' => $request->query('login_hint')] : null;
+        return $request->query('client') ? ['name' => $request->query('client'), 'email' => $request->query('login_hint'), 'icon' => 'https://sendnda.test/icon-512.png'] : null;
     }
 }
 
@@ -423,12 +424,11 @@ test('a client that names no palette, lockup, icons or ink leaves the imprint\'s
 
 class ThemedClient
 {
-    /** @return array{name: string, icon: ?string, palette: ?string, lockup: ?string, icons: ?string, ink: ?string} */
+    /** @return array{name: string, palette: ?string, lockup: ?string, icons: ?string, ink: ?string} */
     public function __invoke(Request $request): array
     {
         return [
             'name' => 'Send NDA',
-            'icon' => 'https://sendnda.test/icon-512.png',
             'palette' => 'sendnda',
             'lockup' => 'https://sendnda.test/brand/lockup.svg',
             'icons' => 'https://sendnda.test',
@@ -437,30 +437,42 @@ class ThemedClient
     }
 }
 
-test('the imprint\'s note stands at the foot of the card, and nothing where it has none', function () {
-    config(['imprint.auth.note' => SignInNote::class]);
-
-    $this->get('/login')->assertSee('One account for Send NDA, Bron and Fly');
-
-    config(['imprint.auth.note' => null]);
-
-    $this->get('/login')->assertDontSee('One account for');
-});
-
-class SignInNote
-{
-    public function __invoke(Request $request): ?string
-    {
-        return 'One account for Send NDA, Bron and Fly';
-    }
-}
-
 test('the mail comes from the client\'s name on the imprint\'s address, and from mail.from without a client', function () {
     config(['mail.from' => ['address' => 'hello@steddle.com', 'name' => 'Steddle']]);
     $user = SignInUser::create(['name' => 'ada', 'email' => 'ada@imprint.test']);
 
-    expect((new LoginLink('https://imprint.test', 'Send NDA'))->toMail($user)->from)->toBe(['hello@steddle.com', 'Send NDA'])
+    expect((new LoginLink('https://imprint.test', ['name' => 'Send NDA']))->toMail($user)->from)->toBe(['hello@steddle.com', 'Send NDA'])
         ->and((new LoginLink('https://imprint.test'))->toMail($user)->from)->toBe([]);
+});
+
+test('the mail for a client wears its mail logo, its palette\'s ink, paper and primary, and reads \'{name}, by Steddle\' at its foot', function () {
+    config(['imprint.ink' => '#0b231c', 'imprint.paper' => '#f1f2ea', 'imprint.mail.accent' => null]);
+    $user = SignInUser::create(['name' => 'ada', 'email' => 'ada@imprint.test']);
+
+    $client = (string) (new LoginLink('https://imprint.test/login/magic/1', (new ThemedClient)(request())))->toMail($user)->render();
+
+    expect($client)->toContain('<img src="https://sendnda.test/brand/mail/logo-2x.png" class="logo" width="240" height="48" alt="Send NDA"')
+        ->toMatch('/<body[^>]*background-color: #f7eff2/')
+        ->toMatch('/<h1[^>]*color: #2b1720/')
+        ->toMatch('/class="button button-primary"[^>]*background-color: #f862b3/')
+        ->toContain('Send NDA, by Steddle')
+        ->toMatch('#Regards,<br>\s*Send NDA#')
+        ->not->toContain('A service by');
+
+    $own = (string) (new LoginLink('https://imprint.test/login/magic/1'))->toMail($user)->render();
+
+    expect($own)->not->toContain('sendnda.test')
+        ->toMatch('/<body[^>]*background-color: #f1f2ea/')
+        ->toMatch('/class="button button-primary"[^>]*background-color: #0b231c/')
+        ->toContain('© '.date('Y').' Imprint')
+        ->not->toContain('by Steddle');
+});
+
+test('/foundry/mail?login shows the sign-in mail for the client the request is for', function () {
+    config(['imprint.auth.client' => ThemedClient::class]);
+    Route::middleware('web')->get('foundry/mail', ShowMail::class);
+
+    $this->get('/foundry/mail?login')->assertOk()->assertSee('Sign in to Send NDA')->assertSee('https://sendnda.test/brand/mail/logo-2x.png', false);
 });
 
 test('the mail asks an account without a passkey to add one, and leaves an account with one alone', function () {

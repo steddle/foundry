@@ -1,10 +1,11 @@
 {{--
     A notification hands the theme its options in
     `->markdown('notifications::email', ['mail' => [...]])`: `preheader`,
-    `header`, `footer`, `links`, `legal`, and `above` and `below` as markdown.
+    `header`, `footer`, `links`, `legal`, `client`, and `above` and `below`
+    as markdown.
 --}}
 @php($mail ??= [])
-<x-mail::message :header="$mail['header'] ?? null" :footer="$mail['footer'] ?? null" :links="$mail['links'] ?? null" :legal="$mail['legal'] ?? null" :preheader="$mail['preheader'] ?? null">
+<x-mail::message :header="$mail['header'] ?? null" :footer="$mail['footer'] ?? null" :links="$mail['links'] ?? null" :legal="$mail['legal'] ?? null" :preheader="$mail['preheader'] ?? null" :client="$mail['client'] ?? null">
 @isset($mail['above'])
 <x-slot:above>
 {{ $mail['above'] }}
@@ -44,7 +45,7 @@
 {{ $salutation }}
 @else
 @lang('Regards,')<br>
-{{ config('imprint.name', config('app.name')) }}
+{{ $mail['client']['name'] ?? config('imprint.name', config('app.name')) }}
 @endif
 
 @isset($actionText)

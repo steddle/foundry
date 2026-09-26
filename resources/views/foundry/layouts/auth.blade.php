@@ -15,7 +15,7 @@
     @prop card Sets the slot on a card under the lockup, its title at heading-1's phone size, with `ink` on the lockup and the foot rather than the body, so Flux's dark variant keeps out of the card. A card page shows no language switch and no service line.
     @slot footer In card mode, a band a step below the card at its foot, full-bleed with the card's padding: the way on from a consent, its Continue and Cancel.
     @slot after In card mode, a line under the card, centred in its column, small and muted on the ground.
-    @prop client The product a sign-in or a consent is for, as `imprint.auth.client` answers it, which it falls back to: `name`, `icon`, `palette`, `lockup`, `icons` and `ink`. The page takes its palette, its lockup over the card, its icons and browser chrome, and its name in `<title>`; each that is null leaves the imprint's own.
+    @prop client The product a sign-in or a consent is for, as `imprint.auth.client` answers it, which it falls back to: `name`, `palette`, `lockup`, `icons` and `ink`. The page takes its palette, its lockup over the card, its icons and browser chrome, and its name in `<title>`; each that is null leaves the imprint's own.
     @prop home Where the lockup leads; without one, the `home` route in the current language where the imprint speaks more than one, and the root otherwise.
 
     @example A sign-in
@@ -23,7 +23,6 @@
     <foundry:layouts.auth title="Sign in" description="Sign in with a link by email." card>
         <foundry:heading size="1" level="1">Sign in</foundry:heading>
         <foundry:text tone="muted">We'll email you a link. No password needed.</foundry:text>
-        <foundry:text variant="small" tone="muted" class="border-t border-zinc-200 dark:border-zinc-700 pt-6">One account for Send NDA, Bron and Fly.</foundry:text>
     </foundry:layouts.auth>
 
     @example A consent with its way on at the foot, and a line under the card

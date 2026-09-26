@@ -1,4 +1,4 @@
-@props(['header' => null, 'footer' => null, 'links' => null, 'legal' => null, 'preheader' => null])
+@props(['header' => null, 'footer' => null, 'links' => null, 'legal' => null, 'preheader' => null, 'client' => null])
 
 {{--
     An imprint that sets `mail.markdown` in its config keeps `paths` in it, or
@@ -13,16 +13,17 @@
     @prop links label => url, set under the footer line.
     @prop legal The last line: an address, a registration; without one, the copyright and, for an endorsed imprint, the house that serves it, Steddle drawn as its wordmark once foundry:assets has rendered it. False leaves it out.
     @prop preheader The line an inbox shows beside the subject, hidden in the message itself.
+    @prop client The product the mail is for, as `imprint.auth.client` answers it: its mail logo from `{icons}/brand/mail/logo-2x.png`, its palette's colours, and '{name}, by Steddle' as the last line. Without one, the imprint's own.
     @slot above A block over the message, such as a notice.
     @slot below A block under the message and its subcopy, over a rule.
 --}}
 @php
-    ['header' => $header, 'footer' => $footer, 'links' => $links, 'legal' => $legal, 'service' => $service] = \Steddle\Foundry\Mail\MailOptions::resolve($header, $footer, $links, $legal);
+    ['header' => $header, 'footer' => $footer, 'links' => $links, 'legal' => $legal, 'service' => $service] = \Steddle\Foundry\Mail\MailOptions::resolve($header, $footer, $links, $legal, $client);
 @endphp
 <x-mail::layout :$preheader>
 @if ($header !== 'none')
 <x-slot:header>
-<x-mail::header :url="config('app.url')" />
+<x-mail::header :url="config('app.url')" :$client />
 </x-slot:header>
 @endif
 

@@ -1,7 +1,6 @@
 @php
     $client = \Steddle\Foundry\Auth\LoginLink::clientFor(request());
     $name = $client['name'] ?? config('imprint.name');
-    $note = ($noted = config('imprint.auth.note')) ? app($noted)(request()) : null;
 @endphp
 <foundry:layouts.auth :title="__('foundry::sign-in.title')" :description="__('foundry::sign-in.description', ['name' => $name])" :$client card>
     @if (session('sign_in_email'))
@@ -19,10 +18,6 @@
 
         <a href="{{ route('login') }}" class="text-small link">{{ __('foundry::sign-in.sent.other') }}</a>
     @else
-        @if ($client['icon'] ?? null)
-            <img src="{{ $client['icon'] }}" alt="" width="48" height="48" class="size-12 shrink-0 rounded-lg">
-        @endif
-
         <div class="flex flex-col gap-3">
             <foundry:heading size="1" level="1">{{ __('foundry::sign-in.heading', ['name' => $name]) }}</foundry:heading>
             <foundry:text tone="muted">{{ __(config('imprint.auth.signup') ? 'foundry::sign-in.lede.signup' : 'foundry::sign-in.lede.members') }}</foundry:text>
@@ -40,9 +35,5 @@
         @if (Route::has('passkey.login'))
             <foundry:passkey-sign-in />
         @endif
-    @endif
-
-    @if ($note)
-        <foundry:text variant="small" tone="muted" class="border-t border-zinc-200 dark:border-zinc-700 pt-6">{{ $note }}</foundry:text>
     @endif
 </foundry:layouts.auth>

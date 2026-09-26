@@ -13,15 +13,19 @@ use Steddle\Foundry\Brand\BrandAssets;
 final class MailOptions
 {
     /**
+     * A client, the product a sign-in mail is for, takes the last line as
+     * '{name}, by Steddle' where the mailable states none.
+     *
      * @param  array<string, string>|null  $links
+     * @param  array{name: string}|null  $client
      * @return array{header: string, footer: ?string, links: array<string, string>, legal: ?string, service: bool}
      */
-    public static function resolve(?string $header = null, string|false|null $footer = null, ?array $links = null, string|false|null $legal = null): array
+    public static function resolve(?string $header = null, string|false|null $footer = null, ?array $links = null, string|false|null $legal = null, ?array $client = null): array
     {
         $mail = config('imprint.mail', []);
 
         $footer ??= $mail['footer'] ?? config('imprint.disclaimer');
-        $legal ??= $mail['legal'] ?? null;
+        $legal ??= $client === null ? $mail['legal'] ?? null : __('foundry::mail.by_steddle', ['name' => $client['name']]);
 
         return [
             'header' => $header ?? $mail['header'] ?? 'lockup',

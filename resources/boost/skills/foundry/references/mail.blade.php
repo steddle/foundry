@@ -55,6 +55,8 @@ A notification hands them over with Laravel's own view:
 
 `above` and `below` are markdown there.
 
+`client` is the product a mail is for, as `imprint.auth.client` answers it; the sign-in mail hands it over itself. The mail then wears that product's lockup from `{icons}/brand/mail/logo-2x.png`, its palette's `zinc-900` as ink, `zinc-50` as paper and `primary-300` as the button, signs off as it, and its last line reads '{name}, by Steddle'. `Steddle\Foundry\Brand\Palette::colour('sendnda', 'primary-300')` reads a palette's colour as hex from foundry.css. `/foundry/mail?login` shows the sign-in mail for the client of the request.
+
 ## Standing in
 
 A file under `resources/views/vendor/mail/html` or `text`, or `resources/views/vendor/notifications/email.blade.php`, stands in for the foundry's of that name. Keep one only where the theme cannot say it; a colour or a line belongs in `imprint.mail`. A `markdown` block in `config/mail.php` keeps its `paths` key, or the imprint's own mail files are no longer read.
