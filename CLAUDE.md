@@ -27,7 +27,7 @@ The lab is `/labs`, `/design`, `/components` and `/foundry/mail`, set by `pages`
 2. `bin/imprints check`: sync, test, then reset, holding a lock per imprint that a second run from any session waits on. Every imprint runs this checkout from its `vendor/`, with the guideline and the `foundry` skill installed from it, then goes back to its locked foundry, so its tracked `CLAUDE.md` and skill are left as they were. `sync` and `test` run the halves alone to look into a failure; `reset` puts an imprint back after.
 3. Commit and push the foundry once every suite passes.
 4. `bin/imprints update` (`composer update steddle/foundry`, `boost:install`, clearing views and building the assets, so the imprint serves the foundry's CSS), then `bin/imprints test` again.
-5. Commit each imprint by pathspec: its `composer.lock`, its `CLAUDE.md`, its skills directories, and what the change touched in it. Push an imprint only on Mischa's word.
+5. Commit each imprint by pathspec: its `composer.lock`, its `CLAUDE.md`, its skills directories, and what the change touched in it, and push it: every imprint runs the latest foundry in production, and a push deploys it. Any other push of an imprint waits for Mischa's word.
 
 A visual change is looked at with `bin/shoot <imprint> <path>... [--dark] [--phone] [--as=<email>]`: it builds the imprint, renders each page at full length in Playwright's Chromium and prints the PNG paths; `--as` signs in through the foundry's `foundry.shoot` route, signed and registered only where `APP_ENV` is local, whether the imprint signs in by link or through the Steddle account.
 
